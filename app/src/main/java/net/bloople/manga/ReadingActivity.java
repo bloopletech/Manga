@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class ReadingActivity extends AppCompatActivity {
     private Book book;
@@ -23,13 +24,14 @@ public class ReadingActivity extends AppCompatActivity {
         int key = intent.getIntExtra("key", 0);
 
         book = MangaApplication.books.get(key);
-        currentPage = 1;
+        currentPage = 0;
 
         imageView = (ImageView)findViewById(R.id.image_view);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(currentPage == book.pages() - 1) return;
                 currentPage++;
                 showCurrentPage();
             }
@@ -39,9 +41,10 @@ public class ReadingActivity extends AppCompatActivity {
     }
 
     private void showCurrentPage() {
-        Uri uri = MangaApplication.root().buildUpon().appendEncodedPath(book.getUrl())
-                    .appendEncodedPath(book.getPageUrls().get(currentPage - 1)).build();
+        Glide.with(this).load(book.pageUrl(currentPage)).dontAnimate().into(imageView);
 
-        Glide.with(this).load(uri.toString()).into(imageView);
+        if ((currentPage + 1) < book.pages()) {
+            Glide.with(this).load(book.pageUrl(currentPage + 1)).diskCacheStrategy(DiskCacheStrategy.SOURCE).preload();
+        }
     }
 }

@@ -1,5 +1,7 @@
 package net.bloople.manga;
 
+import android.net.Uri;
+
 import java.util.List;
 
 /**
@@ -44,5 +46,14 @@ public class Book {
 
     public String getKey() {
         return mKey;
+    }
+
+    public Uri pageUrl(int index) {
+        return MangaApplication.root().buildUpon().appendEncodedPath(getUrl())
+                .appendEncodedPath(mPageUrls.get(index)).build();
+    }
+
+    public int pages() {
+        return mPageUrls.size();
     }
 }

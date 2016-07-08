@@ -69,16 +69,12 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         Book book = books.get(position);
         Uri uri = MangaApplication.root().buildUpon().appendEncodedPath(book.getThumbnailUrl()).build();
 
-        Glide.with(holder.imageView.getContext()).load(uri.toString()).into(holder.imageView);
+        Glide.with(holder.imageView.getContext()).load(uri).dontAnimate().into(holder.imageView);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return books.size();
-    }
-
-    public Book getModel(int index) {
-        return books.get(index);
     }
 }
