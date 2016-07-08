@@ -1,7 +1,6 @@
 package net.bloople.manga;
 
 import android.net.Uri;
-
 import java.util.List;
 
 /**
@@ -24,32 +23,32 @@ public class Book {
         mKey = key;
     }
 
-    public String getUrl() {
+    public String url() {
         return mUrl;
     }
 
-    public List<String> getPageUrls() {
+    public List<String> pageUrls() {
         return mPageUrls;
     }
 
-    public String getThumbnailUrl() {
+    public String thumbnailUrl() {
         return mThumbnailUrl;
     }
 
-    public String getTitle() {
+    public String title() {
         return mTitle;
     }
 
-    public int getPublishedOn() {
+    public int publishedOn() {
         return mPublishedOn;
     }
 
-    public String getKey() {
+    public String key() {
         return mKey;
     }
 
     public Uri pageUrl(int index) {
-        return MangaApplication.root().buildUpon().appendEncodedPath(getUrl())
+        return MangaApplication.root().buildUpon().appendEncodedPath(url())
                 .appendEncodedPath(mPageUrls.get(index)).build();
     }
 

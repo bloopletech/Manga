@@ -6,11 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -51,8 +47,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     // Create new views (invoked by the layout manager)
     @Override
     public BooksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gridview_item, parent,
-                false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.index_image_view, parent, false);
 
         final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 3.0 / 197.0;
         view.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
@@ -67,7 +62,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         holder.imageView.setImageDrawable(null);
 
         Book book = books.get(position);
-        Uri uri = MangaApplication.root().buildUpon().appendEncodedPath(book.getThumbnailUrl()).build();
+        Uri uri = MangaApplication.root().buildUpon().appendEncodedPath(book.thumbnailUrl()).build();
 
         Glide.with(holder.imageView.getContext()).load(uri).dontAnimate().into(holder.imageView);
     }
