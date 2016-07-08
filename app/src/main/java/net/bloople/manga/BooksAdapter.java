@@ -49,7 +49,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     public BooksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.index_image_view, parent, false);
 
-        final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 3.0 / 197.0;
+        final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 5.0 / 197.0;
         view.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
 
         return new ViewHolder(view, mOnItemClickListener);
