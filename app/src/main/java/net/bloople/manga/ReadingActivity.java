@@ -15,21 +15,25 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 public class ReadingActivity extends AppCompatActivity {
+    public static final int MAX_IMAGE_SIZE = 2048;
+
     private Book book;
     private int currentPage;
     private RelativeLayout holder;
-    private RequestListener requestListener;
+    private RequestListener<Uri, GlideDrawable> requestListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_reading);
 
         Intent intent = getIntent();
         int key = intent.getIntExtra("key", 0);
-
         book = MangaApplication.books.get(key);
-        currentPage = 0;
+
+        if(savedInstanceState != null) currentPage = savedInstanceState.getInt("currentPage");
+        else currentPage = 0;
 
         holder = (RelativeLayout)findViewById(R.id.image_view_holder);
 
@@ -39,25 +43,27 @@ public class ReadingActivity extends AppCompatActivity {
                 if(currentPage == book.pages() - 1) return;
                 currentPage++;
                 showCurrentPage();
+                cacheNextPage();
             }
         });
 
-        requestListener = new RequestListener<Uri, GlideDrawable>() {
-            @Override
-            public boolean onException(Exception e, Uri model, Target<GlideDrawable> target,
-                                       boolean isFirstResource) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target,
-                                           boolean isFromMemoryCache, boolean isFirstResource) {
-                for(int i = 0; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(0);
-                return false;
-            }
-        };
+        requestListener = new LoadedRequestListener();
 
         showCurrentPage();
+        cacheNextPage();
+    }
+
+    @Override
+    public void onBackPressed() {
+        currentPage--;
+        if(currentPage == -1) finish();
+        else showCurrentPage();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentPage", currentPage);
     }
 
     private void showCurrentPage() {
@@ -66,11 +72,39 @@ public class ReadingActivity extends AppCompatActivity {
 
         holder.addView(imageView);
 
-        Glide.with(this).load(book.pageUrl(currentPage))
-                .diskCacheStrategy(DiskCacheStrategy.ALL).dontAnimate().listener(requestListener).into(imageView);
+        Glide
+                .with(this)
+                .load(book.pageUrl(currentPage))
+                .override(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
+                .listener(requestListener)
+                .into(imageView);
+    }
 
-        if ((currentPage + 1) < book.pages()) {
-            Glide.with(this).load(book.pageUrl(currentPage + 1)).diskCacheStrategy(DiskCacheStrategy.SOURCE).preload();
+    private void cacheNextPage() {
+        if ((currentPage + 1) >= book.pages()) return;
+
+        Glide
+                .with(this)
+                .load(book.pageUrl(currentPage + 1))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .preload();
+    }
+
+    private class LoadedRequestListener implements RequestListener<Uri, GlideDrawable> {
+        @Override
+        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target,
+        boolean isFirstResource) {
+            e.printStackTrace();
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target,
+        boolean isFromMemoryCache, boolean isFirstResource) {
+            for(int i = 0; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(0);
+            return false;
         }
     }
 }
