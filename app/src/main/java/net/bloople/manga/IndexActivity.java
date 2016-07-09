@@ -15,7 +15,6 @@ import java.util.List;
 
 public class IndexActivity extends AppCompatActivity {
     private RecyclerView booksView;
-    private GridLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +22,31 @@ public class IndexActivity extends AppCompatActivity {
         setContentView(R.layout.activity_index);
 
         booksView = (RecyclerView)findViewById(R.id.books_view);
+        booksView.setLayoutManager(new GridLayoutManager(this, 5));
 
-        layoutManager = new GridLayoutManager(this, 5);
-        booksView.setLayoutManager(layoutManager);
+        if(MangaApplication.books != null) {
+            initAdapter();
+        }
+        else {
+            LoadBooksTask loader = new LoadBooksTask();
+            loader.execute();
+        }
+    }
 
-        LoadBooksTask loader = new LoadBooksTask();
-        loader.execute();
+    private void initAdapter() {
+        final BooksAdapter adapter = new BooksAdapter(MangaApplication.books);
+
+        adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(IndexActivity.this, ReadingActivity.class);
+                intent.putExtra("key", position);
+
+                startActivity(intent);
+            }
+        });
+
+        booksView.setAdapter(adapter);
     }
 
     private class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
@@ -60,20 +78,7 @@ public class IndexActivity extends AppCompatActivity {
 
         protected void onPostExecute(List<Book> books) {
             MangaApplication.books = books;
-
-            final BooksAdapter adapter = new BooksAdapter(MangaApplication.books);
-
-            adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    Intent intent = new Intent(IndexActivity.this, ReadingActivity.class);
-                    intent.putExtra("key", position);
-
-                    startActivity(intent);
-                }
-            });
-
-            booksView.setAdapter(adapter);
+            initAdapter();
         }
     }
 }
