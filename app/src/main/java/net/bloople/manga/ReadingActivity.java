@@ -1,8 +1,8 @@
 package net.bloople.manga;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-public class ReadingActivity extends AppCompatActivity {
+public class ReadingActivity extends Activity {
     public static final int MAX_IMAGE_SIZE = 2048;
 
     private Book book;
