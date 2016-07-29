@@ -21,6 +21,11 @@ public class IndexActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) {
+            Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler("/storage/emulated/0/Download"));
+        }
+
         setContentView(R.layout.activity_index);
 
         booksView = (RecyclerView)findViewById(R.id.books_view);
