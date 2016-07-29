@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,12 +39,8 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         }
     }
 
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
     private OnItemClickListener mOnItemClickListener;
-
-    public BooksAdapter(List<Book> inBooks) {
-        books = inBooks;
-    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
@@ -80,5 +78,15 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return books.size();
+    }
+
+    public void update(ArrayList<Book> inBooks) {
+        books.clear();
+        books.addAll(inBooks);
+        notifyDataSetChanged();
+    }
+
+    public Book at(int position) {
+        return books.get(position);
     }
 }

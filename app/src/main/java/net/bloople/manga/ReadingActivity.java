@@ -30,8 +30,13 @@ public class ReadingActivity extends Activity {
         setContentView(R.layout.activity_reading);
 
         Intent intent = getIntent();
-        int key = intent.getIntExtra("key", 0);
-        book = MangaApplication.books.get(key);
+        String key = intent.getStringExtra("key");
+        for(Book b : MangaApplication.allBooks) {
+            if(b.key().equals(key)) {
+                book = b;
+                break;
+            }
+        }
 
         if(savedInstanceState != null) currentPage = savedInstanceState.getInt("currentPage");
         else currentPage = 0;

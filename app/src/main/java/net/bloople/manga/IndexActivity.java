@@ -2,21 +2,33 @@ package net.bloople.manga;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+
 import org.json.JSONException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
+    private BooksAdapter adapter;
+    private CharSequence searchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +40,55 @@ public class IndexActivity extends Activity {
 
         setContentView(R.layout.activity_index);
 
+        final EditText searchField = (EditText)findViewById(R.id.search_field);
+        searchField.setOnEditorActionListener(new OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                    InputMethodManager in = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    in.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
+                    searchField.clearFocus();
+
+                    searchText = v.getText();
+                    resolve();
+
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        ImageButton clearSearchButton = (ImageButton)findViewById(R.id.clear_search);
+        clearSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchField.setText("");
+                searchText = "";
+                resolve();
+
+            }
+        });
+
         booksView = (RecyclerView)findViewById(R.id.books_view);
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
 
-        if(MangaApplication.books != null) {
-            initAdapter();
+        adapter = new BooksAdapter();
+        adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(IndexActivity.this, ReadingActivity.class);
+                intent.putExtra("key", adapter.at(position).key());
+
+                startActivity(intent);
+            }
+        });
+
+        booksView.setAdapter(adapter);
+
+        if(MangaApplication.allBooks != null) {
+            resolve();
         }
         else {
             LoadBooksTask loader = new LoadBooksTask();
@@ -54,20 +110,19 @@ public class IndexActivity extends Activity {
                 .show();
     }
 
-    private void initAdapter() {
-        final BooksAdapter adapter = new BooksAdapter(MangaApplication.books);
+    private void resolve() {
+        ArrayList<Book> books = new ArrayList<>();
 
-        adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(IndexActivity.this, ReadingActivity.class);
-                intent.putExtra("key", position);
-
-                startActivity(intent);
+        if(searchText == null || searchText.equals("")) {
+            books.addAll(MangaApplication.allBooks);
+        }
+        else {
+            for(Book b : MangaApplication.allBooks) {
+                if(b.title().contains(searchText)) books.add(b);
             }
-        });
+        }
 
-        booksView.setAdapter(adapter);
+        adapter.update(books);
     }
 
     private class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
@@ -97,9 +152,9 @@ public class IndexActivity extends Activity {
             return books;
         }
 
-        protected void onPostExecute(List<Book> books) {
-            MangaApplication.books = books;
-            initAdapter();
+        protected void onPostExecute(List<Book> allBooks) {
+            MangaApplication.allBooks = allBooks;
+            resolve();
         }
     }
 }
