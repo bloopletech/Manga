@@ -2,6 +2,7 @@ package net.bloople.manga;
 
 import android.app.Application;
 import android.net.Uri;
+
 import java.util.List;
 
 /**

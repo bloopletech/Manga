@@ -2,9 +2,9 @@ package net.bloople.manga;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.Writer;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 public class CustomExceptionHandler implements UncaughtExceptionHandler {
