@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.view.View.OnTouchListener;
 
 import org.json.JSONException;
 import java.io.IOException;
@@ -60,14 +62,24 @@ public class IndexActivity extends Activity {
             }
         });
 
-        ImageButton clearSearchButton = (ImageButton)findViewById(R.id.clear_search);
-        clearSearchButton.setOnClickListener(new View.OnClickListener() {
+        searchField.setOnTouchListener(new OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                searchField.setText("");
-                searchText = "";
-                resolve();
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
 
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    int clickIndex = searchField.getRight() -
+                            searchField.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+
+                    if(event.getRawX() >= clickIndex) {
+                        searchField.setText("");
+                        searchText = "";
+                        resolve();
+
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 

@@ -6,24 +6,15 @@
     android:orientation="vertical"
     android:focusableInTouchMode="true">
 
-    <FrameLayout
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/search_field"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:drawableStart="@drawable/ic_search_black_24dp" />
-        <ImageButton
-            android:id="@+id/clear_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:background="@drawable/ic_clear_black_24dp"
-            />
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/search_field"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:drawableStart="@drawable/ic_search_black_24dp"
+        android:drawableEnd="@drawable/ic_clear_black_24dp"
+        android:singleLine="true"/>
 
     <android.support.v7.widget.RecyclerView
     android:id="@+id/books_view"
