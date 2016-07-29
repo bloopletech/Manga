@@ -143,7 +143,7 @@ public class IndexActivity extends Activity {
             List<Book> books;
 
             try {
-                books = new BooksLoader().load();
+                books = new BooksLoader(IndexActivity.this).load();
             }
             catch(JSONException e) {
                 e.printStackTrace();
