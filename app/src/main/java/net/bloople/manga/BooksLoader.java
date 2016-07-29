@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 /**
@@ -45,15 +46,18 @@ public class BooksLoader {
     }
 
     private String getContent(Uri uri) throws IOException {
-        InputStream is = new URL(uri.toString()).openConnection().getInputStream();
+        URLConnection connection = new URL(uri.toString()).openConnection();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
+        int contentLength = connection.getContentLength();
+        if(contentLength == -1) contentLength = 10000000;
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder sb = new StringBuilder(contentLength);
+        String line;
 
         while((line = reader.readLine()) != null) sb.append(line).append("\n");
 
-        is.close();
+        reader.close();
 
         return sb.toString();
     }
