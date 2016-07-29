@@ -29,7 +29,7 @@ public class IndexActivity extends Activity {
         setContentView(R.layout.activity_index);
 
         booksView = (RecyclerView)findViewById(R.id.books_view);
-        booksView.setLayoutManager(new GridLayoutManager(this, 5));
+        booksView.setLayoutManager(new GridLayoutManager(this, 4));
 
         if(MangaApplication.books != null) {
             initAdapter();

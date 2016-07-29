@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView textView;
         public ImageView imageView;
         public ViewHolder(View view, final OnItemClickListener clickListener) {
             super(view);
@@ -29,6 +32,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
                 }
             });
 
+            textView = (TextView)view.findViewById(R.id.text_view);
             imageView = (ImageView)view.findViewById(R.id.image_view);
         }
     }
@@ -47,9 +51,9 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     // Create new views (invoked by the layout manager)
     @Override
     public BooksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.index_image_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.index_book_view, parent, false);
 
-        final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 5.0 / 197.0;
+        final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 4.0 / 197.0;
         view.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
 
         return new ViewHolder(view, mOnItemClickListener);
@@ -58,10 +62,15 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Book book = books.get(position);
+
+        String title = book.title().replaceAll("\\s+", " ");
+        //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
+        holder.textView.setText(title);
+
         Glide.clear(holder.imageView);
         holder.imageView.setImageDrawable(null);
 
-        Book book = books.get(position);
         Uri uri = MangaApplication.root().buildUpon().appendEncodedPath(book.thumbnailUrl()).build();
 
         Glide.with(holder.imageView.getContext()).load(uri).dontAnimate().into(holder.imageView);
