@@ -22,6 +22,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView pageCountView;
         public TextView textView;
         public ImageView imageView;
         public ViewHolder(View view, final OnItemClickListener clickListener) {
@@ -34,6 +35,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
                 }
             });
 
+            pageCountView = (TextView)view.findViewById(R.id.page_count_view);
             textView = (TextView)view.findViewById(R.id.text_view);
             imageView = (ImageView)view.findViewById(R.id.image_view);
         }
@@ -65,6 +67,8 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         String title = book.title().replaceAll("\\s+", " ");
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.setText(title);
+
+        holder.pageCountView.setText(String.format("%,d", book.pages()));
 
         Glide.clear(holder.imageView);
         holder.imageView.setImageDrawable(null);
