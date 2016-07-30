@@ -22,7 +22,6 @@ import android.widget.TextView.OnEditorActionListener;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.List;
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
-    private CharSequence searchText;
+    private BookSearcher searcher = new BookSearcher();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class IndexActivity extends Activity {
                     in.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
                     searchField.clearFocus();
 
-                    searchText = v.getText();
+                    searcher.setSearchText(v.getText().toString());
                     resolve();
 
                     handled = true;
@@ -73,7 +72,7 @@ public class IndexActivity extends Activity {
 
                     if(event.getRawX() >= clickIndex) {
                         searchField.setText("");
-                        searchText = "";
+                        searcher.setSearchText("");
                         resolve();
 
                         return true;
@@ -123,18 +122,7 @@ public class IndexActivity extends Activity {
     }
 
     private void resolve() {
-        ArrayList<Book> books = new ArrayList<>();
-
-        if(searchText == null || searchText.equals("")) {
-            books.addAll(MangaApplication.allBooks);
-        }
-        else {
-            for(Book b : MangaApplication.allBooks) {
-                if(b.title().contains(searchText)) books.add(b);
-            }
-        }
-
-        adapter.update(books);
+        adapter.update(searcher.resolve());
     }
 
     private class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
