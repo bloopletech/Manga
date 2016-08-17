@@ -9,15 +9,18 @@ import java.util.List;
  */
 public class Book {
     private String mUrl;
+    private String mPagesDeflated;
     private List<String> mPageUrls;
+    private int mPagesCount;
     private String mThumbnailUrl;
     private String mTitle;
     private int mPublishedOn;
     private String mKey;
 
-    public Book(String url, List<String> pageUrls, String thumbnailUrl, String title, int publishedOn, String key) {
+    public Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title, int publishedOn, String key) {
         mUrl = url;
-        mPageUrls = pageUrls;
+        mPagesDeflated = pagesDeflated;
+        mPagesCount = pagesCount;
         mThumbnailUrl = thumbnailUrl;
         mTitle = title;
         mPublishedOn = publishedOn;
@@ -28,7 +31,12 @@ public class Book {
         return mUrl;
     }
 
+    public String pagesDeflated() {
+        return mPagesDeflated;
+    }
+
     public List<String> pageUrls() {
+        if(mPageUrls == null) mPageUrls = new PagesInflater(mPagesDeflated).inflate();
         return mPageUrls;
     }
 
@@ -50,10 +58,11 @@ public class Book {
 
     public Uri pageUrl(int index) {
         return MangaApplication.root().buildUpon().appendEncodedPath(url())
-                .appendEncodedPath(mPageUrls.get(index)).build();
+                .appendEncodedPath(pageUrls().get(index)).build();
     }
 
     public int pages() {
-        return mPageUrls.size();
+        //We are trusting the server that mPagesCount matches pageUrls().size()
+        return mPagesCount;
     }
 }

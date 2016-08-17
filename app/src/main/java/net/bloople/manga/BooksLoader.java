@@ -51,12 +51,10 @@ public class BooksLoader {
         int publishedOn = object.getInt("publishedOn");
         String thumbnailUrl = object.getString("thumbnailUrl");
         String key = object.getString("key");
+        String pagesDeflated = object.getString("pageUrls");
+        int pagesCount = object.getInt("pages");
 
-        JSONArray pageUrlObjects = object.getJSONArray("pageUrls");
-        ArrayList<String> pageUrls = new ArrayList<>();
-        for(int i = 0; i < pageUrlObjects.length(); i++) pageUrls.add(pageUrlObjects.getString(i));
-
-        return new Book(url, pageUrls, thumbnailUrl, title, publishedOn, key);
+        return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, publishedOn, key);
     }
 
     private String getContent() throws IOException {
