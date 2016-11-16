@@ -42,13 +42,32 @@ public class ReadingActivity extends Activity {
         if(savedInstanceState != null) currentPage = savedInstanceState.getInt("currentPage");
         else currentPage = 0;
 
-        holder = (RelativeLayout)findViewById(R.id.image_view_holder);
-
-        holder.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener nextListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentPage == book.pages() - 1) return;
-                currentPage++;
+                if(!changePage(1)) return;
+                showCurrentPage();
+                cacheNextPage();
+            }
+        };
+
+        holder = (RelativeLayout)findViewById(R.id.image_view_holder);
+        holder.setOnClickListener(nextListener);
+
+        ImageView prev10 = (ImageView)findViewById(R.id.prev_10);
+        prev10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changePage(-10);
+                showCurrentPage();
+            }
+        });
+
+        ImageView next10 = (ImageView)findViewById(R.id.next_10);
+        next10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changePage(10);
                 showCurrentPage();
                 cacheNextPage();
             }
@@ -62,9 +81,8 @@ public class ReadingActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        currentPage--;
-        if(currentPage == -1) finish();
-        else showCurrentPage();
+        if(changePage(-1)) showCurrentPage();
+        else finish();
     }
 
     @Override
@@ -115,6 +133,22 @@ public class ReadingActivity extends Activity {
                 .load(book.pageUrl(currentPage + 1))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .preload();
+    }
+
+    private boolean changePage(int change) {
+        currentPage += change;
+
+        if(currentPage < 0) {
+            currentPage = 0;
+            return false;
+        }
+
+        if(currentPage > (book.pages() - 1)) {
+            currentPage = book.pages() - 1;
+            return false;
+        }
+
+        return true;
     }
 
     private class LoadedRequestListener implements RequestListener<Uri, GlideDrawable> {
