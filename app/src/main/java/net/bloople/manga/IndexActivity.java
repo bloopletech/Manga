@@ -28,10 +28,13 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
+import static android.R.id.list;
 import static net.bloople.manga.BookSearcher.SORT_AGE;
 import static net.bloople.manga.BookSearcher.SORT_ALPHABETIC;
 import static net.bloople.manga.BookSearcher.SORT_LAST_OPENED;
@@ -105,6 +108,16 @@ public class IndexActivity extends Activity {
         adapter = new BooksAdapter(multiSelector);
         booksView.setAdapter(adapter);
 
+        ArrayList<BookList> lists = BookList.all(this);
+        if(lists != null) {
+            for(BookList list : lists) {
+                System.out.println("list: " + list.name());
+                ArrayList<String> keys = list.bookKeys(this);
+                for(String key : keys) System.out.println(key);
+                System.out.println("====================================================");
+            }
+        }
+
         if(MangaApplication.allBooks != null) {
             resolve();
         }
@@ -163,9 +176,17 @@ public class IndexActivity extends Activity {
             if(wasOn) {
                 List<Integer> positions = multiSelector.getSelectedPositions();
 
-                for(int i : positions) {
-                    System.out.println(adapter.at(i).title());
-                }
+                String name = UUID.randomUUID().toString();
+
+
+                ArrayList<String> keys = new ArrayList<>();
+
+                for(int i : positions) keys.add(adapter.at(i).key());
+
+                BookList list = new BookList();
+                list.name(name);
+                list.save(this);
+                list.bookKeys(this, keys);
 
                 multiSelector.clearSelections();
             }
@@ -199,13 +220,6 @@ public class IndexActivity extends Activity {
                 e.printStackTrace();
                 return null;
             }
-
-            Collections.sort(books, new Comparator<Book>() {
-                public int compare(Book o1, Book o2) {
-                    if(o1.publishedOn() == o2.publishedOn()) return 0;
-                    return (o1.publishedOn() < o2.publishedOn()) ? 1 : -1;
-                }
-            });
 
             return books;
         }
