@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -18,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toolbar;
 
 import org.json.JSONException;
 
@@ -26,9 +30,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static net.bloople.manga.BookSearcher.SORT_AGE;
+import static net.bloople.manga.BookSearcher.SORT_ALPHABETIC;
+import static net.bloople.manga.BookSearcher.SORT_LAST_OPENED;
+import static net.bloople.manga.BookSearcher.SORT_LENGTH;
+
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
+
     private BookSearcher searcher = new BookSearcher();
 
     @Override
@@ -40,6 +50,9 @@ public class IndexActivity extends Activity {
         }
 
         setContentView(R.layout.activity_index);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setActionBar(toolbar);
 
         final EditText searchField = (EditText)findViewById(R.id.search_field);
         searchField.setOnEditorActionListener(new OnEditorActionListener() {
@@ -86,16 +99,6 @@ public class IndexActivity extends Activity {
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
 
         adapter = new BooksAdapter();
-        adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Intent intent = new Intent(IndexActivity.this, ReadingActivity.class);
-                intent.putExtra("key", adapter.at(position).key());
-
-                startActivity(intent);
-            }
-        });
-
         booksView.setAdapter(adapter);
 
         if(MangaApplication.allBooks != null) {
@@ -121,8 +124,47 @@ public class IndexActivity extends Activity {
                 .show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.sort_alphabetic) {
+            if(searcher.getSortMethod() == BookSearcher.SORT_ALPHABETIC) searcher.flipSortDirection();
+            searcher.setSortMethod(BookSearcher.SORT_ALPHABETIC);
+        }
+        else if(menuItem.getItemId() == R.id.sort_age) {
+            if(searcher.getSortMethod() == BookSearcher.SORT_AGE) searcher.flipSortDirection();
+            searcher.setSortMethod(BookSearcher.SORT_AGE);
+        }
+        else if(menuItem.getItemId() == R.id.sort_size) {
+            if(searcher.getSortMethod() == BookSearcher.SORT_LENGTH) searcher.flipSortDirection();
+            searcher.setSortMethod(BookSearcher.SORT_LENGTH);
+        }
+        else if(menuItem.getItemId() == R.id.sort_last_opened) {
+            if(searcher.getSortMethod() == BookSearcher.SORT_LAST_OPENED) searcher.flipSortDirection();
+            searcher.setSortMethod(BookSearcher.SORT_LAST_OPENED);
+        }
+        /*else if(menuItem.getItemId() == R.id.manage_indexing) {
+            Intent intent = new Intent(BooksActivity.this, IndexingActivity.class);
+            startActivity(intent);
+        }*/
+
+        resolve();
+
+        return true;
+    }
+
     private void resolve() {
         adapter.update(searcher.resolve());
+        booksView.scrollToPosition(0);
     }
 
     private class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
