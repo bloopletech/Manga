@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toolbar;
 
+import com.bignerdranch.android.multiselector.MultiSelector;
+
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -38,6 +40,7 @@ import static net.bloople.manga.BookSearcher.SORT_LENGTH;
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
+    private MultiSelector multiSelector;
 
     private BookSearcher searcher = new BookSearcher();
 
@@ -98,7 +101,8 @@ public class IndexActivity extends Activity {
         booksView = (RecyclerView)findViewById(R.id.books_view);
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
 
-        adapter = new BooksAdapter();
+        multiSelector = new MultiSelector();
+        adapter = new BooksAdapter(multiSelector);
         booksView.setAdapter(adapter);
 
         if(MangaApplication.allBooks != null) {
@@ -152,10 +156,22 @@ public class IndexActivity extends Activity {
             if(searcher.getSortMethod() == BookSearcher.SORT_LAST_OPENED) searcher.flipSortDirection();
             searcher.setSortMethod(BookSearcher.SORT_LAST_OPENED);
         }
-        /*else if(menuItem.getItemId() == R.id.manage_indexing) {
-            Intent intent = new Intent(BooksActivity.this, IndexingActivity.class);
-            startActivity(intent);
-        }*/
+        else if(menuItem.getItemId() == R.id.manage_indexing) {
+            boolean wasOn = multiSelector.isSelectable();
+            multiSelector.setSelectable(!multiSelector.isSelectable());
+
+            if(wasOn) {
+                List<Integer> positions = multiSelector.getSelectedPositions();
+
+                for(int i : positions) {
+                    System.out.println(adapter.at(i).title());
+                }
+
+                multiSelector.clearSelections();
+            }
+            //Intent intent = new Intent(BooksActivity.this, IndexingActivity.class);
+            //startActivity(intent);
+        }
 
         resolve();
 

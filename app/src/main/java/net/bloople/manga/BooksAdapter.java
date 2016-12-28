@@ -22,14 +22,15 @@ import java.util.List;
 public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     private MultiSelector multiSelector;
 
-    public BooksAdapter() {
-        multiSelector = new MultiSelector();
+    public BooksAdapter(MultiSelector multiSelector) {
+        this.multiSelector = multiSelector;
     }
 
     class ViewHolder extends SwappingHolder implements View.OnClickListener {
         public TextView pageCountView;
         public TextView textView;
         public ImageView imageView;
+        public ImageView selectableView;
         public ViewHolder(View view) {
             super(view, multiSelector);
 
@@ -38,6 +39,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
             pageCountView = (TextView)view.findViewById(R.id.page_count_view);
             textView = (TextView)view.findViewById(R.id.text_view);
             imageView = (ImageView)view.findViewById(R.id.image_view);
+            selectableView = (ImageView)view.findViewById(R.id.selectable);
         }
 
         @Override
@@ -48,6 +50,12 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
 
                 view.getContext().startActivity(intent);
             }
+        }
+
+
+        public void setSelectable(boolean isSelectable) {
+            super.setSelectable(isSelectable);
+            selectableView.setVisibility(isSelectable ? View.VISIBLE : View.INVISIBLE);
         }
     }
 
