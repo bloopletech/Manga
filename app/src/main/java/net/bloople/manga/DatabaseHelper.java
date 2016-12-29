@@ -33,7 +33,9 @@ public class DatabaseHelper {
                 ")");
 
         Cursor result = db.rawQuery("SELECT COUNT(*) FROM lists", new String[] {});
-        if(result.getCount() == 0) {
+        result.moveToFirst();
+
+        if(result.getInt(0) == 0) {
             ContentValues values = new ContentValues();
             values.put("name", "All Books");
             db.insert("lists", null, values);
