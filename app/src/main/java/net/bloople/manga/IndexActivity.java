@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -29,21 +28,14 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-
-import static android.R.id.list;
-import static net.bloople.manga.BookSearcher.SORT_AGE;
-import static net.bloople.manga.BookSearcher.SORT_ALPHABETIC;
-import static net.bloople.manga.BookSearcher.SORT_LAST_OPENED;
-import static net.bloople.manga.BookSearcher.SORT_LENGTH;
 
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private MultiSelector multiSelector;
+    private CollectionsManager collections;
 
     private BookSearcher searcher = new BookSearcher();
 
@@ -108,15 +100,8 @@ public class IndexActivity extends Activity {
         adapter = new BooksAdapter(multiSelector);
         booksView.setAdapter(adapter);
 
-        ArrayList<BookList> lists = BookList.all(this);
-        if(lists != null) {
-            for(BookList list : lists) {
-                System.out.println("list: " + list.name());
-                ArrayList<String> keys = list.bookKeys(this);
-                for(String key : keys) System.out.println(key);
-                System.out.println("====================================================");
-            }
-        }
+        collections = new CollectionsManager(this, multiSelector, adapter);
+        collections.setup();
 
         if(MangaApplication.allBooks != null) {
             resolve();
@@ -202,6 +187,14 @@ public class IndexActivity extends Activity {
     private void resolve() {
         adapter.update(searcher.resolve());
         booksView.scrollToPosition(0);
+    }
+
+
+
+    public void useList(BookList list) {
+        if(list == null) searcher.setFilterKeys(null);
+        else searcher.setFilterKeys(list.bookKeys(this));
+        resolve();
     }
 
     private class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {

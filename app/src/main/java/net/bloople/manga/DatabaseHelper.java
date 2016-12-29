@@ -32,6 +32,14 @@ public class DatabaseHelper {
                 "book_key TEXT" +
                 ")");
 
+        Cursor result = db.rawQuery("SELECT COUNT(*) FROM lists", new String[] {});
+        if(result.getCount() == 0) {
+            ContentValues values = new ContentValues();
+            values.put("name", "All Books");
+            db.insert("lists", null, values);
+        }
+        result.close();
+
         return db;
     }
 

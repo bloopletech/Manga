@@ -106,4 +106,12 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
     public Book at(int position) {
         return books.get(position);
     }
+
+    public int positionOf(String key) {
+        for(Book book : books) {
+            if(key.equals(book.key())) return books.indexOf(book);
+        }
+
+        return -1;
+    }
 }

@@ -18,6 +18,7 @@ public class BookSearcher {
     private int sortMethod = SORT_AGE;
     private boolean sortDirectionAsc = false;
     private String searchText = "";
+    private ArrayList<String> filterKeys;
 
     public void setSearchText(String inSearchText) {
         searchText = inSearchText;
@@ -39,6 +40,10 @@ public class BookSearcher {
         sortDirectionAsc = !sortDirectionAsc;
     }
 
+    public void setFilterKeys(ArrayList<String> filterKeys) {
+        this.filterKeys = filterKeys;
+    }
+
     public ArrayList<Book> resolve() {
         ArrayList<Book> books = new ArrayList<>();
 
@@ -46,6 +51,8 @@ public class BookSearcher {
 
         bookLoop:
         for(Book b : MangaApplication.allBooks) {
+            if(filterKeys != null && !filterKeys.contains(b.key())) continue;
+
             String compareTitle = b.title().toLowerCase();
 
             for(String searchTerm : searchTerms) {

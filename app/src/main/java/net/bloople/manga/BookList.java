@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
-import static android.R.attr.path;
-
 /**
  * Created by i on 29/12/2016.
  */
@@ -17,20 +15,16 @@ public class BookList {
     private long _id = -1L;
     private String name;
 
-    public static ArrayList<BookList> all(Context context) {
+    public static BookList findById(Context context, long id) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
-        Cursor result = db.rawQuery("SELECT * FROM lists", new String[] {});
+        Cursor result = db.rawQuery("SELECT * FROM lists WHERE _id=?", new String[] { String.valueOf(id) });
+        result.moveToFirst();
 
         if(result.getCount() > 0) {
-            ArrayList<BookList> lists = new ArrayList<>();
-
-            while(result.moveToNext()) {
-                lists.add(new BookList(result));
-            }
-
+            BookList bookList = new BookList(result);
             result.close();
-            return lists;
+            return bookList;
         }
         else {
             return null;
@@ -45,6 +39,10 @@ public class BookList {
         name = result.getString(result.getColumnIndex("name"));
     }
 
+    public long id() {
+        return _id;
+    }
+
     public String name() {
         return name;
     }
@@ -56,7 +54,7 @@ public class BookList {
     public ArrayList<String> bookKeys(Context context) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
-        Cursor result = db.rawQuery("SELECT * FROM lists_books WHERE list_id=?", new String[] { String.valueOf(_id) });
+        Cursor result = db.rawQuery("SELECT book_key FROM lists_books WHERE list_id=?", new String[] { String.valueOf(_id) });
 
         if(result.getCount() > 0) {
             ArrayList<String> keys = new ArrayList<>();
@@ -69,6 +67,7 @@ public class BookList {
             return keys;
         }
         else {
+            result.close();
             return null;
         }
     }
@@ -76,7 +75,7 @@ public class BookList {
     public void bookKeys(Context context, ArrayList<String> keys) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
-        db.rawQuery("DELETE FROM lists_books WHERE list_id=?", new String[] { String.valueOf(_id) });
+        db.delete("lists_books", "list_id=?", new String[] { String.valueOf(_id) });
 
         for(String key : keys) {
             ContentValues values = new ContentValues();
@@ -99,5 +98,10 @@ public class BookList {
         else {
             db.update("lists", values, "_id=?", new String[] { String.valueOf(_id) });
         }
+    }
+
+    public void destroy(Context context) {
+        SQLiteDatabase db = DatabaseHelper.instance(context);
+        db.delete("lists", "_id=?", new String[] { String.valueOf(_id) });
     }
 }
