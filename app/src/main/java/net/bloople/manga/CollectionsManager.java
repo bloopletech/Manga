@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 /**
@@ -18,10 +19,10 @@ public class CollectionsManager {
     private IndexActivity activity;
     private BooksAdapter adapter;
     private BookListAdapter bookListAdapter;
-    private Button newCollection;
+    private ImageButton newCollection;
     private Button saveCollection;
-    private Button editCollection;
-    private Button destroyCollection;
+    private ImageButton editCollection;
+    private ImageButton destroyCollection;
     private Button editName;
     private ListView sidebar;
     private BookList list;
@@ -48,10 +49,14 @@ public class CollectionsManager {
                 view.setActivated(true);
 
                 if(list == null) {
+                    adapter.clearSelectedBookIds();
+                    adapter.setSelectable(false);
+
                     newCollection.setVisibility(View.VISIBLE);
                     editCollection.setVisibility(View.GONE);
                     editName.setVisibility(View.GONE);
                     destroyCollection.setVisibility(View.GONE);
+                    saveCollection.setVisibility(View.GONE);
                 }
                 else {
                     newCollection.setVisibility(View.GONE);
@@ -62,7 +67,7 @@ public class CollectionsManager {
             }
         });
 
-        newCollection = (Button)activity.findViewById(R.id.new_collection);
+        newCollection = (ImageButton)activity.findViewById(R.id.new_collection);
         newCollection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +83,7 @@ public class CollectionsManager {
             }
         });
 
-        editCollection = (Button)activity.findViewById(R.id.edit_collection);
+        editCollection = (ImageButton)activity.findViewById(R.id.edit_collection);
         editCollection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +99,7 @@ public class CollectionsManager {
             }
         });
 
-        destroyCollection = (Button)activity.findViewById(R.id.destroy_collection);
+        destroyCollection = (ImageButton)activity.findViewById(R.id.destroy_collection);
         destroyCollection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

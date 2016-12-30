@@ -50,32 +50,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:choiceMode="singleChoice"
-            android:listSelector="#ff0000"/>
-        <Button
+            android:listSelector="#9FA8DA"/>
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/new_collection"
-            android:text="+"/>
+            android:src="@drawable/ic_add_black_24dp"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/save_collection"
             android:text="Save"/>
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/edit_collection"
-            android:text="Edit"/>
+            android:src="@drawable/ic_create_black_24dp"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/edit_name"
             android:text="Edit Name"/>
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/destroy_collection"
-            android:text="Delete"/>
+            android:src="@drawable/ic_delete_black_24dp"/>
 
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

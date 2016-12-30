@@ -165,8 +165,6 @@ public class IndexActivity extends Activity {
         booksView.scrollToPosition(0);
     }
 
-
-
     public void useList(BookList list) {
         if(list == null) searcher.setFilterIds(null);
         else searcher.setFilterIds(list.bookIds(this));
