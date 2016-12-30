@@ -54,7 +54,9 @@ public class BooksLoader {
         String pagesDeflated = object.getString("pageUrls");
         int pagesCount = object.getInt("pages");
 
-        return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, publishedOn, key);
+        long _id = Long.parseLong(key.substring(0, 15), 16); //Using substring of key would be dangerous for large N
+
+        return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, publishedOn, _id);
     }
 
     private String getContent() throws IOException {

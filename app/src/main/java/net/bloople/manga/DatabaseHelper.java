@@ -29,7 +29,7 @@ public class DatabaseHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS lists_books ( " +
                 "list_id INTEGER, " +
-                "book_key TEXT" +
+                "book_id INTEGER" +
                 ")");
 
         Cursor result = db.rawQuery("SELECT COUNT(*) FROM lists", new String[] {});

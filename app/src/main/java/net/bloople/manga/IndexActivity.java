@@ -22,18 +22,17 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toolbar;
 
-import com.bignerdranch.android.multiselector.MultiSelector;
-
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+
+import static net.bloople.manga.MangaApplication.allBooks;
 
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
-    private MultiSelector multiSelector;
-    private CollectionsManager collections;
 
     private BookSearcher searcher = new BookSearcher();
 
@@ -94,11 +93,10 @@ public class IndexActivity extends Activity {
         booksView = (RecyclerView)findViewById(R.id.books_view);
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
 
-        multiSelector = new MultiSelector();
-        adapter = new BooksAdapter(multiSelector);
+        adapter = new BooksAdapter();
         booksView.setAdapter(adapter);
 
-        collections = new CollectionsManager(this, multiSelector, adapter);
+        CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
         if(MangaApplication.allBooks != null) {
@@ -170,8 +168,8 @@ public class IndexActivity extends Activity {
 
 
     public void useList(BookList list) {
-        if(list == null) searcher.setFilterKeys(null);
-        else searcher.setFilterKeys(list.bookKeys(this));
+        if(list == null) searcher.setFilterIds(null);
+        else searcher.setFilterIds(list.bookIds(this));
         resolve();
     }
 
@@ -195,8 +193,10 @@ public class IndexActivity extends Activity {
             return books;
         }
 
-        protected void onPostExecute(List<Book> allBooks) {
-            MangaApplication.allBooks = allBooks;
+        protected void onPostExecute(List<Book> books) {
+            allBooks = new HashMap<>();
+            for(Book b : books) allBooks.put(b.id(), b);
+
             resolve();
         }
     }

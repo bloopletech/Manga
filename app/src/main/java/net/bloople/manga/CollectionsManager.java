@@ -10,18 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.bignerdranch.android.multiselector.MultiSelector;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by i on 30/12/2016.
  */
 
 public class CollectionsManager {
     private IndexActivity activity;
-    private MultiSelector multiSelector;
     private BooksAdapter adapter;
     private BookListAdapter bookListAdapter;
     private Button newCollection;
@@ -32,9 +26,8 @@ public class CollectionsManager {
     private ListView sidebar;
     private BookList list;
 
-    public CollectionsManager(IndexActivity activity, MultiSelector multiSelector, BooksAdapter adapter) {
+    public CollectionsManager(IndexActivity activity, BooksAdapter adapter) {
         this.activity = activity;
-        this.multiSelector = multiSelector;
         this.adapter = adapter;
     }
 
@@ -123,7 +116,8 @@ public class CollectionsManager {
 
         updateCursor();
 
-        multiSelector.setSelectable(true);
+        adapter.clearSelectedBookIds();
+        adapter.setSelectable(true);
 
         newCollection.setVisibility(View.GONE);
         editCollection.setVisibility(View.GONE);
@@ -134,12 +128,8 @@ public class CollectionsManager {
     public void editCollection() {
         activity.useList(null);
 
-        ArrayList<String> keys = list.bookKeys(activity);
-        for(String key : keys) {
-            multiSelector.setSelected(adapter.positionOf(key), 0, true);
-        }
-
-        multiSelector.setSelectable(true);
+        adapter.setSelectedBookIds(list.bookIds(activity));
+        adapter.setSelectable(true);
 
         newCollection.setVisibility(View.GONE);
         editCollection.setVisibility(View.GONE);
@@ -148,14 +138,10 @@ public class CollectionsManager {
     }
 
     public void updateCollection() {
-        List<Integer> positions = multiSelector.getSelectedPositions();
+        list.bookIds(activity, adapter.getSelectedBookIds());
 
-        ArrayList<String> keys = new ArrayList<>();
-        for(int i : positions) keys.add(adapter.at(i).key());
-        list.bookKeys(activity, keys);
-
-        multiSelector.clearSelections();
-        multiSelector.setSelectable(false);
+        adapter.clearSelectedBookIds();
+        adapter.setSelectable(false);
 
         activity.useList(list);
 

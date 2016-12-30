@@ -3,6 +3,7 @@ package net.bloople.manga;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Created by i on 30/07/2016.
@@ -18,7 +19,7 @@ public class BookSearcher {
     private int sortMethod = SORT_AGE;
     private boolean sortDirectionAsc = false;
     private String searchText = "";
-    private ArrayList<String> filterKeys;
+    private ArrayList<Long> filterIds;
 
     public void setSearchText(String inSearchText) {
         searchText = inSearchText;
@@ -40,18 +41,20 @@ public class BookSearcher {
         sortDirectionAsc = !sortDirectionAsc;
     }
 
-    public void setFilterKeys(ArrayList<String> filterKeys) {
-        this.filterKeys = filterKeys;
+    public void setFilterIds(ArrayList<Long> filterIds) {
+        this.filterIds = filterIds;
     }
 
-    public ArrayList<Book> resolve() {
+    public ArrayList<Book> filter() {
         ArrayList<Book> books = new ArrayList<>();
 
         String[] searchTerms = searchText.toLowerCase().split("\\s+");
 
         bookLoop:
-        for(Book b : MangaApplication.allBooks) {
-            if(filterKeys != null && !filterKeys.contains(b.key())) continue;
+        for(Map.Entry<Long, Book> entry : MangaApplication.allBooks.entrySet()) {
+            if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
+
+            Book b = entry.getValue();
 
             String compareTitle = b.title().toLowerCase();
 
@@ -75,12 +78,21 @@ public class BookSearcher {
             books.add(b);
         }
 
-        sortResults(books);
-
         return books;
     }
 
-    private void sortResults(ArrayList<Book> books) {
+    public ArrayList<Long> resolve() {
+        ArrayList<Book> books = filter();
+
+        sort(books);
+
+        ArrayList<Long> bookIds = new ArrayList<>();
+        for(Book b : books) bookIds.add(b.id());
+
+        return bookIds;
+    }
+
+    private void sort(ArrayList<Book> books) {
         Collections.sort(books, new Comparator<Book>() {
             @Override
             public int compare(Book a, Book b)

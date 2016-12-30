@@ -14,16 +14,16 @@ public class Book {
     private String mThumbnailUrl;
     private String mTitle;
     private int mPublishedOn;
-    private String mKey;
+    private long _id;
 
-    public Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title, int publishedOn, String key) {
+    public Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title, int publishedOn, long _id) {
         mUrl = url;
         mPagesDeflated = pagesDeflated;
         mPagesCount = pagesCount;
         mThumbnailUrl = thumbnailUrl;
         mTitle = title;
         mPublishedOn = publishedOn;
-        mKey = key;
+        this._id = _id;
     }
 
     public String url() {
@@ -51,8 +51,8 @@ public class Book {
         return mPublishedOn;
     }
 
-    public String key() {
-        return mKey;
+    public long id() {
+        return _id;
     }
 
     public Uri pageUrl(int index) {

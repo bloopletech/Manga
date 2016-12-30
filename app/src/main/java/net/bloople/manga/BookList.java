@@ -51,36 +51,27 @@ public class BookList {
         this.name = name;
     }
 
-    public ArrayList<String> bookKeys(Context context) {
+    public ArrayList<Long> bookIds(Context context) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
-        Cursor result = db.rawQuery("SELECT book_key FROM lists_books WHERE list_id=?", new String[] { String.valueOf(_id) });
+        Cursor result = db.rawQuery("SELECT book_id FROM lists_books WHERE list_id=?", new String[] { String.valueOf(_id) });
 
-        if(result.getCount() > 0) {
-            ArrayList<String> keys = new ArrayList<>();
+        ArrayList<Long> bookIds = new ArrayList<>();
+        while(result.moveToNext()) bookIds.add(result.getLong(result.getColumnIndex("book_id")));
+        result.close();
 
-            while(result.moveToNext()) {
-                keys.add(result.getString(result.getColumnIndex("book_key")));
-            }
-
-            result.close();
-            return keys;
-        }
-        else {
-            result.close();
-            return null;
-        }
+        return bookIds;
     }
 
-    public void bookKeys(Context context, ArrayList<String> keys) {
+    public void bookIds(Context context, ArrayList<Long> bookIds) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
         db.delete("lists_books", "list_id=?", new String[] { String.valueOf(_id) });
 
-        for(String key : keys) {
+        for(long bookId : bookIds) {
             ContentValues values = new ContentValues();
             values.put("list_id", _id);
-            values.put("book_key", key);
+            values.put("book_id", bookId);
 
             db.insert("lists_books", null, values);
         }
