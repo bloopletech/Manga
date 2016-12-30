@@ -27,9 +27,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
@@ -155,26 +153,6 @@ public class IndexActivity extends Activity {
             searcher.setSortMethod(BookSearcher.SORT_LAST_OPENED);
         }
         else if(menuItem.getItemId() == R.id.manage_indexing) {
-            boolean wasOn = multiSelector.isSelectable();
-            multiSelector.setSelectable(!multiSelector.isSelectable());
-
-            if(wasOn) {
-                List<Integer> positions = multiSelector.getSelectedPositions();
-
-                String name = UUID.randomUUID().toString();
-
-
-                ArrayList<String> keys = new ArrayList<>();
-
-                for(int i : positions) keys.add(adapter.at(i).key());
-
-                BookList list = new BookList();
-                list.name(name);
-                list.save(this);
-                list.bookKeys(this, keys);
-
-                multiSelector.clearSelections();
-            }
             //Intent intent = new Intent(BooksActivity.this, IndexingActivity.class);
             //startActivity(intent);
         }

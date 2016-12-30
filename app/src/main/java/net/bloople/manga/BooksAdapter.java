@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     private MultiSelector multiSelector;
+    private List<Book> books = new ArrayList<>();
 
     public BooksAdapter(MultiSelector multiSelector) {
         this.multiSelector = multiSelector;
@@ -59,7 +60,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         }
     }
 
-    private List<Book> books = new ArrayList<>();
+
 
     // Create new views (invoked by the layout manager)
     @Override
