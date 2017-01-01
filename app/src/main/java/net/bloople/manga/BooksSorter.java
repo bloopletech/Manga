@@ -54,7 +54,7 @@ public class BooksSorter {
                 public int compare(Book a, Book b) {
                     switch(sortMethod) {
                         case SORT_ALPHABETIC:
-                            return a.title().compareTo(b.title());
+                            return a.normalisedTitle().compareTo(b.normalisedTitle());
                         case SORT_AGE:
                             return Integer.compare(a.publishedOn(), b.publishedOn());
                         case SORT_LENGTH:

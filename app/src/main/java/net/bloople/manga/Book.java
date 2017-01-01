@@ -13,15 +13,18 @@ public class Book {
     private int mPagesCount;
     private String mThumbnailUrl;
     private String mTitle;
+    private String mNormalisedTitle;
     private int mPublishedOn;
     private long _id;
 
-    public Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title, int publishedOn, long _id) {
+    public Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title,
+                String normalisedTitle, int publishedOn, long _id) {
         mUrl = url;
         mPagesDeflated = pagesDeflated;
         mPagesCount = pagesCount;
         mThumbnailUrl = thumbnailUrl;
         mTitle = title;
+        mNormalisedTitle = normalisedTitle;
         mPublishedOn = publishedOn;
         this._id = _id;
     }
@@ -45,6 +48,10 @@ public class Book {
 
     public String title() {
         return mTitle;
+    }
+
+    public String normalisedTitle() {
+        return mNormalisedTitle;
     }
 
     public int publishedOn() {

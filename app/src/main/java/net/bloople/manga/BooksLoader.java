@@ -48,15 +48,15 @@ public class BooksLoader {
     private Book toBook(JSONObject object) throws JSONException {
         String url = object.getString("url");
         String title = object.getString("title");
+        String normalisedTitle = normalise(title);
         int publishedOn = object.getInt("publishedOn");
         String thumbnailUrl = object.getString("thumbnailUrl");
         String key = object.getString("key");
+        long _id = Long.parseLong(key.substring(0, 15), 16); //Using substring of key would be dangerous for large N
         String pagesDeflated = object.getString("pageUrls");
         int pagesCount = object.getInt("pages");
 
-        long _id = Long.parseLong(key.substring(0, 15), 16); //Using substring of key would be dangerous for large N
-
-        return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, publishedOn, _id);
+        return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, normalisedTitle, publishedOn, _id);
     }
 
     private String getContent() throws IOException {
@@ -106,5 +106,9 @@ public class BooksLoader {
         reader.close();
 
         return sb.toString();
+    }
+
+    private String normalise(String title) {
+        return title.replaceAll("[^A-Za-z0-9]+", "").toLowerCase();
     }
 }
