@@ -11,4 +11,17 @@
         android:textColor="#000"
         android:gravity="start"
         android:padding="5dp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_name"
+        android:textSize="16dp"
+        android:textColor="#000"
+        android:gravity="start"
+        android:padding="5dp"
+        android:drawableEnd="@drawable/ic_clear_black_24dp"
+        android:visibility="gone"
+        android:inputType="text"
+        android:maxLines="1"
+        android:imeOptions="actionDone"/>
 </LinearLayout>

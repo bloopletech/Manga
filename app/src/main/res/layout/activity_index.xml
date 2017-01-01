@@ -44,7 +44,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#ffffff"
-        android:layout_gravity="left|start">
+        android:layout_gravity="left|start"
+        android:clickable="true">
         <ListView
             android:id="@+id/sidebar"
             android:layout_width="match_parent"
@@ -66,11 +67,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/edit_collection"
             android:src="@drawable/ic_create_black_24dp"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/edit_name"
-            android:text="Edit Name"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

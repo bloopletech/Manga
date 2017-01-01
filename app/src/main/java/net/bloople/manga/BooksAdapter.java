@@ -77,12 +77,10 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
 
                     if(selectable) {
                         if(selectedBookIds.contains(bookId)) {
-                            System.out.println("Deactivating book " + bookId);
                             selectedBookIds.remove(bookId);
                             v.setActivated(false);
                         }
                         else {
-                            System.out.println("Activating book " + bookId);
                             selectedBookIds.add(bookId);
                             v.setActivated(true);
                         }

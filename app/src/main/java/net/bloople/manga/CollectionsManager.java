@@ -1,15 +1,16 @@
 package net.bloople.manga;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Created by i on 30/12/2016.
@@ -23,7 +24,6 @@ public class CollectionsManager {
     private Button saveCollection;
     private ImageButton editCollection;
     private ImageButton destroyCollection;
-    private Button editName;
     private ListView sidebar;
     private BookList list;
 
@@ -54,16 +54,34 @@ public class CollectionsManager {
 
                     newCollection.setVisibility(View.VISIBLE);
                     editCollection.setVisibility(View.GONE);
-                    editName.setVisibility(View.GONE);
                     destroyCollection.setVisibility(View.GONE);
                     saveCollection.setVisibility(View.GONE);
                 }
                 else {
                     newCollection.setVisibility(View.GONE);
                     editCollection.setVisibility(View.VISIBLE);
-                    editName.setVisibility(View.VISIBLE);
                     destroyCollection.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        sidebar.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final TextView nameView = (TextView)view.findViewById(R.id.name);
+                final EditText editNameView = (EditText)view.findViewById(R.id.edit_name);
+
+                if(nameView == null) return false;
+
+                editNameView.setText(nameView.getText());
+                nameView.setVisibility(View.GONE);
+                editNameView.setVisibility(View.VISIBLE);
+
+                editNameView.requestFocusFromTouch();
+                InputMethodManager in = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.showSoftInput(editNameView, 0);
+
+                return true;
             }
         });
 
@@ -91,14 +109,6 @@ public class CollectionsManager {
             }
         });
 
-        editName = (Button)activity.findViewById(R.id.edit_name);
-        editName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editName();
-            }
-        });
-
         destroyCollection = (ImageButton)activity.findViewById(R.id.destroy_collection);
         destroyCollection.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +119,6 @@ public class CollectionsManager {
 
         newCollection.setVisibility(View.VISIBLE);
         editCollection.setVisibility(View.GONE);
-        editName.setVisibility(View.GONE);
         destroyCollection.setVisibility(View.GONE);
         saveCollection.setVisibility(View.GONE);
     }
@@ -126,7 +135,6 @@ public class CollectionsManager {
 
         newCollection.setVisibility(View.GONE);
         editCollection.setVisibility(View.GONE);
-        editName.setVisibility(View.GONE);
         saveCollection.setVisibility(View.VISIBLE);
     }
 
@@ -138,7 +146,6 @@ public class CollectionsManager {
 
         newCollection.setVisibility(View.GONE);
         editCollection.setVisibility(View.GONE);
-        editName.setVisibility(View.GONE);
         saveCollection.setVisibility(View.VISIBLE);
     }
 
@@ -154,37 +161,7 @@ public class CollectionsManager {
 
         newCollection.setVisibility(View.GONE);
         editCollection.setVisibility(View.VISIBLE);
-        editName.setVisibility(View.VISIBLE);
         saveCollection.setVisibility(View.GONE);
-    }
-
-    public void editName() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Edit Collection");
-        builder.setMessage("Collection name:");
-
-        final EditText userInput = new EditText(activity);
-        userInput.setText(list.name());
-        builder.setView(userInput);
-
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                list.name(userInput.getText().toString());
-                list.save(activity);
-                updateCursor();
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     public void destroyCollection() {
