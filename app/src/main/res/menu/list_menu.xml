@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sort_alphabetic"
-        android:title="Name"
+        android:title="Title"
         android:showAsAction="always"/>
     <item
         android:id="@+id/sort_size"
