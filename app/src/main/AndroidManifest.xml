@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.bloople.manga">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="net.bloople.manga">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".MangaApplication">
+        <meta-data android:name="net.bloople.manga.RelaxedGlideModule" android:value="GlideModule" />
         <activity android:name=".IndexActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
