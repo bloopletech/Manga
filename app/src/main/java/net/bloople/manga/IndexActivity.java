@@ -25,6 +25,7 @@ import android.widget.Toolbar;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
 
-    private BookSearcher searcher = new BookSearcher();
+    private BooksSearcher searcher = new BooksSearcher();
+    private BooksSorter sorter = new BooksSorter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,20 +137,20 @@ public class IndexActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if(menuItem.getItemId() == R.id.sort_alphabetic) {
-            if(searcher.getSortMethod() == BookSearcher.SORT_ALPHABETIC) searcher.flipSortDirection();
-            searcher.setSortMethod(BookSearcher.SORT_ALPHABETIC);
+            if(sorter.getSortMethod() == BooksSorter.SORT_ALPHABETIC) sorter.flipSortDirection();
+            sorter.setSortMethod(BooksSorter.SORT_ALPHABETIC);
         }
         else if(menuItem.getItemId() == R.id.sort_age) {
-            if(searcher.getSortMethod() == BookSearcher.SORT_AGE) searcher.flipSortDirection();
-            searcher.setSortMethod(BookSearcher.SORT_AGE);
+            if(sorter.getSortMethod() == BooksSorter.SORT_AGE) sorter.flipSortDirection();
+            sorter.setSortMethod(BooksSorter.SORT_AGE);
         }
         else if(menuItem.getItemId() == R.id.sort_size) {
-            if(searcher.getSortMethod() == BookSearcher.SORT_LENGTH) searcher.flipSortDirection();
-            searcher.setSortMethod(BookSearcher.SORT_LENGTH);
+            if(sorter.getSortMethod() == BooksSorter.SORT_LENGTH) sorter.flipSortDirection();
+            sorter.setSortMethod(BooksSorter.SORT_LENGTH);
         }
         else if(menuItem.getItemId() == R.id.sort_last_opened) {
-            if(searcher.getSortMethod() == BookSearcher.SORT_LAST_OPENED) searcher.flipSortDirection();
-            searcher.setSortMethod(BookSearcher.SORT_LAST_OPENED);
+            if(sorter.getSortMethod() == BooksSorter.SORT_LAST_OPENED) sorter.flipSortDirection();
+            sorter.setSortMethod(BooksSorter.SORT_LAST_OPENED);
         }
         else if(menuItem.getItemId() == R.id.manage_indexing) {
             //Intent intent = new Intent(BooksActivity.this, IndexingActivity.class);
@@ -161,7 +163,13 @@ public class IndexActivity extends Activity {
     }
 
     private void resolve() {
-        adapter.update(searcher.resolve());
+        ArrayList<Book> books = searcher.search();
+        sorter.sort(this, books);
+
+        ArrayList<Long> bookIds = new ArrayList<>();
+        for(Book b : books) bookIds.add(b.id());
+
+        adapter.update(bookIds);
         booksView.scrollToPosition(0);
     }
 

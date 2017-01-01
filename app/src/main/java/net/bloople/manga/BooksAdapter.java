@@ -88,6 +88,10 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
                         notifyItemChanged(getAdapterPosition());
                     }
                     else {
+                        BookMetadata metadata = BookMetadata.findOrCreateByBookId(v.getContext(), bookId);
+                        metadata.lastOpenedAt(System.currentTimeMillis());
+                        metadata.save(v.getContext());
+
                         Intent intent = new Intent(v.getContext(), ReadingActivity.class);
                         intent.putExtra("_id", bookId);
 

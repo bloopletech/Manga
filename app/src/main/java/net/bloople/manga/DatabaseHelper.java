@@ -42,6 +42,13 @@ public class DatabaseHelper {
         }
         result.close();
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS books_metadata ( " +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "book_id INTEGER, " +
+                "last_opened_at INTEGER DEFAULT 0, " +
+                "last_read_position INTEGER DEFAULT 0" +
+                ")");
+
         return db;
     }
 
