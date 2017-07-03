@@ -149,7 +149,7 @@ public class ReadingActivity extends Activity {
         @Override
         public boolean onException(Exception e, Uri model, Target<GlideDrawable> target,
         boolean isFirstResource) {
-            e.printStackTrace();
+            if(e != null) e.printStackTrace();
             return false;
         }
 
