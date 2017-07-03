@@ -34,6 +34,7 @@ import static net.bloople.manga.MangaApplication.allBooks;
 public class IndexActivity extends Activity {
     private RecyclerView booksView;
     private BooksAdapter adapter;
+    private EditText searchField;
 
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
@@ -51,7 +52,8 @@ public class IndexActivity extends Activity {
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        final EditText searchField = (EditText)findViewById(R.id.search_field);
+        searchField = (EditText)findViewById(R.id.search_field);
+
         searchField.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -62,7 +64,6 @@ public class IndexActivity extends Activity {
                     in.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
                     searchField.clearFocus();
 
-                    searcher.setSearchText(v.getText().toString());
                     resolve();
 
                     handled = true;
@@ -82,7 +83,6 @@ public class IndexActivity extends Activity {
 
                     if(event.getRawX() >= clickIndex) {
                         searchField.setText("");
-                        searcher.setSearchText("");
                         resolve();
 
                         return true;
@@ -101,13 +101,14 @@ public class IndexActivity extends Activity {
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
-        if(MangaApplication.allBooks != null) {
-            resolve();
-        }
-        else {
-            LoadBooksTask loader = new LoadBooksTask();
-            loader.execute();
-        }
+        if(savedInstanceState == null) resolveOrLoad();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        resolveOrLoad();
     }
 
     @Override
@@ -162,7 +163,19 @@ public class IndexActivity extends Activity {
         return true;
     }
 
+    private void resolveOrLoad() {
+        if(MangaApplication.allBooks != null) {
+            resolve();
+        }
+        else {
+            LoadBooksTask loader = new LoadBooksTask();
+            loader.execute();
+        }
+    }
+
     private void resolve() {
+        searcher.setSearchText(searchField.getText().toString());
+
         ArrayList<Book> books = searcher.search();
         sorter.sort(this, books);
 
