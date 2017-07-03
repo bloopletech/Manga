@@ -33,9 +33,6 @@ public class ReadingActivity extends Activity {
         Intent intent = getIntent();
         book = MangaApplication.allBooks.get(intent.getLongExtra("_id", -1));
 
-        if(savedInstanceState != null) currentPage = savedInstanceState.getInt("currentPage");
-        else currentPage = 0;
-
         View.OnClickListener nextListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +66,11 @@ public class ReadingActivity extends Activity {
 
         requestListener = new LoadedRequestListener();
 
-        showCurrentPage();
-        cacheNextPage();
+        int newPage = savedInstanceState != null ? savedInstanceState.getInt("currentPage") : 0;
+        if(changePage(newPage)) {
+            showCurrentPage();
+            cacheNextPage();
+        }
     }
 
     @Override
