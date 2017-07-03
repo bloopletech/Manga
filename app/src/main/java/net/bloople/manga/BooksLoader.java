@@ -60,11 +60,12 @@ public class BooksLoader {
     }
 
     private String getContent() throws IOException {
-        String content = getContentFromFile();
-        if(content == null) {
-            content = getContentFromUri();
-            saveContent(content);
-        }
+        //String content = getContentFromFile();
+        //if(content == null) {
+        //    content = getContentFromUri();
+        //    saveContent(content);
+        //}
+        String content = getContentFromUri();
         return content;
     }
 
