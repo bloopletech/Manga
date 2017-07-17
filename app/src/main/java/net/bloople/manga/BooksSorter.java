@@ -64,9 +64,9 @@ public class BooksSorter {
                     return 0;
                 }
             });
-        }
 
-        if(!sortDirectionAsc) Collections.reverse(books);
+            if(!sortDirectionAsc) Collections.reverse(books);
+        }
     }
 
     private void sortLastOpened(Context context, ArrayList<Book> books) {
@@ -82,7 +82,8 @@ public class BooksSorter {
                 if(abm == null) return 1;
                 if(bbm == null) return -1;
 
-                return Long.compare(abm.lastOpenedAt(), bbm.lastOpenedAt());
+                if(sortDirectionAsc) return Long.compare(abm.lastOpenedAt(), bbm.lastOpenedAt());
+                else return Long.compare(bbm.lastOpenedAt(), abm.lastOpenedAt());
             }
         });
     }
