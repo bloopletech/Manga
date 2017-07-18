@@ -8,8 +8,8 @@ android {
         applicationId "net.bloople.manga"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 10
-        versionName "1.9"
+        versionCode 11
+        versionName "1.10"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
