@@ -16,11 +16,12 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-public class ReadingActivity extends Activity {
+public class ReadingActivity extends Activity implements BooksLoadedListener {
     public static final int MAX_IMAGE_SIZE = 2048;
 
     private Book book;
     private BookMetadata bookMetadata;
+    private int pageFromBundle = -1;
     private int currentPage;
     private RelativeLayout holder;
     private RequestListener<Uri, GlideDrawable> requestListener;
@@ -29,18 +30,14 @@ public class ReadingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) pageFromBundle = savedInstanceState.getInt("currentPage");
+
         setContentView(R.layout.activity_reading);
-
-        Intent intent = getIntent();
-        long bookId = intent.getLongExtra("_id", -1);
-        book = MangaApplication.allBooks.get(bookId);
-        bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
-
-        boolean resume = intent.getBooleanExtra("resume", false);
 
         View.OnClickListener nextListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(book == null) return;
                 if(!changePage(1)) return;
                 showCurrentPage();
                 cacheNextPage();
@@ -54,6 +51,7 @@ public class ReadingActivity extends Activity {
         prev10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(book == null) return;
                 changePage(-10);
                 showCurrentPage();
             }
@@ -63,6 +61,7 @@ public class ReadingActivity extends Activity {
         next10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(book == null) return;
                 changePage(10);
                 showCurrentPage();
                 cacheNextPage();
@@ -71,12 +70,7 @@ public class ReadingActivity extends Activity {
 
         requestListener = new LoadedRequestListener();
 
-        int lastReadPosition = resume ? bookMetadata.lastReadPosition() : 0;
-        int newPage = savedInstanceState != null ? savedInstanceState.getInt("currentPage") : lastReadPosition;
-        if(changePage(newPage)) {
-            showCurrentPage();
-            cacheNextPage();
-        }
+        MangaApplication.ensureAllBooks(this, this);
     }
 
     @Override
@@ -107,6 +101,22 @@ public class ReadingActivity extends Activity {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("currentPage", currentPage);
+    }
+
+    public void onBooksLoaded() {
+        Intent intent = getIntent();
+        long bookId = intent.getLongExtra("_id", -1);
+        book = MangaApplication.allBooks.get(bookId);
+        bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
+
+        boolean resume = intent.getBooleanExtra("resume", false);
+
+        int lastReadPosition = resume ? bookMetadata.lastReadPosition() : 0;
+        int newPage = pageFromBundle != -1 ? pageFromBundle : lastReadPosition;
+        if(changePage(newPage)) {
+            showCurrentPage();
+            cacheNextPage();
+        }
     }
 
     private void showCurrentPage() {

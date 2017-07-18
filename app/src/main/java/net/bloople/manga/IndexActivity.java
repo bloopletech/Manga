@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,16 +21,9 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toolbar;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-import static net.bloople.manga.MangaApplication.allBooks;
-
-public class IndexActivity extends Activity {
+public class IndexActivity extends Activity implements BooksLoadedListener {
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private EditText searchField;
@@ -162,14 +154,12 @@ public class IndexActivity extends Activity {
         return true;
     }
 
+    public void onBooksLoaded() {
+        resolve();
+    }
+
     private void resolveOrLoad() {
-        if(MangaApplication.allBooks != null) {
-            resolve();
-        }
-        else {
-            LoadBooksTask loader = new LoadBooksTask();
-            loader.execute();
-        }
+        MangaApplication.ensureAllBooks(this, this);
     }
 
     private void resolve() {
@@ -191,31 +181,4 @@ public class IndexActivity extends Activity {
         resolve();
     }
 
-    private class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
-
-        protected List<Book> doInBackground(Void... params) {
-            List<Book> books;
-
-            try {
-                books = new BooksLoader(IndexActivity.this).load();
-            }
-            catch(JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-            catch(IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            return books;
-        }
-
-        protected void onPostExecute(List<Book> books) {
-            allBooks = new HashMap<>();
-            for(Book b : books) allBooks.put(b.id(), b);
-
-            resolve();
-        }
-    }
 }
