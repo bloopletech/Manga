@@ -109,10 +109,15 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
         book = MangaApplication.allBooks.get(bookId);
         bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
 
-        boolean resume = intent.getBooleanExtra("resume", false);
+        int newPage = 0;
+        if(pageFromBundle != -1) {
+            newPage = pageFromBundle;
+        }
+        else if(intent.getBooleanExtra("resume", false)) {
+            int lastReadPosition = bookMetadata.lastReadPosition();
+            if(lastReadPosition < lastPage()) newPage = lastReadPosition;
+        }
 
-        int lastReadPosition = resume ? bookMetadata.lastReadPosition() : 0;
-        int newPage = pageFromBundle != -1 ? pageFromBundle : lastReadPosition;
         if(changePage(newPage)) {
             showCurrentPage();
             cacheNextPage();
@@ -156,12 +161,16 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
             return false;
         }
 
-        if(currentPage > (book.pages() - 1)) {
-            currentPage = book.pages() - 1;
+        if(currentPage > lastPage()) {
+            currentPage = lastPage();
             return false;
         }
 
         return true;
+    }
+
+    private int lastPage() {
+        return book.pages() - 1;
     }
 
     private class LoadedRequestListener implements RequestListener<Uri, GlideDrawable> {
