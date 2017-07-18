@@ -88,15 +88,20 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
                         notifyItemChanged(getAdapterPosition());
                     }
                     else {
-                        BookMetadata metadata = BookMetadata.findOrCreateByBookId(v.getContext(), bookId);
-                        metadata.lastOpenedAt(System.currentTimeMillis());
-                        metadata.save(v.getContext());
-
-                        Intent intent = new Intent(v.getContext(), ReadingActivity.class);
-                        intent.putExtra("_id", bookId);
-
-                        v.getContext().startActivity(intent);
+                        openBook(bookId, true);
                     }
+                }
+            });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if(selectable) return false;
+
+                    long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+                    openBook(bookId, false);
+
+                    return true;
                 }
             });
 
@@ -104,6 +109,18 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
             textView = (TextView)view.findViewById(R.id.text_view);
             imageView = (ImageView)view.findViewById(R.id.image_view);
             selectableView = (ImageView)view.findViewById(R.id.selectable);
+        }
+
+        private void openBook(long bookId, boolean resume) {
+            BookMetadata metadata = BookMetadata.findOrCreateByBookId(itemView.getContext(), bookId);
+            metadata.lastOpenedAt(System.currentTimeMillis());
+            metadata.save(itemView.getContext());
+
+            Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
+            intent.putExtra("_id", bookId);
+            intent.putExtra("resume", resume);
+
+            itemView.getContext().startActivity(intent);
         }
     }
 

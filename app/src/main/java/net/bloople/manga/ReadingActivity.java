@@ -20,6 +20,7 @@ public class ReadingActivity extends Activity {
     public static final int MAX_IMAGE_SIZE = 2048;
 
     private Book book;
+    private BookMetadata bookMetadata;
     private int currentPage;
     private RelativeLayout holder;
     private RequestListener<Uri, GlideDrawable> requestListener;
@@ -31,7 +32,11 @@ public class ReadingActivity extends Activity {
         setContentView(R.layout.activity_reading);
 
         Intent intent = getIntent();
-        book = MangaApplication.allBooks.get(intent.getLongExtra("_id", -1));
+        long bookId = intent.getLongExtra("_id", -1);
+        book = MangaApplication.allBooks.get(bookId);
+        bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
+
+        boolean resume = intent.getBooleanExtra("resume", false);
 
         View.OnClickListener nextListener = new View.OnClickListener() {
             @Override
@@ -66,7 +71,8 @@ public class ReadingActivity extends Activity {
 
         requestListener = new LoadedRequestListener();
 
-        int newPage = savedInstanceState != null ? savedInstanceState.getInt("currentPage") : 0;
+        int lastReadPosition = resume ? bookMetadata.lastReadPosition() : 0;
+        int newPage = savedInstanceState != null ? savedInstanceState.getInt("currentPage") : lastReadPosition;
         if(changePage(newPage)) {
             showCurrentPage();
             cacheNextPage();
@@ -117,6 +123,9 @@ public class ReadingActivity extends Activity {
                 .dontAnimate()
                 .listener(requestListener)
                 .into(imageView);
+
+        bookMetadata.lastReadPosition(currentPage);
+        bookMetadata.save(getApplicationContext());
     }
 
     private void cacheNextPage() {
