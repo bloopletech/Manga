@@ -19,8 +19,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 public class ReadingActivity extends Activity implements BooksLoadedListener {
-    public static final int MAX_IMAGE_SIZE = 2048;
-
     private Book book;
     private BookMetadata bookMetadata;
     private int pageFromBundle = -1;
@@ -146,7 +144,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
         Glide
                 .with(this)
                 .load(book.pageUrl(currentPage))
-                .override(MAX_IMAGE_SIZE, MAX_IMAGE_SIZE)
+                .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .listener(requestListener)
