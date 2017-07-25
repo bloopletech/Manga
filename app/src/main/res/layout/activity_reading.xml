@@ -10,11 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#333333">
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/image_view_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        </RelativeLayout>
+            <Space
+                android:id="@+id/scroller_fill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
     </ScrollView>
 
     <ImageView

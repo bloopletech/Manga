@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Space;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -24,7 +25,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
     private BookMetadata bookMetadata;
     private int pageFromBundle = -1;
     private int currentPage;
-    private RelativeLayout holder;
+    private FrameLayout holder;
     private RequestListener<Uri, GlideDrawable> requestListener;
     private ScrollView scroller;
 
@@ -36,7 +37,8 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         setContentView(R.layout.activity_reading);
 
-        View.OnClickListener nextListener = new View.OnClickListener() {
+        holder = (FrameLayout)findViewById(R.id.image_view_holder);
+        holder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(book == null) return;
@@ -44,10 +46,19 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
                 showCurrentPage();
                 cacheNextPage();
             }
-        };
+        });
 
-        holder = (RelativeLayout)findViewById(R.id.image_view_holder);
-        holder.setOnClickListener(nextListener);
+        scroller = (ScrollView)findViewById(R.id.scroller);
+
+        final FrameLayout layout = (FrameLayout)findViewById(R.id.layout);
+        final Space scroller_fill = (Space)findViewById(R.id.scroller_fill);
+
+        scroller_fill.post(new Runnable() {
+            @Override
+            public void run() {
+                scroller_fill.setMinimumHeight(layout.getHeight());
+            }
+        });
 
         ImageView prev10 = (ImageView)findViewById(R.id.prev_10);
         prev10.setOnClickListener(new View.OnClickListener() {
@@ -69,8 +80,6 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
                 cacheNextPage();
             }
         });
-
-        scroller = (ScrollView)findViewById(R.id.scroller);
 
         requestListener = new LoadedRequestListener();
 
@@ -190,7 +199,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
         boolean isFromMemoryCache, boolean isFirstResource) {
             scroller.scrollTo(0, 0);
 
-            for(int i = 0; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(0);
+            for(int i = 1; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(1);
 
             return false;
         }
