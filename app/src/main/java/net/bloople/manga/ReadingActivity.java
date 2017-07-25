@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,6 +26,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
     private int currentPage;
     private RelativeLayout holder;
     private RequestListener<Uri, GlideDrawable> requestListener;
+    private ScrollView scroller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
                 cacheNextPage();
             }
         });
+
+        scroller = (ScrollView)findViewById(R.id.scroller);
 
         requestListener = new LoadedRequestListener();
 
@@ -184,7 +188,10 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
         @Override
         public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target,
         boolean isFromMemoryCache, boolean isFirstResource) {
+            scroller.scrollTo(0, 0);
+
             for(int i = 0; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(0);
+
             return false;
         }
     }
