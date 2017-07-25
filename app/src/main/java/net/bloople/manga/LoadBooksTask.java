@@ -14,11 +14,9 @@ import java.util.List;
  */
 
 class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
-    private Context context;
     private BooksLoadedListener listener;
 
-    LoadBooksTask(Context context, BooksLoadedListener listener) {
-        this.context = context;
+    LoadBooksTask(BooksLoadedListener listener) {
         this.listener = listener;
     }
 

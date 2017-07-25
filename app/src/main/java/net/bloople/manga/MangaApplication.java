@@ -16,12 +16,12 @@ import java.util.List;
 public class MangaApplication extends Application {
     public static HashMap<Long, Book> allBooks;
 
-    public static void ensureAllBooks(Context context, BooksLoadedListener listener) {
+    public static void ensureAllBooks(BooksLoadedListener listener) {
         if(allBooks != null) {
             listener.onBooksLoaded();
         }
         else {
-            LoadBooksTask loader = new LoadBooksTask(context, listener);
+            LoadBooksTask loader = new LoadBooksTask(listener);
             loader.execute();
         }
     }

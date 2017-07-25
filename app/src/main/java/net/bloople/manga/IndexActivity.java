@@ -155,7 +155,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
     }
 
     private void resolveOrLoad() {
-        MangaApplication.ensureAllBooks(this, this);
+        MangaApplication.ensureAllBooks(this);
     }
 
     private void resolve() {

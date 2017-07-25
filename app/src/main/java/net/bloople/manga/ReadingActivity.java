@@ -83,7 +83,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         requestListener = new LoadedRequestListener();
 
-        MangaApplication.ensureAllBooks(this, this);
+        MangaApplication.ensureAllBooks(this);
     }
 
     @Override
