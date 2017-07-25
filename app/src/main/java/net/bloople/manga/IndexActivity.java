@@ -144,10 +144,6 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
             if(sorter.getSortMethod() == BooksSorter.SORT_LAST_OPENED) sorter.flipSortDirection();
             sorter.setSortMethod(BooksSorter.SORT_LAST_OPENED);
         }
-        else if(menuItem.getItemId() == R.id.manage_indexing) {
-            //Intent intent = new Intent(BooksActivity.this, IndexingActivity.class);
-            //startActivity(intent);
-        }
 
         resolve();
 

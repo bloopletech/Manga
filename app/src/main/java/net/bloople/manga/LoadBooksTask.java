@@ -26,7 +26,7 @@ class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
         List<Book> books;
 
         try {
-            books = new BooksLoader(context).load();
+            books = new BooksLoader().load();
         }
         catch(JSONException e) {
             e.printStackTrace();

@@ -18,9 +18,4 @@
         android:title="Last Opened"
         android:icon="@drawable/ic_visibility_white_24dp"
         android:showAsAction="always"/>
-
-    <item
-        android:id="@+id/manage_indexing"
-        android:icon="@drawable/ic_settings_white_24dp"
-        android:showAsAction="always"/>
 </menu>

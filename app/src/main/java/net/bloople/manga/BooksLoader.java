@@ -1,6 +1,5 @@
 package net.bloople.manga;
 
-import android.content.Context;
 import android.net.Uri;
 
 import org.json.JSONArray;
@@ -8,12 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -25,17 +21,11 @@ public class BooksLoader {
     public static final String CACHE_FILE_NAME = "cached-data.json";
     public static final int DEFAULT_CONTENT_LENGTH = 10000000;
 
-    private Context context;
-
-    public BooksLoader(Context inContext) {
-        context = inContext;
-    }
-
     public ArrayList<Book> load() throws IOException, JSONException {
 
         ArrayList<Book> books = new ArrayList<>();
 
-        JSONArray bookObjects = new JSONArray(getContent());
+        JSONArray bookObjects = new JSONArray(getContentFromUri());
 
         for(int i = 0; i < bookObjects.length(); i++) {
             JSONObject bookObject = (JSONObject) bookObjects.get(i);
@@ -57,33 +47,6 @@ public class BooksLoader {
         int pagesCount = object.getInt("pages");
 
         return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, normalisedTitle, publishedOn, _id);
-    }
-
-    private String getContent() throws IOException {
-        //String content = getContentFromFile();
-        //if(content == null) {
-        //    content = getContentFromUri();
-        //    saveContent(content);
-        //}
-        String content = getContentFromUri();
-        return content;
-    }
-
-    private String getContentFromFile() throws IOException {
-        try {
-            return readStream(context.openFileInput(CACHE_FILE_NAME), DEFAULT_CONTENT_LENGTH);
-        }
-        catch(FileNotFoundException e) {
-            return null;
-        }
-    }
-
-    private void saveContent(String content) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(CACHE_FILE_NAME,
-                Context.MODE_PRIVATE)));
-
-        writer.write(content);
-        writer.close();
     }
 
     private String getContentFromUri() throws IOException {
