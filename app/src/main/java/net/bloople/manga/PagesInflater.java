@@ -2,17 +2,14 @@ package net.bloople.manga;
 
 import java.util.ArrayList;
 
-/**
- * Created by i on 17/08/2016.
- */
-public class PagesInflater {
+class PagesInflater {
     private String pagesString;
 
-    public PagesInflater(String inPagesString) {
+    PagesInflater(String inPagesString) {
         pagesString = inPagesString;
     }
 
-    public ArrayList<String> inflate() {
+    ArrayList<String> inflate() {
         ArrayList<String> paths = new ArrayList<>();
 
         String[] parts = pagesString.split("\\|");

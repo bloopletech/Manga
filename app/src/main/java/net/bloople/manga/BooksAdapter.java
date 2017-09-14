@@ -13,15 +13,12 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-/**
- * Created by i on 9/07/2016.
- */
-public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
+class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     private ArrayList<Long> bookIds = new ArrayList<>();
     private ArrayList<Long> selectedBookIds = new ArrayList<>();
     private boolean selectable = false;
 
-    public BooksAdapter() {
+    BooksAdapter() {
         setHasStableIds(true);
     }
 
@@ -33,21 +30,21 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         return selectable;
     }
 
-    public void setSelectable(boolean isSelectable) {
+    void setSelectable(boolean isSelectable) {
         selectable = isSelectable;
         notifyDataSetChanged();
     }
 
-    public ArrayList<Long> getSelectedBookIds() {
+    ArrayList<Long> getSelectedBookIds() {
         return selectedBookIds;
     }
 
-    public void setSelectedBookIds(ArrayList<Long> selectedBookIds) {
+    void setSelectedBookIds(ArrayList<Long> selectedBookIds) {
         this.selectedBookIds = selectedBookIds;
         notifyDataSetChanged();
     }
 
-    public void clearSelectedBookIds() {
+    void clearSelectedBookIds() {
         setSelectedBookIds(new ArrayList<Long>());
     }
 
@@ -57,17 +54,17 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> 
         return bookIds.size();
     }
 
-    public void update(ArrayList<Long> inBookIds) {
+    void update(ArrayList<Long> inBookIds) {
         bookIds = inBookIds;
         notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView pageCountView;
-        public TextView textView;
-        public ImageView imageView;
-        public ImageView selectableView;
-        public ViewHolder(View view) {
+        TextView pageCountView;
+        TextView textView;
+        ImageView imageView;
+        ImageView selectableView;
+        ViewHolder(View view) {
             super(view);
 
             view.setOnClickListener(new View.OnClickListener() {

@@ -7,12 +7,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
 
-public class CustomExceptionHandler implements UncaughtExceptionHandler {
+class CustomExceptionHandler implements UncaughtExceptionHandler {
     private UncaughtExceptionHandler defaultUEH;
 
     private String localPath;
 
-    public CustomExceptionHandler(String localPath) {
+    CustomExceptionHandler(String localPath) {
         this.localPath = localPath;
         this.defaultUEH = Thread.getDefaultUncaughtExceptionHandler();
     }

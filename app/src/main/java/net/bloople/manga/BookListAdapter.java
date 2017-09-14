@@ -13,12 +13,9 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
-/**
- * Created by i on 29/12/2016.
- */
 
-public class BookListAdapter extends CursorAdapter {
-    public BookListAdapter(Context context, Cursor cursor) {
+class BookListAdapter extends CursorAdapter {
+    BookListAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
 

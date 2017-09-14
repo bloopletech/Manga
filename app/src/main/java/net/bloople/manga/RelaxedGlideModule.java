@@ -13,12 +13,8 @@ import okhttp3.OkHttpClient;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by i on 2/01/2017.
- */
-
 public class RelaxedGlideModule implements GlideModule {
-    static final int TIMEOUT_SECONDS = 60;
+    private static final int TIMEOUT_SECONDS = 60;
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {

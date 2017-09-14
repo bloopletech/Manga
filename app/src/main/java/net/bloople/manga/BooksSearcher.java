@@ -3,28 +3,25 @@ package net.bloople.manga;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Created by i on 30/07/2016.
- */
-public class BooksSearcher {
-    public static final int LONG_BOOK_PAGES = 100;
-    public static final String SPECIAL_LONG_BOOK = "s.long";
+class BooksSearcher {
+    static final int LONG_BOOK_PAGES = 100;
+    static final String SPECIAL_LONG_BOOK = "s.long";
 
     private String searchText = "";
     private ArrayList<Long> filterIds;
 
-    public BooksSearcher() {
+    BooksSearcher() {
     }
 
-    public void setSearchText(String inSearchText) {
+    void setSearchText(String inSearchText) {
         searchText = inSearchText;
     }
 
-    public void setFilterIds(ArrayList<Long> filterIds) {
+    void setFilterIds(ArrayList<Long> filterIds) {
         this.filterIds = filterIds;
     }
 
-    public ArrayList<Book> search() {
+    ArrayList<Book> search() {
         ArrayList<Book> books = new ArrayList<>();
 
         String[] searchTerms = searchText.toLowerCase().split("\\s+");

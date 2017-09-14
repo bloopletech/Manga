@@ -5,11 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-/**
- * Created by i on 2/01/2017.
- */
-
-public class BookMetadata {
+class BookMetadata {
     private long _id = -1L;
     private long bookId;
     private long lastOpenedAt;
@@ -31,7 +27,7 @@ public class BookMetadata {
         }
     }
 
-    public static BookMetadata findOrCreateByBookId(Context context, long bookId) {
+    static BookMetadata findOrCreateByBookId(Context context, long bookId) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
         Cursor result = db.rawQuery("SELECT * FROM books_metadata WHERE book_id=?", new String[] { String.valueOf(bookId) });
@@ -50,10 +46,10 @@ public class BookMetadata {
         }
     }
 
-    public BookMetadata() {
+    BookMetadata() {
     }
 
-    public BookMetadata(Cursor result) {
+    BookMetadata(Cursor result) {
         _id = result.getLong(result.getColumnIndex("_id"));
         bookId = result.getLong(result.getColumnIndex("book_id"));
         lastOpenedAt = result.getLong(result.getColumnIndex("last_opened_at"));
@@ -64,31 +60,31 @@ public class BookMetadata {
         return _id;
     }
 
-    public long bookId() {
+    long bookId() {
         return bookId;
     }
 
-    public void bookId(long bookId) {
+    void bookId(long bookId) {
         this.bookId = bookId;
     }
 
-    public long lastOpenedAt() {
+    long lastOpenedAt() {
         return lastOpenedAt;
     }
 
-    public void lastOpenedAt(long lastOpenedAt) {
+    void lastOpenedAt(long lastOpenedAt) {
         this.lastOpenedAt = lastOpenedAt;
     }
 
-    public int lastReadPosition() {
+    int lastReadPosition() {
         return lastReadPosition;
     }
 
-    public void lastReadPosition(int inLastReadPosition) {
+    void lastReadPosition(int inLastReadPosition) {
         lastReadPosition = inLastReadPosition;
     }
 
-    public void save(Context context) {
+    void save(Context context) {
         ContentValues values = new ContentValues();
         values.put("book_id", bookId);
         values.put("last_opened_at", lastOpenedAt);

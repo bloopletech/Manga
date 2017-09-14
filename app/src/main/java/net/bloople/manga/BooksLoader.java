@@ -14,14 +14,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-/**
- * Created by i on 8/07/2016.
- */
-public class BooksLoader {
+class BooksLoader {
     public static final String CACHE_FILE_NAME = "cached-data.json";
-    public static final int DEFAULT_CONTENT_LENGTH = 10000000;
+    static final int DEFAULT_CONTENT_LENGTH = 10000000;
 
-    public ArrayList<Book> load() throws IOException, JSONException {
+    ArrayList<Book> load() throws IOException, JSONException {
 
         ArrayList<Book> books = new ArrayList<>();
 

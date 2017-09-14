@@ -1,18 +1,10 @@
 package net.bloople.manga;
 
 import android.app.Application;
-import android.content.Context;
 import android.net.Uri;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
-/**
- * Created by i on 8/07/2016.
- */
 public class MangaApplication extends Application {
     public static HashMap<Long, Book> allBooks;
 

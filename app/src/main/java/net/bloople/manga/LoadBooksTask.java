@@ -1,6 +1,5 @@
 package net.bloople.manga;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
@@ -9,9 +8,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by i on 19/07/2017.
- */
 
 class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
     private BooksLoadedListener listener;

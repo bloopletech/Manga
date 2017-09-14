@@ -12,11 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-/**
- * Created by i on 30/12/2016.
- */
-
-public class CollectionsManager {
+class CollectionsManager {
     private IndexActivity activity;
     private BooksAdapter adapter;
     private BookListAdapter bookListAdapter;
@@ -27,12 +23,12 @@ public class CollectionsManager {
     private ListView sidebar;
     private BookList list;
 
-    public CollectionsManager(IndexActivity activity, BooksAdapter adapter) {
+    CollectionsManager(IndexActivity activity, BooksAdapter adapter) {
         this.activity = activity;
         this.adapter = adapter;
     }
 
-    public void setup() {
+    void setup() {
         sidebar = (ListView)activity.findViewById(R.id.sidebar);
         bookListAdapter = new BookListAdapter(activity, null);
         sidebar.setAdapter(bookListAdapter);
@@ -123,7 +119,7 @@ public class CollectionsManager {
         saveCollection.setVisibility(View.GONE);
     }
 
-    public void newCollection() {
+    private void newCollection() {
         list = new BookList();
         list.name("New Collection");
         list.save(activity);
@@ -138,7 +134,7 @@ public class CollectionsManager {
         saveCollection.setVisibility(View.VISIBLE);
     }
 
-    public void editCollection() {
+    private void editCollection() {
         activity.useList(null);
 
         adapter.setSelectedBookIds(list.bookIds(activity));
@@ -149,7 +145,7 @@ public class CollectionsManager {
         saveCollection.setVisibility(View.VISIBLE);
     }
 
-    public void updateCollection() {
+    private void updateCollection() {
         list.bookIds(activity, adapter.getSelectedBookIds());
 
         adapter.clearSelectedBookIds();
@@ -164,12 +160,12 @@ public class CollectionsManager {
         saveCollection.setVisibility(View.GONE);
     }
 
-    public void destroyCollection() {
+    private void destroyCollection() {
         list.destroy(activity);
         updateCursor();
     }
 
-    public void updateCursor() {
+    private void updateCursor() {
         SQLiteDatabase db = DatabaseHelper.instance(activity);
         Cursor result = db.rawQuery("SELECT * FROM lists", new String[] {});
         bookListAdapter.changeCursor(result);

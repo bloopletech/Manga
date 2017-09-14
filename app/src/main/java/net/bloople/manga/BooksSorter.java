@@ -10,27 +10,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-/**
- * Created by i on 2/01/2017.
- */
-
-public class BooksSorter {
-    public static final int SORT_ALPHABETIC = 0;
-    public static final int SORT_AGE = 1;
-    public static final int SORT_LENGTH = 2;
-    public static final int SORT_LAST_OPENED = 3;
+class BooksSorter {
+    static final int SORT_ALPHABETIC = 0;
+    static final int SORT_AGE = 1;
+    static final int SORT_LENGTH = 2;
+    static final int SORT_LAST_OPENED = 3;
 
     private int sortMethod = SORT_AGE;
     private boolean sortDirectionAsc = false;
 
-    public BooksSorter() {
+    BooksSorter() {
     }
 
-    public int getSortMethod() {
+    int getSortMethod() {
         return sortMethod;
     }
 
-    public void setSortMethod(int sortMethod) {
+    void setSortMethod(int sortMethod) {
         this.sortMethod = sortMethod;
     }
 
@@ -38,11 +34,11 @@ public class BooksSorter {
         this.sortDirectionAsc = sortDirectionAsc;
     }
 
-    public void flipSortDirection() {
+    void flipSortDirection() {
         sortDirectionAsc = !sortDirectionAsc;
     }
 
-    public void sort(Context context, ArrayList<Book> books) {
+    void sort(Context context, ArrayList<Book> books) {
         if(books.isEmpty()) return;
 
         if(sortMethod == SORT_LAST_OPENED) {

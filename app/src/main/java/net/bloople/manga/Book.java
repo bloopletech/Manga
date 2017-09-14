@@ -3,10 +3,7 @@ package net.bloople.manga;
 import android.net.Uri;
 import java.util.List;
 
-/**
- * Created by i on 8/07/2016.
- */
-public class Book {
+class Book {
     private String mUrl;
     private String mPagesDeflated;
     private List<String> mPageUrls;
@@ -17,7 +14,7 @@ public class Book {
     private int mPublishedOn;
     private long _id;
 
-    public Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title,
+    Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title,
                 String normalisedTitle, int publishedOn, long _id) {
         mUrl = url;
         mPagesDeflated = pagesDeflated;
@@ -29,7 +26,7 @@ public class Book {
         this._id = _id;
     }
 
-    public String url() {
+    String url() {
         return mUrl;
     }
 
@@ -37,24 +34,24 @@ public class Book {
         return mPagesDeflated;
     }
 
-    public List<String> pageUrls() {
+    List<String> pageUrls() {
         if(mPageUrls == null) mPageUrls = new PagesInflater(mPagesDeflated).inflate();
         return mPageUrls;
     }
 
-    public String thumbnailUrl() {
+    String thumbnailUrl() {
         return mThumbnailUrl;
     }
 
-    public String title() {
+    String title() {
         return mTitle;
     }
 
-    public String normalisedTitle() {
+    String normalisedTitle() {
         return mNormalisedTitle;
     }
 
-    public int publishedOn() {
+    int publishedOn() {
         return mPublishedOn;
     }
 
@@ -62,12 +59,12 @@ public class Book {
         return _id;
     }
 
-    public Uri pageUrl(int index) {
+    Uri pageUrl(int index) {
         return MangaApplication.root().buildUpon().appendEncodedPath(url())
                 .appendEncodedPath(pageUrls().get(index)).build();
     }
 
-    public int pages() {
+    int pages() {
         //We are trusting the server that mPagesCount matches pageUrls().size()
         return mPagesCount;
     }
