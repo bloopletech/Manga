@@ -19,6 +19,6 @@ public class MangaApplication extends Application {
     }
 
     public static Uri root() {
-        return Uri.parse("http://192.168.1.2/Manga-OG/.mangos/");
+        return Uri.parse("http://192.168.1.100:82/Manga-OG/.mangos/");
     }
 }
