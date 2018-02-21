@@ -33,17 +33,15 @@ class BooksLoader {
     }
 
     private Book toBook(JSONObject object) throws JSONException {
-        String url = object.getString("url");
-        String title = object.getString("title");
-        String normalisedTitle = normalise(title);
+        String path = object.getString("path");
+        String normalisedTitle = normalise(path);
         int publishedOn = object.getInt("publishedOn");
-        String thumbnailUrl = object.getString("thumbnailUrl");
         String key = object.getString("key");
         long _id = Long.parseLong(key.substring(0, 15), 16); //Using substring of key would be dangerous for large N
-        String pagesDeflated = object.getString("pageUrls");
+        String pagesDeflated = object.getString("pagePaths");
         int pagesCount = object.getInt("pages");
 
-        return new Book(url, pagesDeflated, pagesCount, thumbnailUrl, title, normalisedTitle, publishedOn, _id);
+        return new Book(path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, _id);
     }
 
     private String getContentFromUri() throws IOException {

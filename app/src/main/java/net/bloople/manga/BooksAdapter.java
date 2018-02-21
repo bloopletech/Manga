@@ -141,9 +141,8 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
         if(selectable) holder.itemView.setActivated(selectedBookIds.contains(bookId));
 
-        String title = book.title().replaceAll("\\s+", " ");
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
-        holder.textView.setText(title);
+        holder.textView.setText(book.title());
 
         holder.pageCountView.setText(String.format("%,d", book.pages()));
 

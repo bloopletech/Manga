@@ -143,7 +143,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Glide
                 .with(this)
-                .load(book.pageUrl(currentPage))
+                .load(pageUrl(currentPage))
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
@@ -159,7 +159,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Glide
                 .with(this)
-                .load(book.pageUrl(currentPage + 1))
+                .load(pageUrl(currentPage + 1))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .preload();
     }
@@ -182,6 +182,10 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
     private int lastPage() {
         return book.pages() - 1;
+    }
+
+    private Uri pageUrl(int index) {
+        return MangaApplication.root().buildUpon().appendEncodedPath(book.pageUrl(index)).build();
     }
 
     private class LoadedRequestListener implements RequestListener<Uri, GlideDrawable> {

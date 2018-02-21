@@ -4,68 +4,64 @@ import android.net.Uri;
 import java.util.List;
 
 class Book {
-    private String mUrl;
-    private String mPagesDeflated;
-    private List<String> mPageUrls;
-    private int mPagesCount;
-    private String mThumbnailUrl;
-    private String mTitle;
-    private String mNormalisedTitle;
-    private int mPublishedOn;
+    private String path;
+    private String pagesDeflated;
+    private List<String> pagePaths;
+    private int pagesCount;
+    private String normalisedTitle;
+    private int publishedOn;
+    private String key;
     private long _id;
 
-    Book(String url, String pagesDeflated, int pagesCount, String thumbnailUrl, String title,
-                String normalisedTitle, int publishedOn, long _id) {
-        mUrl = url;
-        mPagesDeflated = pagesDeflated;
-        mPagesCount = pagesCount;
-        mThumbnailUrl = thumbnailUrl;
-        mTitle = title;
-        mNormalisedTitle = normalisedTitle;
-        mPublishedOn = publishedOn;
+    Book(String path, String pagesDeflated, int pagesCount, String normalisedTitle, int publishedOn, String key, long _id) {
+        this.path = path;
+        this.pagesDeflated = pagesDeflated;
+        this.pagesCount = pagesCount;
+        this.normalisedTitle = normalisedTitle;
+        this.publishedOn = publishedOn;
+        this.key = key;
         this._id = _id;
     }
 
-    String url() {
-        return mUrl;
+    private String url() {
+      return "../" + Uri.encode(path);
     }
 
-    public String pagesDeflated() {
-        return mPagesDeflated;
-    }
-
-    List<String> pageUrls() {
-        if(mPageUrls == null) mPageUrls = new PagesInflater(mPagesDeflated).inflate();
-        return mPageUrls;
+    private List<String> pagePaths() {
+        if(pagePaths == null) pagePaths = new PagesInflater(pagesDeflated).inflate();
+        return pagePaths;
     }
 
     String thumbnailUrl() {
-        return mThumbnailUrl;
+      return "img/thumbnails/" + key + ".jpg";
     }
 
     String title() {
-        return mTitle;
+      return path.replaceAll("\\s+", " ");
     }
 
     String normalisedTitle() {
-        return mNormalisedTitle;
+        return normalisedTitle;
     }
 
     int publishedOn() {
-        return mPublishedOn;
+        return publishedOn;
+    }
+
+    public String key() {
+      return key;
     }
 
     public long id() {
         return _id;
     }
 
-    Uri pageUrl(int index) {
-        return MangaApplication.root().buildUpon().appendEncodedPath(url())
-                .appendEncodedPath(pageUrls().get(index)).build();
+    String pageUrl(int index) {
+        return url() + "/" + Uri.encode(pagePaths().get(index));
     }
 
     int pages() {
-        //We are trusting the server that mPagesCount matches pageUrls().size()
-        return mPagesCount;
+        //We are trusting the server that mPagesCount matches pagePaths().size()
+        return pagesCount;
     }
 }
