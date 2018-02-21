@@ -41,7 +41,11 @@ class BooksLoader {
         String pagesDeflated = object.getString("pagePaths");
         int pagesCount = object.getInt("pages");
 
-        return new Book(path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, _id);
+        ArrayList<String> tags = new ArrayList<>();
+        JSONArray tagObjects = object.getJSONArray("tags");
+        for(int i = 0; i < tagObjects.length(); i++) tags.add(tagObjects.getString(i));
+
+        return new Book(path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, tags, _id);
     }
 
     private String getContentFromUri() throws IOException {

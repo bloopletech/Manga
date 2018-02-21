@@ -1,25 +1,28 @@
 package net.bloople.manga;
 
 import android.net.Uri;
-import java.util.List;
+import java.util.ArrayList;
 
 class Book {
     private String path;
     private String pagesDeflated;
-    private List<String> pagePaths;
+    private ArrayList<String> pagePaths;
     private int pagesCount;
     private String normalisedTitle;
     private int publishedOn;
     private String key;
+    private ArrayList<String> tags;
     private long _id;
 
-    Book(String path, String pagesDeflated, int pagesCount, String normalisedTitle, int publishedOn, String key, long _id) {
+    Book(String path, String pagesDeflated, int pagesCount, String normalisedTitle, int publishedOn, String key,
+         ArrayList<String> tags, long _id) {
         this.path = path;
         this.pagesDeflated = pagesDeflated;
         this.pagesCount = pagesCount;
         this.normalisedTitle = normalisedTitle;
         this.publishedOn = publishedOn;
         this.key = key;
+        this.tags = tags;
         this._id = _id;
     }
 
@@ -27,7 +30,7 @@ class Book {
       return "../" + Uri.encode(path);
     }
 
-    private List<String> pagePaths() {
+    private ArrayList<String> pagePaths() {
         if(pagePaths == null) pagePaths = new PagesInflater(pagesDeflated).inflate();
         return pagePaths;
     }
@@ -50,6 +53,10 @@ class Book {
 
     public String key() {
       return key;
+    }
+
+    public ArrayList<String> tags() {
+        return tags;
     }
 
     public long id() {

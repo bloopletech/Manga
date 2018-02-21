@@ -177,4 +177,9 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
         resolve();
     }
 
+    public void useTag(String tag) {
+        searchField.setText(searchField.getText().toString() + " \"" + tag + "\"");
+        resolve();
+    }
+
 }

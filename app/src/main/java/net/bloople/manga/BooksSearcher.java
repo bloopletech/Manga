@@ -2,6 +2,8 @@ package net.bloople.manga;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 class BooksSearcher {
     static final int LONG_BOOK_PAGES = 100;
@@ -24,7 +26,7 @@ class BooksSearcher {
     ArrayList<Book> search() {
         ArrayList<Book> books = new ArrayList<>();
 
-        String[] searchTerms = searchText.toLowerCase().split("\\s+");
+        ArrayList<String> searchTerms = parseSearchTerms();
 
         bookLoop:
         for(Map.Entry<Long, Book> entry : MangaApplication.allBooks.entrySet()) {
@@ -55,5 +57,16 @@ class BooksSearcher {
         }
 
         return books;
+    }
+
+    private ArrayList<String> parseSearchTerms() {
+        ArrayList<String> terms = new ArrayList<String>();
+
+        Pattern searchPattern = Pattern.compile("\"[^\"]*\"|[^ ]+");
+        Matcher matcher = searchPattern.matcher(searchText.toLowerCase());
+
+        while(matcher.find()) terms.add(matcher.group().replace("\"", ""));
+
+        return terms;
     }
 }

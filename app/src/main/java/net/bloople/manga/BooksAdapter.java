@@ -2,6 +2,7 @@ package net.bloople.manga;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,11 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         ViewHolder(View view) {
             super(view);
 
+            pageCountView = (TextView)view.findViewById(R.id.page_count_view);
+            textView = (TextView)view.findViewById(R.id.text_view);
+            imageView = (ImageView)view.findViewById(R.id.image_view);
+            selectableView = (ImageView)view.findViewById(R.id.selectable);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -102,10 +108,25 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
                 }
             });
 
-            pageCountView = (TextView)view.findViewById(R.id.page_count_view);
-            textView = (TextView)view.findViewById(R.id.text_view);
-            imageView = (ImageView)view.findViewById(R.id.image_view);
-            selectableView = (ImageView)view.findViewById(R.id.selectable);
+            textView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if(selectable) return false;
+
+                    long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+
+                    IndexActivity indexActivity = (IndexActivity)itemView.getContext();
+
+                    Bundle arguments = new Bundle();
+                    arguments.putLong("_id", bookId);
+
+                    TagChooserFragment tagChooser = new TagChooserFragment();
+                    tagChooser.setArguments(arguments);
+                    tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
+
+                    return true;
+                }
+            });
         }
 
         private void openBook(long bookId, boolean resume) {
