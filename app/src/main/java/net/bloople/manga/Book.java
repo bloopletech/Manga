@@ -27,9 +27,8 @@ class Book {
     }
 
     private String url() {
-      return "../" + Uri.encode(path);
+        return "../" + Uri.encode(path);
     }
-
     private ArrayList<String> pagePaths() {
         if(pagePaths == null) pagePaths = new PagesInflater(pagesDeflated).inflate();
         return pagePaths;
