@@ -14,17 +14,20 @@ import android.widget.Space;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 public class ReadingActivity extends Activity implements BooksLoadedListener {
+    public static final String MAX_IMAGE_DIMENSION = "1500";
     private Book book;
     private BookMetadata bookMetadata;
     private int pageFromBundle = -1;
     private int currentPage;
     private FrameLayout holder;
-    private RequestListener<Uri, GlideDrawable> requestListener;
+    private RequestListener<GlideUrl, GlideDrawable> requestListener;
     private ScrollView scroller;
 
     @Override
@@ -143,7 +146,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Glide
                 .with(this)
-                .load(pageUrl(currentPage))
+                .load(urlWithContentHint(pageUrl(currentPage)))
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
@@ -159,7 +162,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Glide
                 .with(this)
-                .load(pageUrl(currentPage + 1))
+                .load(urlWithContentHint(pageUrl(currentPage + 1)))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .preload();
     }
@@ -188,16 +191,22 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
         return MangaApplication.root().buildUpon().appendEncodedPath(book.pageUrl(index)).build();
     }
 
-    private class LoadedRequestListener implements RequestListener<Uri, GlideDrawable> {
+    private GlideUrl urlWithContentHint(Uri uri) {
+        return new GlideUrl(uri.toString(), new LazyHeaders.Builder()
+                .addHeader("Width", MAX_IMAGE_DIMENSION)
+                .build());
+    }
+
+    private class LoadedRequestListener implements RequestListener<GlideUrl, GlideDrawable> {
         @Override
-        public boolean onException(Exception e, Uri model, Target<GlideDrawable> target,
+        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target,
         boolean isFirstResource) {
             if(e != null) e.printStackTrace();
             return false;
         }
 
         @Override
-        public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target,
+        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
         boolean isFromMemoryCache, boolean isFirstResource) {
             scroller.scrollTo(0, 0);
 
