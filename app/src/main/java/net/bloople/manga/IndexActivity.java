@@ -16,17 +16,24 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toolbar;
 
+import com.hootsuite.nachos.NachoTextView;
+import com.hootsuite.nachos.chip.Chip;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class IndexActivity extends Activity implements BooksLoadedListener {
+    public static final char TAG_SEPARATOR = '\u0000';
+
     private RecyclerView booksView;
     private BooksAdapter adapter;
-    private EditText searchField;
+    private NachoTextView searchField;
 
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
@@ -44,7 +51,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        searchField = (EditText)findViewById(R.id.search_field);
+        searchField = (NachoTextView)findViewById(R.id.search_field);
 
         searchField.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
@@ -159,7 +166,10 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
     }
 
     private void resolve() {
-        searcher.setSearchText(searchField.getText().toString());
+        ArrayAdapter<Tag> searchAdapter = new ArrayAdapter<>(this, R.layout.tag_view, popularTags());
+        searchField.setAdapter(searchAdapter);
+
+        searcher.setSearchTags(getSearchTags());
 
         ArrayList<Book> books = searcher.search();
         sorter.sort(this, books);
@@ -177,9 +187,33 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
         resolve();
     }
 
-    public void useTag(String tag) {
-        searchField.setText(searchField.getText().toString() + " \"" + tag + "\"");
+    public void useTag(Tag tag) {
+        //searchField.setText(searchField.getText().toString() + TAG_SEPARATOR + tag.tag());
         resolve();
+    }
+
+    private Tag[] popularTags() {
+        ArrayList<Tag> sortedTags = new ArrayList<Tag>(MangaApplication.allTags);
+
+        Collections.sort(sortedTags, new Comparator<Tag>() {
+            @Override
+            public int compare(Tag a, Tag b) {
+                return Integer.compare(b.popularity(), a.popularity());
+            }
+        });
+
+        return sortedTags.subList(0, 500).toArray(new Tag[0]);
+    }
+
+    private ArrayList<Tag> getSearchTags() {
+        ArrayList<Tag> searchTags = new ArrayList<>();
+
+        for(Chip chip : searchField.getAllChips()) {
+            Tag tag = (Tag)chip.getData();
+            searchTags.add(tag);
+        }
+
+        return searchTags;
     }
 
 }

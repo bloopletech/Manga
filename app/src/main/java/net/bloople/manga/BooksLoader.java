@@ -13,23 +13,31 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class BooksLoader {
     public static final String CACHE_FILE_NAME = "cached-data.json";
     static final int DEFAULT_CONTENT_LENGTH = 10000000;
 
-    ArrayList<Book> load() throws IOException, JSONException {
+    private HashMap<Long, Book> books = new HashMap<>();
+    private ArrayList<Tag> tags = new ArrayList<>();
 
-        ArrayList<Book> books = new ArrayList<>();
+    HashMap<Long, Book> books() {
+        return books;
+    }
 
+    ArrayList<Tag> tags() {
+        return tags;
+    }
+
+    void load() throws IOException, JSONException {
         JSONArray bookObjects = new JSONArray(getContentFromUri());
 
         for(int i = 0; i < bookObjects.length(); i++) {
             JSONObject bookObject = (JSONObject) bookObjects.get(i);
-            books.add(toBook(bookObject));
+            Book book = toBook(bookObject);
+            books.put(book.id(), book);
         }
-
-        return books;
     }
 
     private Book toBook(JSONObject object) throws JSONException {
@@ -41,11 +49,24 @@ class BooksLoader {
         String pagesDeflated = object.getString("pagePaths");
         int pagesCount = object.getInt("pages");
 
-        ArrayList<String> tags = new ArrayList<>();
+        ArrayList<Tag> bookTags = new ArrayList<>();
         JSONArray tagObjects = object.getJSONArray("tags");
-        for(int i = 0; i < tagObjects.length(); i++) tags.add(tagObjects.getString(i));
+        for(int i = 0; i < tagObjects.length(); i++) bookTags.add(addTag(tagObjects.getString(i)));
 
-        return new Book(path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, tags, _id);
+        return new Book(path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, bookTags, _id);
+    }
+
+    private Tag addTag(String tagString) {
+        for(Tag tag : tags) {
+            if(tag.tag().equals(tagString)) {
+                tag.popularity(tag.popularity() + 1);
+                return tag;
+            }
+        }
+
+        Tag tag = new Tag(tags.size(), tagString);
+        tags.add(tag);
+        return tag;
     }
 
     private String getContentFromUri() throws IOException {

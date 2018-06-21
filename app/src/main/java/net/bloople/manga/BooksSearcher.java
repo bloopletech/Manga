@@ -9,14 +9,14 @@ class BooksSearcher {
     static final int LONG_BOOK_PAGES = 100;
     static final String SPECIAL_LONG_BOOK = "s.long";
 
-    private String searchText = "";
+    private ArrayList<Tag> searchTags = new ArrayList<>();
     private ArrayList<Long> filterIds;
 
     BooksSearcher() {
     }
 
-    void setSearchText(String inSearchText) {
-        searchText = inSearchText;
+    void setSearchTags(ArrayList<Tag> searchTags) {
+        this.searchTags = searchTags;
     }
 
     void setFilterIds(ArrayList<Long> filterIds) {
@@ -26,15 +26,17 @@ class BooksSearcher {
     ArrayList<Book> search() {
         ArrayList<Book> books = new ArrayList<>();
 
-        ArrayList<String> searchTerms = parseSearchTerms();
-
         bookLoop:
         for(Map.Entry<Long, Book> entry : MangaApplication.allBooks.entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();
 
-            String compareTitle = b.title().toLowerCase();
+            for(Tag searchTag : searchTags) {
+                if(!b.tags().contains(searchTag)) continue bookLoop;
+            }
+
+            /*String compareTitle = b.title().toLowerCase();
 
             for(String searchTerm : searchTerms) {
                 if(searchTerm.startsWith("-")) {
@@ -51,22 +53,11 @@ class BooksSearcher {
                     }
                     else if(!compareTitle.contains(searchTerm)) continue bookLoop;
                 }
-            }
+            }*/
 
             books.add(b);
         }
 
         return books;
-    }
-
-    private ArrayList<String> parseSearchTerms() {
-        ArrayList<String> terms = new ArrayList<String>();
-
-        Pattern searchPattern = Pattern.compile("\"[^\"]*\"|[^ ]+");
-        Matcher matcher = searchPattern.matcher(searchText.toLowerCase());
-
-        while(matcher.find()) terms.add(matcher.group().replace("\"", ""));
-
-        return terms;
     }
 }

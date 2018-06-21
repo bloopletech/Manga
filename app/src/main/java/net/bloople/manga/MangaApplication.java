@@ -3,10 +3,12 @@ package net.bloople.manga;
 import android.app.Application;
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MangaApplication extends Application {
     public static HashMap<Long, Book> allBooks;
+    public static ArrayList<Tag> allTags;
 
     public static void ensureAllBooks(BooksLoadedListener listener) {
         if(allBooks != null) {

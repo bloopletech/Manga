@@ -9,18 +9,18 @@ import java.util.HashMap;
 import java.util.List;
 
 
-class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
+class LoadBooksTask extends AsyncTask<Void, Void, BooksLoader> {
     private BooksLoadedListener listener;
 
     LoadBooksTask(BooksLoadedListener listener) {
         this.listener = listener;
     }
 
-    protected List<Book> doInBackground(Void... params) {
-        List<Book> books;
+    protected BooksLoader doInBackground(Void... params) {
+        BooksLoader loader = new BooksLoader();
 
         try {
-            books = new BooksLoader().load();
+            loader.load();
         }
         catch(JSONException e) {
             e.printStackTrace();
@@ -31,12 +31,12 @@ class LoadBooksTask extends AsyncTask<Void, Void, List<Book>> {
             return null;
         }
 
-        return books;
+        return loader;
     }
 
-    protected void onPostExecute(List<Book> books) {
-        MangaApplication.allBooks = new HashMap<>();
-        for(Book b : books) MangaApplication.allBooks.put(b.id(), b);
+    protected void onPostExecute(BooksLoader loader) {
+        MangaApplication.allBooks = loader.books();
+        MangaApplication.allTags = loader.tags();
 
         listener.onBooksLoaded();
     }
