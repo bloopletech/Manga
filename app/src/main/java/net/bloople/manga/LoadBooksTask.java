@@ -1,23 +1,21 @@
 package net.bloople.manga;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import org.json.JSONException;
-
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
 
 
-class LoadBooksTask extends AsyncTask<Void, Void, BooksLoader> {
+class LoadBooksTask extends AsyncTask<Uri, Void, BooksLoader> {
     private BooksLoadedListener listener;
 
     LoadBooksTask(BooksLoadedListener listener) {
         this.listener = listener;
     }
 
-    protected BooksLoader doInBackground(Void... params) {
-        BooksLoader loader = new BooksLoader();
+    protected BooksLoader doInBackground(Uri... urls) {
+        BooksLoader loader = new BooksLoader(urls[0]);
 
         try {
             loader.load();
@@ -35,8 +33,7 @@ class LoadBooksTask extends AsyncTask<Void, Void, BooksLoader> {
     }
 
     protected void onPostExecute(BooksLoader loader) {
-        MangaApplication.allBooks = loader.books();
-        MangaApplication.allTags = loader.tags();
+        Mango.current = new Mango(loader.root(), loader.books(), loader.tags());
 
         listener.onBooksLoaded();
     }

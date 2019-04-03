@@ -4,6 +4,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 
 class Book {
+    private Uri root;
     private String path;
     private String pagesDeflated;
     private ArrayList<String> pagePaths;
@@ -14,8 +15,9 @@ class Book {
     private ArrayList<Tag> tags;
     private long _id;
 
-    Book(String path, String pagesDeflated, int pagesCount, String normalisedTitle, int publishedOn, String key,
-         ArrayList<Tag> tags, long _id) {
+    Book(Uri root, String path, String pagesDeflated, int pagesCount, String normalisedTitle,
+         int publishedOn, String key, ArrayList<Tag> tags, long _id) {
+        this.root = root;
         this.path = path;
         this.pagesDeflated = pagesDeflated;
         this.pagesCount = pagesCount;
@@ -26,16 +28,12 @@ class Book {
         this._id = _id;
     }
 
-    private String url() {
-        return "../" + Uri.encode(path);
-    }
-    private ArrayList<String> pagePaths() {
-        if(pagePaths == null) pagePaths = new PagesInflater(pagesDeflated).inflate();
-        return pagePaths;
+    private String relativeThumbnailUrl() {
+      return "img/thumbnails/" + key + ".jpg";
     }
 
-    String thumbnailUrl() {
-      return "img/thumbnails/" + key + ".jpg";
+    Uri thumbnailUrl() {
+        return root.buildUpon().appendEncodedPath(relativeThumbnailUrl()).build();
     }
 
     String title() {
@@ -62,8 +60,21 @@ class Book {
         return _id;
     }
 
-    String pageUrl(int index) {
-        return url() + "/" + Uri.encode(pagePaths().get(index));
+    private ArrayList<String> pagePaths() {
+        if(pagePaths == null) pagePaths = new PagesInflater(pagesDeflated).inflate();
+        return pagePaths;
+    }
+
+    private String relativeUrl() {
+        return "../" + Uri.encode(path);
+    }
+
+    private String relativePageUrl(int index) {
+        return relativeUrl() + "/" + Uri.encode(pagePaths().get(index));
+    }
+
+    Uri pageUrl(int index) {
+        return root.buildUpon().appendEncodedPath(relativePageUrl(index)).build();
     }
 
     int pages() {

@@ -137,6 +137,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", resume);
+            intent.putExtra("root", Mango.current.root());
 
             itemView.getContext().startActivity(intent);
         }
@@ -157,7 +158,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         long bookId = getItemId(position);
-        Book book = MangaApplication.allBooks.get(bookId);
+        Book book = Mango.current.books().get(bookId);
 
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
         if(selectable) holder.itemView.setActivated(selectedBookIds.contains(bookId));
@@ -170,9 +171,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         Glide.clear(holder.imageView);
         holder.imageView.setImageDrawable(null);
 
-        Uri uri = MangaApplication.root().buildUpon().appendEncodedPath(book.thumbnailUrl()).build();
-
-        Glide.with(holder.imageView.getContext()).load(uri).dontAnimate().into(holder.imageView);
+        Glide.with(holder.imageView.getContext()).load(book.thumbnailUrl()).dontAnimate().into(holder.imageView);
     }
 
 }

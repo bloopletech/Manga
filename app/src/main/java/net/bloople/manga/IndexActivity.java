@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -99,6 +101,9 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
+        LibrariesManager librariesManager = new LibrariesManager(this);
+        librariesManager.setup();
+
         if(savedInstanceState == null) resolveOrLoad();
     }
 
@@ -162,7 +167,11 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
     }
 
     private void resolveOrLoad() {
-        MangaApplication.ensureAllBooks(this);
+        Intent intent = getIntent();
+        String root = intent.getStringExtra("root");
+        if(root == null) root = Library.findDefault(this).root();
+
+        Mango.ensureCurrent(Uri.parse(root), this);
     }
 
     private void resolve() {
@@ -187,13 +196,19 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
         resolve();
     }
 
+    public void useRoot(String root) {
+        Intent intent = getIntent();
+        intent.putExtra("root", root);
+        recreate();
+    }
+
     public void useTag(Tag tag) {
         //searchField.setText(searchField.getText().toString() + TAG_SEPARATOR + tag.tag());
         resolve();
     }
 
     private Tag[] popularTags() {
-        ArrayList<Tag> sortedTags = new ArrayList<Tag>(MangaApplication.allTags);
+        ArrayList<Tag> sortedTags = new ArrayList<Tag>(Mango.current.tags());
 
         Collections.sort(sortedTags, new Comparator<Tag>() {
             @Override
@@ -202,7 +217,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
             }
         });
 
-        return sortedTags.subList(0, 500).toArray(new Tag[0]);
+        return sortedTags.subList(0, Math.min(500, sortedTags.size())).toArray(new Tag[0]);
     }
 
     private ArrayList<Tag> getSearchTags() {

@@ -84,7 +84,9 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         requestListener = new LoadedRequestListener();
 
-        MangaApplication.ensureAllBooks(this);
+        Intent intent = getIntent();
+        String root = intent.getStringExtra("root");
+        Mango.ensureCurrent(Uri.parse(root),this);
     }
 
     @Override
@@ -120,7 +122,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
     public void onBooksLoaded() {
         Intent intent = getIntent();
         long bookId = intent.getLongExtra("_id", -1);
-        book = MangaApplication.allBooks.get(bookId);
+        book = Mango.current.books().get(bookId);
         bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
 
         int newPage = 0;
@@ -146,7 +148,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Glide
                 .with(this)
-                .load(urlWithContentHint(pageUrl(currentPage)))
+                .load(urlWithContentHint(book.pageUrl(currentPage)))
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
@@ -162,7 +164,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Glide
                 .with(this)
-                .load(urlWithContentHint(pageUrl(currentPage + 1)))
+                .load(urlWithContentHint(book.pageUrl(currentPage + 1)))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .preload();
     }
@@ -185,10 +187,6 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
     private int lastPage() {
         return book.pages() - 1;
-    }
-
-    private Uri pageUrl(int index) {
-        return MangaApplication.root().buildUpon().appendEncodedPath(book.pageUrl(index)).build();
     }
 
     private GlideUrl urlWithContentHint(Uri uri) {

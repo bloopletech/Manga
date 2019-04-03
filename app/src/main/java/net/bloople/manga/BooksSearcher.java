@@ -27,7 +27,7 @@ class BooksSearcher {
         ArrayList<Book> books = new ArrayList<>();
 
         bookLoop:
-        for(Map.Entry<Long, Book> entry : MangaApplication.allBooks.entrySet()) {
+        for(Map.Entry<Long, Book> entry : Mango.current.books().entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();

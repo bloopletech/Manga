@@ -45,6 +45,21 @@ class DatabaseHelper {
                 "last_read_position INTEGER DEFAULT 0" +
                 ")");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS libraries ( " +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "root TEXT" +
+                ")");
+
+        result = db.rawQuery("SELECT COUNT(*) FROM libraries", new String[] {});
+        result.moveToFirst();
+
+        if(result.getInt(0) == 0) {
+            ContentValues values = new ContentValues();
+            values.put("root", "http://192.168.1.100:9292/h/Manga-OG/.mangos/");
+            db.insert("libraries", null, values);
+        }
+        result.close();
+
         return db;
     }
 

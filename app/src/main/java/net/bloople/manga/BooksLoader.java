@@ -19,8 +19,15 @@ class BooksLoader {
     public static final String CACHE_FILE_NAME = "cached-data.json";
     static final int DEFAULT_CONTENT_LENGTH = 10000000;
 
+    private Uri root;
     private HashMap<Long, Book> books = new HashMap<>();
     private ArrayList<Tag> tags = new ArrayList<>();
+
+    BooksLoader(Uri root) {
+        this.root = root;
+    }
+
+    Uri root() { return root; }
 
     HashMap<Long, Book> books() {
         return books;
@@ -53,7 +60,7 @@ class BooksLoader {
         JSONArray tagObjects = object.getJSONArray("tags");
         for(int i = 0; i < tagObjects.length(); i++) bookTags.add(addTag(tagObjects.getString(i)));
 
-        return new Book(path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, bookTags, _id);
+        return new Book(root, path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, bookTags, _id);
     }
 
     private Tag addTag(String tagString) {
@@ -70,7 +77,7 @@ class BooksLoader {
     }
 
     private String getContentFromUri() throws IOException {
-        Uri dataUri = MangaApplication.root().buildUpon().appendPath("data.json").build();
+        Uri dataUri = root.buildUpon().appendPath("data.json").build();
 
         URLConnection connection = new URL(dataUri.toString()).openConnection();
 
