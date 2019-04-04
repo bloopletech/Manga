@@ -184,7 +184,7 @@ public class IndexActivity extends Activity implements LibraryService.LibraryLoa
     }
 
     public void useTag(String tag) {
-        searchField.setText(searchField.getText().toString() + " \"" + tag + "\"");
+        searchField.setText("\"" + tag + "\"");
         resolve();
     }
 
