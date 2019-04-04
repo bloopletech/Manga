@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 public class LibraryRootsFragment extends Fragment implements LibraryRootEditFragment.OnLibraryRootEditFinishedListener {
     private Context context;
     private OnLibraryRootSelectedListener listener;
-    private LibrariesAdapter librariesAdapter;
+    private SimpleCursorAdapter libraryRootsAdapter;
 
     public interface OnLibraryRootSelectedListener {
         void onLibraryRootSelected(long libraryRootId);
@@ -42,9 +43,15 @@ public class LibraryRootsFragment extends Fragment implements LibraryRootEditFra
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        libraryRootsAdapter = new SimpleCursorAdapter(context,
+                R.layout.library_root,
+                null,
+                new String[] { "name" },
+                new int[] { R.id.name },
+                0);
+
         ListView libraryRootsView = view.findViewById(R.id.library_roots);
-        librariesAdapter = new LibrariesAdapter(context, null);
-        libraryRootsView.setAdapter(librariesAdapter);
+        libraryRootsView.setAdapter(libraryRootsAdapter);
         updateCursor();
 
         libraryRootsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -103,6 +110,6 @@ public class LibraryRootsFragment extends Fragment implements LibraryRootEditFra
     private void updateCursor() {
         SQLiteDatabase db = DatabaseHelper.instance(context);
         Cursor result = db.rawQuery("SELECT * FROM library_roots", new String[] {});
-        librariesAdapter.changeCursor(result);
+        libraryRootsAdapter.changeCursor(result);
     }
 }
