@@ -2,6 +2,7 @@ package net.bloople.manga;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -37,6 +38,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private NachoTextView searchField;
+    private ProgressDialog loadingLibraryDialog;
 
     private long libraryRootId = -1;
     private BooksSearcher searcher = new BooksSearcher();
@@ -163,6 +165,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
 
     public void onBooksLoaded() {
         resolve();
+        if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
     }
 
     private void resolve() {
@@ -201,6 +204,13 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
             libraryRoot = LibraryRoot.findDefault(this);
             libraryRootId = libraryRoot.id();
         }
+
+        if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
+        loadingLibraryDialog = ProgressDialog.show(
+                this,
+                "Loading " + libraryRoot.name(),
+                "Please wait while the library is loaded...",
+                true);
 
         Mango.ensureCurrent(Uri.parse(libraryRoot.root()), this);
     }
