@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class IndexActivity extends Activity implements BooksLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
+public class IndexActivity extends Activity implements LibraryLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
     public static final char TAG_SEPARATOR = '\u0000';
 
     private RecyclerView booksView;
@@ -163,7 +163,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
         return true;
     }
 
-    public void onBooksLoaded() {
+    public void onLibraryLoaded() {
         resolve();
         if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
     }

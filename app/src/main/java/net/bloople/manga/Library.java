@@ -30,9 +30,9 @@ class Library {
         return tags;
     }
 
-    public static void ensureCurrent(Uri root, BooksLoadedListener listener) {
+    public static void ensureCurrent(Uri root, LibraryLoadedListener listener) {
         if(current != null && current.root().equals(root)) {
-            listener.onBooksLoaded();
+            listener.onLibraryLoaded();
         }
         else {
             LoadBooksTask loader = new LoadBooksTask(listener);

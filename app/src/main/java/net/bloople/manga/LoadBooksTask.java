@@ -8,9 +8,9 @@ import java.io.IOException;
 
 
 class LoadBooksTask extends AsyncTask<Uri, Void, BooksLoader> {
-    private BooksLoadedListener listener;
+    private LibraryLoadedListener listener;
 
-    LoadBooksTask(BooksLoadedListener listener) {
+    LoadBooksTask(LibraryLoadedListener listener) {
         this.listener = listener;
     }
 
@@ -35,6 +35,6 @@ class LoadBooksTask extends AsyncTask<Uri, Void, BooksLoader> {
     protected void onPostExecute(BooksLoader loader) {
         Library.current = new Library(loader.root(), loader.books(), loader.tags());
 
-        listener.onBooksLoaded();
+        listener.onLibraryLoaded();
     }
 }

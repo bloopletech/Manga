@@ -20,7 +20,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-public class ReadingActivity extends Activity implements BooksLoadedListener {
+public class ReadingActivity extends Activity implements LibraryLoadedListener {
     public static final String MAX_IMAGE_DIMENSION = "1500";
     private Book book;
     private BookMetadata bookMetadata;
@@ -119,7 +119,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
         outState.putInt("currentPage", currentPage);
     }
 
-    public void onBooksLoaded() {
+    public void onLibraryLoaded() {
         Intent intent = getIntent();
         long bookId = intent.getLongExtra("_id", -1);
         book = Library.current.books().get(bookId);
