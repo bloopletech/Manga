@@ -7,10 +7,10 @@ import org.json.JSONException;
 import java.io.IOException;
 
 
-class LoadBooksTask extends AsyncTask<Uri, Void, BooksLoader> {
+class LoadLibraryTask extends AsyncTask<Uri, Void, BooksLoader> {
     private LibraryLoadedListener listener;
 
-    LoadBooksTask(LibraryLoadedListener listener) {
+    LoadLibraryTask(LibraryLoadedListener listener) {
         this.listener = listener;
     }
 

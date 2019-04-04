@@ -35,7 +35,7 @@ class Library {
             listener.onLibraryLoaded();
         }
         else {
-            LoadBooksTask loader = new LoadBooksTask(listener);
+            LoadLibraryTask loader = new LoadLibraryTask(listener);
             loader.execute(root);
         }
     }
