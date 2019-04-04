@@ -33,8 +33,7 @@ class LoadLibraryTask extends AsyncTask<Uri, Void, LibraryLoader> {
     }
 
     protected void onPostExecute(LibraryLoader loader) {
-        Library.current = new Library(loader.root(), loader.books(), loader.tags());
-
+        Library.current = loader.library();
         listener.onLibraryLoaded();
     }
 }

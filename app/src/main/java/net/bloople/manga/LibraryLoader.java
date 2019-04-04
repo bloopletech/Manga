@@ -19,22 +19,14 @@ class LibraryLoader {
     public static final String CACHE_FILE_NAME = "cached-data.json";
     static final int DEFAULT_CONTENT_LENGTH = 10000000;
 
-    private Uri root;
-    private HashMap<Long, Book> books = new HashMap<>();
-    private ArrayList<Tag> tags = new ArrayList<>();
+    private Library library;
 
     LibraryLoader(Uri root) {
-        this.root = root;
+        library = new Library(root, new HashMap<Long, Book>(), new ArrayList<Tag>());
     }
 
-    Uri root() { return root; }
-
-    HashMap<Long, Book> books() {
-        return books;
-    }
-
-    ArrayList<Tag> tags() {
-        return tags;
+    Library library() {
+        return library;
     }
 
     void load() throws IOException, JSONException {
@@ -43,7 +35,7 @@ class LibraryLoader {
         for(int i = 0; i < bookObjects.length(); i++) {
             JSONObject bookObject = (JSONObject) bookObjects.get(i);
             Book book = toBook(bookObject);
-            books.put(book.id(), book);
+            library.books().put(book.id(), book);
         }
     }
 
@@ -60,10 +52,21 @@ class LibraryLoader {
         JSONArray tagObjects = object.getJSONArray("tags");
         for(int i = 0; i < tagObjects.length(); i++) bookTags.add(addTag(tagObjects.getString(i)));
 
-        return new Book(root, path, pagesDeflated, pagesCount, normalisedTitle, publishedOn, key, bookTags, _id);
+        return new Book(
+                library.root(),
+                path,
+                pagesDeflated,
+                pagesCount,
+                normalisedTitle,
+                publishedOn,
+                key,
+                bookTags,
+                _id);
     }
 
     private Tag addTag(String tagString) {
+        ArrayList<Tag> tags = library.tags();
+
         for(Tag tag : tags) {
             if(tag.tag().equals(tagString)) {
                 tag.popularity(tag.popularity() + 1);
@@ -77,7 +80,7 @@ class LibraryLoader {
     }
 
     private String getContentFromUri() throws IOException {
-        Uri dataUri = root.buildUpon().appendPath("data.json").build();
+        Uri dataUri = library.root().buildUpon().appendPath("data.json").build();
 
         URLConnection connection = new URL(dataUri.toString()).openConnection();
 
