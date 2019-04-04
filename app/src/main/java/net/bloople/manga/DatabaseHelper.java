@@ -57,7 +57,7 @@ class DatabaseHelper {
         if(result.getInt(0) == 0) {
             ContentValues values = new ContentValues();
             values.put("name", "Manga");
-            values.put("root", "http://192.168.1.100:9292/h/Manga-OG/.mangos/");
+            values.put("root", "http://192.168.1.100:9292/h/Manga-OG/");
             db.insert("library_roots", null, values);
         }
         result.close();

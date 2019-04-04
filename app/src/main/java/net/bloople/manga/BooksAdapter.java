@@ -136,7 +136,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", resume);
-            intent.putExtra("root", Library.current.root());
+            intent.putExtra("libraryRootId", LibraryService.currentLibraryRootId);
 
             itemView.getContext().startActivity(intent);
         }
@@ -157,7 +157,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         long bookId = getItemId(position);
-        Book book = Library.current.books().get(bookId);
+        Book book = LibraryService.current.books().get(bookId);
 
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
         if(selectable) holder.itemView.setActivated(selectedBookIds.contains(bookId));

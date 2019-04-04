@@ -32,15 +32,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class IndexActivity extends Activity implements LibraryLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
+public class IndexActivity extends Activity implements LibraryService.LibraryLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
     public static final char TAG_SEPARATOR = '\u0000';
 
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private NachoTextView searchField;
-    private ProgressDialog loadingLibraryDialog;
 
-    private long libraryRootId = -1;
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
 
@@ -105,13 +103,14 @@ public class IndexActivity extends Activity implements LibraryLoadedListener, Li
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
+        long libraryRootId = -1;
         if(savedInstanceState != null) libraryRootId = savedInstanceState.getLong("libraryRootId");
-        ensureLibraryLoaded();
+        LibraryService.ensureLibrary(this, libraryRootId);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong("libraryRootId", libraryRootId);
+        savedInstanceState.putLong("libraryRootId", LibraryService.currentLibraryRootId);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -165,7 +164,6 @@ public class IndexActivity extends Activity implements LibraryLoadedListener, Li
 
     public void onLibraryLoaded() {
         resolve();
-        if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
     }
 
     private void resolve() {
@@ -194,25 +192,7 @@ public class IndexActivity extends Activity implements LibraryLoadedListener, Li
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(Gravity.RIGHT);
 
-        this.libraryRootId = libraryRootId;
-        ensureLibraryLoaded();
-    }
-
-    public void ensureLibraryLoaded() {
-        LibraryRoot libraryRoot = LibraryRoot.findById(this, libraryRootId);
-        if(libraryRoot == null) {
-            libraryRoot = LibraryRoot.findDefault(this);
-            libraryRootId = libraryRoot.id();
-        }
-
-        if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
-        loadingLibraryDialog = ProgressDialog.show(
-                this,
-                "Loading " + libraryRoot.name(),
-                "Please wait while the library is loaded...",
-                true);
-
-        Library.ensureCurrent(Uri.parse(libraryRoot.root()), this);
+        LibraryService.ensureLibrary(this, libraryRootId);
     }
 
     public void useTag(Tag tag) {
@@ -221,7 +201,7 @@ public class IndexActivity extends Activity implements LibraryLoadedListener, Li
     }
 
     private Tag[] popularTags() {
-        ArrayList<Tag> sortedTags = new ArrayList<Tag>(Library.current.tags());
+        ArrayList<Tag> sortedTags = new ArrayList<Tag>(LibraryService.current.tags());
 
         Collections.sort(sortedTags, new Comparator<Tag>() {
             @Override

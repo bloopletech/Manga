@@ -25,7 +25,7 @@ class BooksSearcher {
         ArrayList<Book> books = new ArrayList<>();
 
         bookLoop:
-        for(Map.Entry<Long, Book> entry : Library.current.books().entrySet()) {
+        for(Map.Entry<Long, Book> entry : LibraryService.current.books().entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();

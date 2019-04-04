@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 class Library {
-    public static Library current;
-
     private Uri root;
+    private Uri mangos;
     private HashMap<Long, Book> books;
     private ArrayList<Tag> tags;
 
@@ -22,21 +21,16 @@ class Library {
         return root;
     }
 
+    public Uri mangos() {
+        if(mangos == null) mangos = root.buildUpon().appendEncodedPath(".mangos").build();
+        return mangos;
+    }
+
     public HashMap<Long, Book> books() {
         return books;
     }
 
     public ArrayList<Tag> tags() {
         return tags;
-    }
-
-    public static void ensureCurrent(Uri root, LibraryLoadedListener listener) {
-        if(current != null && current.root().equals(root)) {
-            listener.onLibraryLoaded();
-        }
-        else {
-            LoadLibraryTask loader = new LoadLibraryTask(listener);
-            loader.execute(root);
-        }
     }
 }

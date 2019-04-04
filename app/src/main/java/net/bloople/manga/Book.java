@@ -4,7 +4,7 @@ import android.net.Uri;
 import java.util.ArrayList;
 
 class Book {
-    private Uri root;
+    private Library library;
     private String path;
     private String pagesDeflated;
     private ArrayList<String> pagePaths;
@@ -15,9 +15,9 @@ class Book {
     private ArrayList<Tag> tags;
     private long _id;
 
-    Book(Uri root, String path, String pagesDeflated, int pagesCount, String normalisedTitle,
+    Book(Library library, String path, String pagesDeflated, int pagesCount, String normalisedTitle,
          int publishedOn, String key, ArrayList<Tag> tags, long _id) {
-        this.root = root;
+        this.library = library;
         this.path = path;
         this.pagesDeflated = pagesDeflated;
         this.pagesCount = pagesCount;
@@ -28,12 +28,8 @@ class Book {
         this._id = _id;
     }
 
-    private String relativeThumbnailUrl() {
-      return "img/thumbnails/" + key + ".jpg";
-    }
-
     Uri thumbnailUrl() {
-        return root.buildUpon().appendEncodedPath(relativeThumbnailUrl()).build();
+        return library.mangos().buildUpon().appendEncodedPath("img/thumbnails/" + key + ".jpg").build();
     }
 
     String title() {
@@ -65,16 +61,12 @@ class Book {
         return pagePaths;
     }
 
-    private String relativeUrl() {
-        return "../" + Uri.encode(path);
-    }
-
     private String relativePageUrl(int index) {
-        return relativeUrl() + "/" + Uri.encode(pagePaths().get(index));
+        return Uri.encode(path) + "/" + Uri.encode(pagePaths().get(index));
     }
 
     Uri pageUrl(int index) {
-        return root.buildUpon().appendEncodedPath(relativePageUrl(index)).build();
+        return library.root().buildUpon().appendEncodedPath(relativePageUrl(index)).build();
     }
 
     int pages() {

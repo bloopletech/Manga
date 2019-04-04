@@ -53,7 +53,7 @@ class LibraryLoader {
         for(int i = 0; i < tagObjects.length(); i++) bookTags.add(addTag(tagObjects.getString(i)));
 
         return new Book(
-                library.root(),
+                library,
                 path,
                 pagesDeflated,
                 pagesCount,
@@ -80,7 +80,7 @@ class LibraryLoader {
     }
 
     private String getContentFromUri() throws IOException {
-        Uri dataUri = library.root().buildUpon().appendPath("data.json").build();
+        Uri dataUri = library.mangos().buildUpon().appendEncodedPath("data.json").build();
 
         URLConnection connection = new URL(dataUri.toString()).openConnection();
 
