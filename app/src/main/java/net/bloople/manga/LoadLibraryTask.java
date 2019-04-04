@@ -7,15 +7,15 @@ import org.json.JSONException;
 import java.io.IOException;
 
 
-class LoadLibraryTask extends AsyncTask<Uri, Void, BooksLoader> {
+class LoadLibraryTask extends AsyncTask<Uri, Void, LibraryLoader> {
     private LibraryLoadedListener listener;
 
     LoadLibraryTask(LibraryLoadedListener listener) {
         this.listener = listener;
     }
 
-    protected BooksLoader doInBackground(Uri... urls) {
-        BooksLoader loader = new BooksLoader(urls[0]);
+    protected LibraryLoader doInBackground(Uri... urls) {
+        LibraryLoader loader = new LibraryLoader(urls[0]);
 
         try {
             loader.load();
@@ -32,7 +32,7 @@ class LoadLibraryTask extends AsyncTask<Uri, Void, BooksLoader> {
         return loader;
     }
 
-    protected void onPostExecute(BooksLoader loader) {
+    protected void onPostExecute(LibraryLoader loader) {
         Library.current = new Library(loader.root(), loader.books(), loader.tags());
 
         listener.onLibraryLoaded();

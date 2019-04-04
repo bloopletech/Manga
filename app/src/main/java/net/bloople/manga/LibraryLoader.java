@@ -15,7 +15,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class BooksLoader {
+class LibraryLoader {
     public static final String CACHE_FILE_NAME = "cached-data.json";
     static final int DEFAULT_CONTENT_LENGTH = 10000000;
 
@@ -23,7 +23,7 @@ class BooksLoader {
     private HashMap<Long, Book> books = new HashMap<>();
     private ArrayList<Tag> tags = new ArrayList<>();
 
-    BooksLoader(Uri root) {
+    LibraryLoader(Uri root) {
         this.root = root;
     }
 
