@@ -45,18 +45,20 @@ class DatabaseHelper {
                 "last_read_position INTEGER DEFAULT 0" +
                 ")");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS libraries ( " +
+        db.execSQL("CREATE TABLE IF NOT EXISTS library_roots ( " +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
                 "root TEXT" +
                 ")");
 
-        result = db.rawQuery("SELECT COUNT(*) FROM libraries", new String[] {});
+        result = db.rawQuery("SELECT COUNT(*) FROM library_roots", new String[] {});
         result.moveToFirst();
 
         if(result.getInt(0) == 0) {
             ContentValues values = new ContentValues();
+            values.put("name", "Manga");
             values.put("root", "http://192.168.1.100:9292/h/Manga-OG/.mangos/");
-            db.insert("libraries", null, values);
+            db.insert("library_roots", null, values);
         }
         result.close();
 

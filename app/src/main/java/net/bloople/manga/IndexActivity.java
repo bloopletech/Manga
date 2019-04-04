@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class IndexActivity extends Activity implements BooksLoadedListener {
+public class IndexActivity extends Activity implements BooksLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
     public static final char TAG_SEPARATOR = '\u0000';
 
     private RecyclerView booksView;
@@ -50,10 +50,10 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
 
         setContentView(R.layout.activity_index);
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        searchField = (NachoTextView)findViewById(R.id.search_field);
+        searchField = findViewById(R.id.search_field);
 
         searchField.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
@@ -92,7 +92,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
             }
         });
 
-        booksView = (RecyclerView)findViewById(R.id.books_view);
+        booksView = findViewById(R.id.books_view);
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
 
         adapter = new BooksAdapter();
@@ -100,9 +100,6 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
 
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
-
-        LibrariesManager librariesManager = new LibrariesManager(this);
-        librariesManager.setup();
 
         if(savedInstanceState == null) resolveOrLoad();
     }
@@ -168,10 +165,11 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
 
     private void resolveOrLoad() {
         Intent intent = getIntent();
-        String root = intent.getStringExtra("root");
-        if(root == null) root = Library.findDefault(this).root();
+        long libraryRootId = intent.getLongExtra("libraryRootId", -1);
+        LibraryRoot libraryRoot = LibraryRoot.findById(this, libraryRootId);
+        if(libraryRoot == null) libraryRoot = LibraryRoot.findDefault(this);
 
-        Mango.ensureCurrent(Uri.parse(root), this);
+        Mango.ensureCurrent(Uri.parse(libraryRoot.root()), this);
     }
 
     private void resolve() {
@@ -196,9 +194,9 @@ public class IndexActivity extends Activity implements BooksLoadedListener {
         resolve();
     }
 
-    public void useRoot(String root) {
+    public void onLibraryRootSelected(long libraryRootId) {
         Intent intent = getIntent();
-        intent.putExtra("root", root);
+        intent.putExtra("libraryRootId", libraryRootId);
         recreate();
     }
 

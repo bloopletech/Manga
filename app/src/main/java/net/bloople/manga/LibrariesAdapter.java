@@ -13,13 +13,9 @@ import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 class LibrariesAdapter extends CursorAdapter {
-    private LibrariesManager librariesManager;
-
-    LibrariesAdapter(Context context, Cursor cursor, LibrariesManager librariesManager) {
+    LibrariesAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
-        this.librariesManager = librariesManager;
 
     }
 
@@ -34,64 +30,9 @@ class LibrariesAdapter extends CursorAdapter {
     // such as setting the text on a TextView.
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
-        // Find fields to populate in inflated template
-        final TextView nameView = (TextView)view.findViewById(R.id.name);
-        final EditText editNameView = (EditText)view.findViewById(R.id.edit_name);
-
-        final long libraryId = cursor.getLong(cursor.getColumnIndex("_id"));
-        final String root = cursor.getString(cursor.getColumnIndex("root"));
-        nameView.setText(root);
-
-        nameView.setVisibility(View.VISIBLE);
-        editNameView.setVisibility(View.GONE);
-
-        editNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId != EditorInfo.IME_ACTION_DONE) return false;
-
-                InputMethodManager in = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                in.hideSoftInputFromWindow(editNameView.getWindowToken(), 0);
-                editNameView.clearFocus();
-
-                Library library = Library.findById(context, libraryId);
-                library.root(editNameView.getText().toString());
-                library.save(context);
-
-                nameView.setText(editNameView.getText().toString());
-                nameView.setVisibility(View.VISIBLE);
-                editNameView.setVisibility(View.GONE);
-                librariesManager.onDoneEditing();
-
-                return true;
-            }
-        });
-
-        editNameView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    int clickIndex = editNameView.getRight() -
-                            editNameView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
-
-                    if(event.getX() < clickIndex) return false;
-
-                    InputMethodManager in = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(editNameView.getWindowToken(), 0);
-                    editNameView.clearFocus();
-
-                    nameView.setVisibility(View.VISIBLE);
-                    editNameView.setVisibility(View.GONE);
-                    librariesManager.onDoneEditing();
-
-                    return true;
-                }
-
-                return false;
-            }
-        });
+        final TextView nameView = view.findViewById(R.id.name);
+        String name = cursor.getString(cursor.getColumnIndex("name"));
+        nameView.setText(name);
     }
 
 }
