@@ -22,7 +22,7 @@ class LibraryLoader {
     private Library library;
 
     LibraryLoader(Uri root) {
-        library = new Library(root, new HashMap<Long, Book>(), new ArrayList<Tag>());
+        library = new Library(root, new HashMap<Long, Book>());
     }
 
     Library library() {
@@ -48,9 +48,9 @@ class LibraryLoader {
         String pagesDeflated = object.getString("pagePaths");
         int pagesCount = object.getInt("pages");
 
-        ArrayList<Tag> bookTags = new ArrayList<>();
+        ArrayList<String> tags = new ArrayList<>();
         JSONArray tagObjects = object.getJSONArray("tags");
-        for(int i = 0; i < tagObjects.length(); i++) bookTags.add(addTag(tagObjects.getString(i)));
+        for(int i = 0; i < tagObjects.length(); i++) tags.add(tagObjects.getString(i));
 
         return new Book(
                 library,
@@ -60,23 +60,8 @@ class LibraryLoader {
                 normalisedTitle,
                 publishedOn,
                 key,
-                bookTags,
+                tags,
                 _id);
-    }
-
-    private Tag addTag(String tagString) {
-        ArrayList<Tag> tags = library.tags();
-
-        for(Tag tag : tags) {
-            if(tag.tag().equals(tagString)) {
-                tag.popularity(tag.popularity() + 1);
-                return tag;
-            }
-        }
-
-        Tag tag = new Tag(tags.size(), tagString);
-        tags.add(tag);
-        return tag;
     }
 
     private String getContentFromUri() throws IOException {

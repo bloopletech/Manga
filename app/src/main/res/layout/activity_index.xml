@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -21,14 +20,16 @@
                  android:minHeight="?android:attr/actionBarSize"
                  android:background="?android:attr/colorPrimary"
                  android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar">
-            <com.hootsuite.nachos.NachoTextView
-                android:id="@+id/search_field"
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
+                android:id="@+id/search_field"
+                android:imeOptions="actionSearch"
                 android:maxLines="1"
                 android:textColor="#FFFFFF"
                 android:minEms="15"
-                android:drawableEnd="@drawable/ic_clear_white_24dp"/>
+                android:drawableEnd="@drawable/ic_clear_white_24dp" />
         </Toolbar>
 
         <android.support.v7.widget.RecyclerView

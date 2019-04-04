@@ -2,19 +2,16 @@ package net.bloople.manga;
 
 import android.net.Uri;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 class Library {
     private Uri root;
     private Uri mangos;
     private HashMap<Long, Book> books;
-    private ArrayList<Tag> tags;
 
-    Library(Uri root, HashMap<Long, Book> books, ArrayList<Tag> tags) {
+    Library(Uri root, HashMap<Long, Book> books) {
         this.root = root;
         this.books = books;
-        this.tags = tags;
     }
 
     public Uri root() {
@@ -28,9 +25,5 @@ class Library {
 
     public HashMap<Long, Book> books() {
         return books;
-    }
-
-    public ArrayList<Tag> tags() {
-        return tags;
     }
 }

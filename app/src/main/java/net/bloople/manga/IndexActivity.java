@@ -2,10 +2,8 @@ package net.bloople.manga;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,24 +18,17 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toolbar;
 
-import com.hootsuite.nachos.NachoTextView;
-import com.hootsuite.nachos.chip.Chip;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class IndexActivity extends Activity implements LibraryService.LibraryLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
-    public static final char TAG_SEPARATOR = '\u0000';
-
     private RecyclerView booksView;
     private BooksAdapter adapter;
-    private NachoTextView searchField;
+    private EditText searchField;
 
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
@@ -167,10 +158,7 @@ public class IndexActivity extends Activity implements LibraryService.LibraryLoa
     }
 
     private void resolve() {
-        ArrayAdapter<Tag> searchAdapter = new ArrayAdapter<>(this, R.layout.tag_view, popularTags());
-        searchField.setAdapter(searchAdapter);
-
-        searcher.setSearchTags(getSearchTags());
+        searcher.setSearchText(searchField.getText().toString());
 
         ArrayList<Book> books = searcher.search();
         sorter.sort(this, books);
@@ -195,33 +183,9 @@ public class IndexActivity extends Activity implements LibraryService.LibraryLoa
         LibraryService.ensureLibrary(this, libraryRootId);
     }
 
-    public void useTag(Tag tag) {
-        //searchField.setText(searchField.getText().toString() + TAG_SEPARATOR + tag.tag());
+    public void useTag(String tag) {
+        searchField.setText(searchField.getText().toString() + " \"" + tag + "\"");
         resolve();
-    }
-
-    private Tag[] popularTags() {
-        ArrayList<Tag> sortedTags = new ArrayList<Tag>(LibraryService.current.tags());
-
-        Collections.sort(sortedTags, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag a, Tag b) {
-                return Integer.compare(b.popularity(), a.popularity());
-            }
-        });
-
-        return sortedTags.subList(0, Math.min(500, sortedTags.size())).toArray(new Tag[0]);
-    }
-
-    private ArrayList<Tag> getSearchTags() {
-        ArrayList<Tag> searchTags = new ArrayList<>();
-
-        for(Chip chip : searchField.getAllChips()) {
-            Tag tag = (Tag)chip.getData();
-            searchTags.add(tag);
-        }
-
-        return searchTags;
     }
 
 }

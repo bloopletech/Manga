@@ -12,11 +12,11 @@ class Book {
     private String normalisedTitle;
     private int publishedOn;
     private String key;
-    private ArrayList<Tag> tags;
+    private ArrayList<String> tags;
     private long _id;
 
     Book(Library library, String path, String pagesDeflated, int pagesCount, String normalisedTitle,
-         int publishedOn, String key, ArrayList<Tag> tags, long _id) {
+         int publishedOn, String key, ArrayList<String> tags, long _id) {
         this.library = library;
         this.path = path;
         this.pagesDeflated = pagesDeflated;
@@ -48,7 +48,7 @@ class Book {
       return key;
     }
 
-    public ArrayList<Tag> tags() {
+    public ArrayList<String> tags() {
         return tags;
     }
 

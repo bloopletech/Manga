@@ -2,19 +2,21 @@ package net.bloople.manga;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class BooksSearcher {
     static final int LONG_BOOK_PAGES = 100;
     static final String SPECIAL_LONG_BOOK = "s.long";
 
-    private ArrayList<Tag> searchTags = new ArrayList<>();
+    private String searchText = "";
     private ArrayList<Long> filterIds;
 
     BooksSearcher() {
     }
 
-    void setSearchTags(ArrayList<Tag> searchTags) {
-        this.searchTags = searchTags;
+    void setSearchText(String inSearchText) {
+        searchText = inSearchText;
     }
 
     void setFilterIds(ArrayList<Long> filterIds) {
@@ -24,17 +26,15 @@ class BooksSearcher {
     ArrayList<Book> search() {
         ArrayList<Book> books = new ArrayList<>();
 
+        ArrayList<String> searchTerms = parseSearchTerms();
+
         bookLoop:
         for(Map.Entry<Long, Book> entry : LibraryService.current.books().entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();
 
-            for(Tag searchTag : searchTags) {
-                if(!b.tags().contains(searchTag)) continue bookLoop;
-            }
-
-            /*String compareTitle = b.title().toLowerCase();
+            String compareTitle = b.title().toLowerCase();
 
             for(String searchTerm : searchTerms) {
                 if(searchTerm.startsWith("-")) {
@@ -51,11 +51,22 @@ class BooksSearcher {
                     }
                     else if(!compareTitle.contains(searchTerm)) continue bookLoop;
                 }
-            }*/
+            }
 
             books.add(b);
         }
 
         return books;
+    }
+
+    private ArrayList<String> parseSearchTerms() {
+        ArrayList<String> terms = new ArrayList<String>();
+
+        Pattern searchPattern = Pattern.compile("\"[^\"]*\"|[^ ]+");
+        Matcher matcher = searchPattern.matcher(searchText.toLowerCase());
+
+        while(matcher.find()) terms.add(matcher.group().replace("\"", ""));
+
+        return terms;
     }
 }
