@@ -4,11 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +38,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
     private BooksAdapter adapter;
     private NachoTextView searchField;
 
+    private long libraryRootId = -1;
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
 
@@ -101,14 +103,14 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
-        if(savedInstanceState == null) resolveOrLoad();
+        if(savedInstanceState != null) libraryRootId = savedInstanceState.getLong("libraryRootId");
+        ensureLibraryLoaded();
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        resolveOrLoad();
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putLong("libraryRootId", libraryRootId);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -163,15 +165,6 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
         resolve();
     }
 
-    private void resolveOrLoad() {
-        Intent intent = getIntent();
-        long libraryRootId = intent.getLongExtra("libraryRootId", -1);
-        LibraryRoot libraryRoot = LibraryRoot.findById(this, libraryRootId);
-        if(libraryRoot == null) libraryRoot = LibraryRoot.findDefault(this);
-
-        Mango.ensureCurrent(Uri.parse(libraryRoot.root()), this);
-    }
-
     private void resolve() {
         ArrayAdapter<Tag> searchAdapter = new ArrayAdapter<>(this, R.layout.tag_view, popularTags());
         searchField.setAdapter(searchAdapter);
@@ -195,9 +188,21 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
     }
 
     public void onLibraryRootSelected(long libraryRootId) {
-        Intent intent = getIntent();
-        intent.putExtra("libraryRootId", libraryRootId);
-        recreate();
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(Gravity.RIGHT);
+
+        this.libraryRootId = libraryRootId;
+        ensureLibraryLoaded();
+    }
+
+    public void ensureLibraryLoaded() {
+        LibraryRoot libraryRoot = LibraryRoot.findById(this, libraryRootId);
+        if(libraryRoot == null) {
+            libraryRoot = LibraryRoot.findDefault(this);
+            libraryRootId = libraryRoot.id();
+        }
+
+        Mango.ensureCurrent(Uri.parse(libraryRoot.root()), this);
     }
 
     public void useTag(Tag tag) {
