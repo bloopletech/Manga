@@ -5,14 +5,14 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-class Mango {
-    public static Mango current;
+class Library {
+    public static Library current;
 
     private Uri root;
     private HashMap<Long, Book> books;
     private ArrayList<Tag> tags;
 
-    Mango(Uri root, HashMap<Long, Book> books, ArrayList<Tag> tags) {
+    Library(Uri root, HashMap<Long, Book> books, ArrayList<Tag> tags) {
         this.root = root;
         this.books = books;
         this.tags = tags;

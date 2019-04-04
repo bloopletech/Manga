@@ -86,7 +86,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
 
         Intent intent = getIntent();
         String root = intent.getStringExtra("root");
-        Mango.ensureCurrent(Uri.parse(root),this);
+        Library.ensureCurrent(Uri.parse(root),this);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class ReadingActivity extends Activity implements BooksLoadedListener {
     public void onBooksLoaded() {
         Intent intent = getIntent();
         long bookId = intent.getLongExtra("_id", -1);
-        book = Mango.current.books().get(bookId);
+        book = Library.current.books().get(bookId);
         bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
 
         int newPage = 0;

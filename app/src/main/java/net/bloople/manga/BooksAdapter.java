@@ -1,7 +1,6 @@
 package net.bloople.manga;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -137,7 +136,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", resume);
-            intent.putExtra("root", Mango.current.root());
+            intent.putExtra("root", Library.current.root());
 
             itemView.getContext().startActivity(intent);
         }
@@ -158,7 +157,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         long bookId = getItemId(position);
-        Book book = Mango.current.books().get(bookId);
+        Book book = Library.current.books().get(bookId);
 
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
         if(selectable) holder.itemView.setActivated(selectedBookIds.contains(bookId));

@@ -212,7 +212,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
                 "Please wait while the library is loaded...",
                 true);
 
-        Mango.ensureCurrent(Uri.parse(libraryRoot.root()), this);
+        Library.ensureCurrent(Uri.parse(libraryRoot.root()), this);
     }
 
     public void useTag(Tag tag) {
@@ -221,7 +221,7 @@ public class IndexActivity extends Activity implements BooksLoadedListener, Libr
     }
 
     private Tag[] popularTags() {
-        ArrayList<Tag> sortedTags = new ArrayList<Tag>(Mango.current.tags());
+        ArrayList<Tag> sortedTags = new ArrayList<Tag>(Library.current.tags());
 
         Collections.sort(sortedTags, new Comparator<Tag>() {
             @Override

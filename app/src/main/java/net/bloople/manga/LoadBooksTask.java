@@ -33,7 +33,7 @@ class LoadBooksTask extends AsyncTask<Uri, Void, BooksLoader> {
     }
 
     protected void onPostExecute(BooksLoader loader) {
-        Mango.current = new Mango(loader.root(), loader.books(), loader.tags());
+        Library.current = new Library(loader.root(), loader.books(), loader.tags());
 
         listener.onBooksLoaded();
     }

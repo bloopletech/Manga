@@ -13,7 +13,7 @@ public class TagChooserFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle arguments = getArguments();
         long bookId = arguments.getLong("_id");
-        final Book book = Mango.current.books().get(bookId);
+        final Book book = Library.current.books().get(bookId);
 
         final ArrayList<String> tagStrings = new ArrayList<>();
         for(Tag tag : book.tags()) tagStrings.add(tag.tag());

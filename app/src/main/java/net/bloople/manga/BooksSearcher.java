@@ -2,8 +2,6 @@ package net.bloople.manga;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 class BooksSearcher {
     static final int LONG_BOOK_PAGES = 100;
@@ -27,7 +25,7 @@ class BooksSearcher {
         ArrayList<Book> books = new ArrayList<>();
 
         bookLoop:
-        for(Map.Entry<Long, Book> entry : Mango.current.books().entrySet()) {
+        for(Map.Entry<Long, Book> entry : Library.current.books().entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();
