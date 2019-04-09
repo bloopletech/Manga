@@ -23,13 +23,13 @@ class BooksSearcher {
         this.filterIds = filterIds;
     }
 
-    ArrayList<Book> search() {
+    ArrayList<Book> search(Library library) {
         ArrayList<Book> books = new ArrayList<>();
 
         ArrayList<String> searchTerms = parseSearchTerms();
 
         bookLoop:
-        for(Map.Entry<Long, Book> entry : LibraryService.current.books().entrySet()) {
+        for(Map.Entry<Long, Book> entry : library.books().entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();

@@ -25,7 +25,9 @@ import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
-public class IndexActivity extends Activity implements LibraryService.LibraryLoadedListener, LibraryRootsFragment.OnLibraryRootSelectedListener {
+public class IndexActivity extends Activity implements LibraryRootsFragment.OnLibraryRootSelectedListener {
+    private long libraryRootId = -1;
+    private Library library;
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private EditText searchField;
@@ -94,14 +96,13 @@ public class IndexActivity extends Activity implements LibraryService.LibraryLoa
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
-        long libraryRootId = -1;
         if(savedInstanceState != null) libraryRootId = savedInstanceState.getLong("libraryRootId");
-        LibraryService.ensureLibrary(this, libraryRootId);
+        loadLibrary();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong("libraryRootId", LibraryService.currentLibraryRootId);
+        savedInstanceState.putLong("libraryRootId", libraryRootId);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -153,20 +154,26 @@ public class IndexActivity extends Activity implements LibraryService.LibraryLoa
         return true;
     }
 
-    public void onLibraryLoaded() {
-        resolve();
+    private void loadLibrary() {
+        LibraryService.ensureLibrary(this, libraryRootId, new LibraryService.LibraryLoadedListener() {
+            @Override
+            public void onLibraryLoaded(Library library) {
+                IndexActivity.this.library = library;
+                resolve();
+            }
+        });
     }
 
     private void resolve() {
         searcher.setSearchText(searchField.getText().toString());
 
-        ArrayList<Book> books = searcher.search();
+        ArrayList<Book> books = searcher.search(library);
         sorter.sort(this, books);
 
         ArrayList<Long> bookIds = new ArrayList<>();
         for(Book b : books) bookIds.add(b.id());
 
-        adapter.update(bookIds);
+        adapter.update(libraryRootId, library, bookIds);
         booksView.scrollToPosition(0);
     }
 
@@ -180,7 +187,8 @@ public class IndexActivity extends Activity implements LibraryService.LibraryLoa
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(Gravity.RIGHT);
 
-        LibraryService.ensureLibrary(this, libraryRootId);
+        this.libraryRootId = libraryRootId;
+        loadLibrary();
     }
 
     public void useTag(String tag) {

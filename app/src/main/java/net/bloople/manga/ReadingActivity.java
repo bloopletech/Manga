@@ -20,11 +20,10 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-public class ReadingActivity extends Activity implements LibraryService.LibraryLoadedListener {
+public class ReadingActivity extends Activity {
     public static final String MAX_IMAGE_DIMENSION = "1500";
     private Book book;
     private BookMetadata bookMetadata;
-    private int pageFromBundle = -1;
     private int currentPage;
     private FrameLayout holder;
     private RequestListener<GlideUrl, GlideDrawable> requestListener;
@@ -33,8 +32,6 @@ public class ReadingActivity extends Activity implements LibraryService.LibraryL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(savedInstanceState != null) pageFromBundle = savedInstanceState.getInt("currentPage");
 
         setContentView(R.layout.activity_reading);
 
@@ -84,9 +81,35 @@ public class ReadingActivity extends Activity implements LibraryService.LibraryL
 
         requestListener = new LoadedRequestListener();
 
-        Intent intent = getIntent();
+        final int pageFromBundle;
+        if(savedInstanceState != null) pageFromBundle = savedInstanceState.getInt("currentPage");
+        else pageFromBundle = -1;
+
+        final Intent intent = getIntent();
         long libraryRootId = intent.getLongExtra("libraryRootId", -1);
-        LibraryService.ensureLibrary(this, libraryRootId);
+
+        LibraryService.ensureLibrary(this, libraryRootId, new LibraryService.LibraryLoadedListener() {
+            @Override
+            public void onLibraryLoaded(Library library) {
+                long bookId = intent.getLongExtra("_id", -1);
+                book = library.books().get(bookId);
+                bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
+
+                int newPage = 0;
+                if(pageFromBundle != -1) {
+                    newPage = pageFromBundle;
+                }
+                else if(intent.getBooleanExtra("resume", false)) {
+                    int lastReadPosition = bookMetadata.lastReadPosition();
+                    if(lastReadPosition < lastPage()) newPage = lastReadPosition;
+                }
+
+                if(changePage(newPage)) {
+                    showCurrentPage();
+                    cacheNextPage();
+                }
+            }
+        });
     }
 
     @Override
@@ -117,27 +140,6 @@ public class ReadingActivity extends Activity implements LibraryService.LibraryL
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("currentPage", currentPage);
-    }
-
-    public void onLibraryLoaded() {
-        Intent intent = getIntent();
-        long bookId = intent.getLongExtra("_id", -1);
-        book = LibraryService.current.books().get(bookId);
-        bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
-
-        int newPage = 0;
-        if(pageFromBundle != -1) {
-            newPage = pageFromBundle;
-        }
-        else if(intent.getBooleanExtra("resume", false)) {
-            int lastReadPosition = bookMetadata.lastReadPosition();
-            if(lastReadPosition < lastPage()) newPage = lastReadPosition;
-        }
-
-        if(changePage(newPage)) {
-            showCurrentPage();
-            cacheNextPage();
-        }
     }
 
     private void showCurrentPage() {

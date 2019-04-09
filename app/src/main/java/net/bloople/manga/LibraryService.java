@@ -10,31 +10,44 @@ import org.json.JSONException;
 import java.io.IOException;
 
 class LibraryService {
-    static long currentLibraryRootId;
-    static Library current;
+    private static Library current;
 
     private Context context;
-    private long libraryRootId;
+    private LibraryRoot libraryRoot;
+    private LibraryLoadedListener listener;
     private ProgressDialog loadingLibraryDialog;
 
+    public static void ensureLibrary(Context context, long libraryRootId, final LibraryLoadedListener listener) {
+        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
+        if(libraryRoot == null) libraryRoot = LibraryRoot.findDefault(context);
+
+        if(current != null && current.root().equals(libraryRoot.rootUri())) {
+            listener.onLibraryLoaded(current);
+        }
+        else {
+            LibraryService service = new LibraryService(context, libraryRoot, new LibraryLoadedListener() {
+                @Override
+                public void onLibraryLoaded(Library library) {
+                    current = library;
+                    listener.onLibraryLoaded(library);
+                }
+            });
+            service.ensureLibrary();
+        }
+    }
+
     public interface LibraryLoadedListener {
-        void onLibraryLoaded();
+        void onLibraryLoaded(Library library);
     }
 
-    public static void ensureLibrary(Context context, long libraryRootId) {
-        currentLibraryRootId = libraryRootId;
-
-        LibraryService service = new LibraryService(context, currentLibraryRootId);
-        service.ensureLibrary();
-    }
-
-    private LibraryService(Context context, long libraryRootId) {
+    private LibraryService(Context context, LibraryRoot libraryRoot, LibraryLoadedListener listener) {
         this.context = context;
-        this.libraryRootId = libraryRootId;
+        this.libraryRoot = libraryRoot;
+        this.listener = listener;
     }
 
-    private void showLoadingLibraryDialog(LibraryRoot libraryRoot) {
-        if (loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
+    private void showLoadingLibraryDialog() {
+        if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
         loadingLibraryDialog = ProgressDialog.show(
                 context,
                 "Loading " + libraryRoot.name(),
@@ -43,17 +56,9 @@ class LibraryService {
     }
 
     private void ensureLibrary() {
-        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
-        if (libraryRoot == null) libraryRoot = LibraryRoot.findDefault(context);
-        Uri rootUri = Uri.parse(libraryRoot.root());
-
-        if (current != null && current.root().equals(rootUri)) {
-            ((LibraryLoadedListener) context).onLibraryLoaded();
-        } else {
-            showLoadingLibraryDialog(libraryRoot);
-            LoadLibraryTask loader = new LoadLibraryTask();
-            loader.execute(rootUri);
-        }
+        showLoadingLibraryDialog();
+        LoadLibraryTask loader = new LoadLibraryTask();
+        loader.execute(libraryRoot.rootUri());
     }
 
     class LoadLibraryTask extends AsyncTask<Uri, Void, LibraryLoader> {
@@ -62,10 +67,12 @@ class LibraryService {
 
             try {
                 loader.load();
-            } catch (JSONException e) {
+            }
+            catch(JSONException e) {
                 e.printStackTrace();
                 return null;
-            } catch (IOException e) {
+            }
+            catch(IOException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -74,9 +81,8 @@ class LibraryService {
         }
 
         protected void onPostExecute(LibraryLoader loader) {
-            current = loader.library();
-            if (loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
-            ((LibraryLoadedListener) context).onLibraryLoaded();
+            if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
+            listener.onLibraryLoaded(loader.library());
         }
     }
 }

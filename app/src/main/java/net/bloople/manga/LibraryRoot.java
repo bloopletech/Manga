@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 class LibraryRoot {
     private long _id = -1L;
@@ -69,6 +70,10 @@ class LibraryRoot {
 
     public void root(String root) {
         this.root = root;
+    }
+
+    public Uri rootUri() {
+        return Uri.parse(root);
     }
 
     void save(Context context) {

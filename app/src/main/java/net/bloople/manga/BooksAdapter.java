@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
+    private long libraryRootId;
+    private Library library;
     private ArrayList<Long> bookIds = new ArrayList<>();
     private ArrayList<Long> selectedBookIds = new ArrayList<>();
     private boolean selectable = false;
@@ -54,7 +56,9 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         return bookIds.size();
     }
 
-    void update(ArrayList<Long> inBookIds) {
+    void update(long libraryRootId, Library library, ArrayList<Long> inBookIds) {
+        this.libraryRootId = libraryRootId;
+        this.library = library;
         bookIds = inBookIds;
         notifyDataSetChanged();
     }
@@ -112,15 +116,10 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
                 public boolean onLongClick(View view) {
                     if(selectable) return false;
 
-                    long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
-
                     IndexActivity indexActivity = (IndexActivity)itemView.getContext();
 
-                    Bundle arguments = new Bundle();
-                    arguments.putLong("_id", bookId);
-
-                    TagChooserFragment tagChooser = new TagChooserFragment();
-                    tagChooser.setArguments(arguments);
+                    Book book = library.books().get(BooksAdapter.this.getItemId(getAdapterPosition()));
+                    TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags().toArray(new String[0]));
                     tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
 
                     return true;
@@ -136,7 +135,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", resume);
-            intent.putExtra("libraryRootId", LibraryService.currentLibraryRootId);
+            intent.putExtra("libraryRootId", libraryRootId);
 
             itemView.getContext().startActivity(intent);
         }
@@ -157,7 +156,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         long bookId = getItemId(position);
-        Book book = LibraryService.current.books().get(bookId);
+        Book book = library.books().get(bookId);
 
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
         if(selectable) holder.itemView.setActivated(selectedBookIds.contains(bookId));

@@ -7,13 +7,18 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 public class TagChooserFragment extends DialogFragment {
+    public static TagChooserFragment newInstance(String[] tags) {
+        TagChooserFragment fragment = new TagChooserFragment();
+        Bundle args = new Bundle();
+        args.putStringArray("tags", tags);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle arguments = getArguments();
-        long bookId = arguments.getLong("_id");
-        final Book book = LibraryService.current.books().get(bookId);
-
-		final String[] tags = book.tags().toArray(new String[0]);
+        final String[] tags = arguments.getStringArray("tags");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Search for tag")
