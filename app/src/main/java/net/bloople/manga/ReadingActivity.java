@@ -138,8 +138,8 @@ public class ReadingActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putInt("currentPage", currentPage);
+        super.onSaveInstanceState(outState);
     }
 
     private void showCurrentPage() {
