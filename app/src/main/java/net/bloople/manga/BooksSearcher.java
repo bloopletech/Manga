@@ -60,7 +60,7 @@ class BooksSearcher {
     }
 
     private ArrayList<String> parseSearchTerms() {
-        ArrayList<String> terms = new ArrayList<String>();
+        ArrayList<String> terms = new ArrayList<>();
 
         Pattern searchPattern = Pattern.compile("\"[^\"]*\"|[^ ]+");
         Matcher matcher = searchPattern.matcher(searchText.toLowerCase());

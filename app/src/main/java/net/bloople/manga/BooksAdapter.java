@@ -47,7 +47,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     }
 
     void clearSelectedBookIds() {
-        setSelectedBookIds(new ArrayList<Long>());
+        setSelectedBookIds(new ArrayList<>());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

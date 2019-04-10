@@ -22,7 +22,7 @@ class LibraryLoader {
     private Library library;
 
     LibraryLoader(Uri root) {
-        library = new Library(root, new HashMap<Long, Book>());
+        library = new Library(root, new HashMap<>());
     }
 
     Library library() {
