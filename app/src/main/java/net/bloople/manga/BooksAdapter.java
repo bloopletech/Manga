@@ -70,10 +70,10 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         ViewHolder(View view) {
             super(view);
 
-            pageCountView = (TextView)view.findViewById(R.id.page_count_view);
-            textView = (TextView)view.findViewById(R.id.text_view);
-            imageView = (ImageView)view.findViewById(R.id.image_view);
-            selectableView = (ImageView)view.findViewById(R.id.selectable);
+            pageCountView = view.findViewById(R.id.page_count_view);
+            textView = view.findViewById(R.id.text_view);
+            imageView = view.findViewById(R.id.image_view);
+            selectableView = view.findViewById(R.id.selectable);
 
             view.setOnClickListener(v -> {
                 long bookId = BooksAdapter.this.getItemId(getAdapterPosition());

@@ -31,8 +31,8 @@ class BookListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, final Cursor cursor) {
         // Find fields to populate in inflated template
-        final TextView nameView = (TextView)view.findViewById(R.id.name);
-        final EditText editNameView = (EditText)view.findViewById(R.id.edit_name);
+        final TextView nameView = view.findViewById(R.id.name);
+        final EditText editNameView = view.findViewById(R.id.edit_name);
 
         final long listId = cursor.getLong(cursor.getColumnIndex("_id"));
         final String name = cursor.getString(cursor.getColumnIndex("name"));

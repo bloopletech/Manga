@@ -35,7 +35,7 @@ public class ReadingActivity extends Activity {
 
         setContentView(R.layout.activity_reading);
 
-        holder = (FrameLayout)findViewById(R.id.image_view_holder);
+        holder = findViewById(R.id.image_view_holder);
         holder.setOnClickListener(v -> {
             if(book == null) return;
             if(!changePage(1)) return;
@@ -43,21 +43,21 @@ public class ReadingActivity extends Activity {
             cacheNextPage();
         });
 
-        scroller = (ScrollView)findViewById(R.id.scroller);
+        scroller = findViewById(R.id.scroller);
 
-        final FrameLayout layout = (FrameLayout)findViewById(R.id.layout);
-        final Space scroller_fill = (Space)findViewById(R.id.scroller_fill);
+        final FrameLayout layout = findViewById(R.id.layout);
+        final Space scroller_fill = findViewById(R.id.scroller_fill);
 
         scroller_fill.post(() -> scroller_fill.setMinimumHeight(layout.getHeight()));
 
-        ImageView prev10 = (ImageView)findViewById(R.id.prev_10);
+        ImageView prev10 = findViewById(R.id.prev_10);
         prev10.setOnClickListener(v -> {
             if(book == null) return;
             changePage(-10);
             showCurrentPage();
         });
 
-        ImageView next10 = (ImageView)findViewById(R.id.next_10);
+        ImageView next10 = findViewById(R.id.next_10);
         next10.setOnClickListener(v -> {
             if(book == null) return;
             changePage(10);

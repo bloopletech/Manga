@@ -29,7 +29,7 @@ class CollectionsManager {
     }
 
     void setup() {
-        sidebar = (ListView)activity.findViewById(R.id.sidebar);
+        sidebar = activity.findViewById(R.id.sidebar);
         bookListAdapter = new BookListAdapter(activity, null);
         sidebar.setAdapter(bookListAdapter);
         updateCursor();
@@ -59,8 +59,8 @@ class CollectionsManager {
         });
 
         sidebar.setOnItemLongClickListener((parent, view, position, id) -> {
-            final TextView nameView = (TextView)view.findViewById(R.id.name);
-            final EditText editNameView = (EditText)view.findViewById(R.id.edit_name);
+            final TextView nameView = view.findViewById(R.id.name);
+            final EditText editNameView = view.findViewById(R.id.edit_name);
 
             if(nameView == null) return false;
 
@@ -75,16 +75,16 @@ class CollectionsManager {
             return true;
         });
 
-        newCollection = (ImageButton)activity.findViewById(R.id.new_collection);
+        newCollection = activity.findViewById(R.id.new_collection);
         newCollection.setOnClickListener(v -> newCollection());
 
-        saveCollection = (Button)activity.findViewById(R.id.save_collection);
+        saveCollection = activity.findViewById(R.id.save_collection);
         saveCollection.setOnClickListener(v -> updateCollection());
 
-        editCollection = (ImageButton)activity.findViewById(R.id.edit_collection);
+        editCollection = activity.findViewById(R.id.edit_collection);
         editCollection.setOnClickListener(v -> editCollection());
 
-        destroyCollection = (ImageButton)activity.findViewById(R.id.destroy_collection);
+        destroyCollection = activity.findViewById(R.id.destroy_collection);
         destroyCollection.setOnClickListener(v -> destroyCollection());
 
         newCollection.setVisibility(View.VISIBLE);
