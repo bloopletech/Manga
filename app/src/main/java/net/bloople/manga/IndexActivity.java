@@ -3,6 +3,7 @@ package net.bloople.manga;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -148,15 +149,8 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
 
     private void resolve() {
         searcher.setSearchText(searchField.getText().toString());
-
-        ArrayList<Book> books = searcher.search(library);
-        sorter.sort(this, books);
-
-        ArrayList<Long> bookIds = new ArrayList<>();
-        for(Book b : books) bookIds.add(b.id());
-
-        adapter.update(libraryRootId, library, bookIds);
-        booksView.scrollToPosition(0);
+        ResolverTask resolver = new ResolverTask();
+        resolver.execute();
     }
 
     public void useList(BookList list) {
@@ -178,4 +172,21 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
         resolve();
     }
 
+    class ResolverTask extends AsyncTask<Void, Void, ArrayList<Long>> {
+        @Override
+        protected ArrayList<Long> doInBackground(Void... voids) {
+            ArrayList<Book> books = searcher.search(library);
+            sorter.sort(IndexActivity.this, books);
+
+            ArrayList<Long> bookIds = new ArrayList<>();
+            for(Book b : books) bookIds.add(b.id());
+            return bookIds;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Long> bookIds) {
+            adapter.update(libraryRootId, library, bookIds);
+            booksView.scrollToPosition(0);
+        }
+    }
 }
