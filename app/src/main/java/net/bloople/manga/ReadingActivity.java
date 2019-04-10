@@ -22,9 +22,7 @@ import com.bumptech.glide.request.target.Target;
 
 public class ReadingActivity extends Activity {
     public static final String MAX_IMAGE_DIMENSION = "1500";
-    private Book book;
-    private BookMetadata bookMetadata;
-    private int currentPage;
+    private ReadingSession session;
     private FrameLayout holder;
     private RequestListener<GlideUrl, GlideDrawable> requestListener;
     private ScrollView scroller;
@@ -38,13 +36,7 @@ public class ReadingActivity extends Activity {
         setContentView(R.layout.activity_reading);
 
         holder = findViewById(R.id.image_view_holder);
-        holder.setOnClickListener(ThrottledOnClickListener.wrap(v -> {
-            if(loadingImage) return;
-            if(book == null) return;
-            if(!changePage(1)) return;
-            showCurrentPage();
-            cacheNextPage();
-        }));
+        holder.setOnClickListener(ThrottledOnClickListener.wrap(v -> navigateAndShow(1)));
 
         scroller = findViewById(R.id.scroller);
 
@@ -54,49 +46,28 @@ public class ReadingActivity extends Activity {
         scroller_fill.post(() -> scroller_fill.setMinimumHeight(layout.getHeight()));
 
         ImageView prev10 = findViewById(R.id.prev_10);
-        prev10.setOnClickListener(ThrottledOnClickListener.wrap(v -> {
-            if(loadingImage) return;
-            if(book == null) return;
-            changePage(-10);
-            showCurrentPage();
-        }));
+        prev10.setOnClickListener(ThrottledOnClickListener.wrap(v -> navigateAndShow(-10)));
 
         ImageView next10 = findViewById(R.id.next_10);
-        next10.setOnClickListener(ThrottledOnClickListener.wrap(v -> {
-            if(loadingImage) return;
-            if(book == null) return;
-            changePage(10);
-            showCurrentPage();
-            cacheNextPage();
-        }));
+        next10.setOnClickListener(ThrottledOnClickListener.wrap(v -> navigateAndShow(10)));
 
         requestListener = new LoadedRequestListener();
-
-        final int pageFromBundle;
-        if(savedInstanceState != null) pageFromBundle = savedInstanceState.getInt("currentPage");
-        else pageFromBundle = -1;
 
         final Intent intent = getIntent();
         long libraryRootId = intent.getLongExtra("libraryRootId", -1);
 
         LibraryService.ensureLibrary(this, libraryRootId, library -> {
             long bookId = intent.getLongExtra("_id", -1);
-            book = library.books().get(bookId);
-            bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
+            session = new ReadingSession(getApplicationContext(), library.books().get(bookId));
 
-            int newPage = 0;
-            if(pageFromBundle != -1) {
-                newPage = pageFromBundle;
-            }
-            else if(intent.getBooleanExtra("resume", false)) {
-                int lastReadPosition = bookMetadata.lastReadPosition();
-                if(lastReadPosition < lastPage()) newPage = lastReadPosition;
+            if(intent.getBooleanExtra("resume", false)) session.resume();
+
+            if(savedInstanceState != null) {
+                int pageFromBundle = savedInstanceState.getInt("page", -1);
+                if(pageFromBundle != -1) session.page(pageFromBundle);
             }
 
-            if(changePage(newPage)) {
-                showCurrentPage();
-                cacheNextPage();
-            }
+            showCurrentPage();
         });
     }
 
@@ -108,9 +79,7 @@ public class ReadingActivity extends Activity {
     }
 
     private void onThrottledBackPress() {
-        if(loadingImage) return;
-        if(changePage(-1)) showCurrentPage();
-        else finish();
+        if(!navigateAndShow(-1)) finish();
     }
 
     @Override
@@ -133,12 +102,22 @@ public class ReadingActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt("currentPage", currentPage);
+        outState.putInt("page", session.page());
         super.onSaveInstanceState(outState);
+    }
+
+    private boolean navigateAndShow(int change) {
+        if(loadingImage) return true;
+        if(session == null) return true;
+        boolean pageChanged = session.go(change);
+        if(pageChanged) showCurrentPage();
+        return pageChanged;
     }
 
     private void showCurrentPage() {
         loadingImage = true;
+
+        cacheNextPage();
 
         ImageView imageView = (ImageView)LayoutInflater.from(this)
                 .inflate(R.layout.reading_image_view, holder, false);
@@ -147,45 +126,22 @@ public class ReadingActivity extends Activity {
 
         Glide
                 .with(this)
-                .load(urlWithContentHint(book.pageUrl(currentPage)))
+                .load(urlWithContentHint(session.url()))
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .listener(requestListener)
                 .into(imageView);
 
-        bookMetadata.lastReadPosition(currentPage);
-        bookMetadata.save(getApplicationContext());
+        session.bookmark();
     }
 
     private void cacheNextPage() {
-        if ((currentPage + 1) >= book.pages()) return;
-
         Glide
                 .with(this)
-                .load(urlWithContentHint(book.pageUrl(currentPage + 1)))
+                .load(urlWithContentHint(session.url(session.nextPage())))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .preload();
-    }
-
-    private boolean changePage(int change) {
-        currentPage += change;
-
-        if(currentPage < 0) {
-            currentPage = 0;
-            return false;
-        }
-
-        if(currentPage > lastPage()) {
-            currentPage = lastPage();
-            return false;
-        }
-
-        return true;
-    }
-
-    private int lastPage() {
-        return book.pages() - 1;
     }
 
     private GlideUrl urlWithContentHint(Uri uri) {
