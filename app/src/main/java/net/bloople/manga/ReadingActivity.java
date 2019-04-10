@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -28,6 +29,7 @@ public class ReadingActivity extends Activity {
     private RequestListener<GlideUrl, GlideDrawable> requestListener;
     private ScrollView scroller;
     private boolean loadingImage = false;
+    private long lastBackPressMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +38,13 @@ public class ReadingActivity extends Activity {
         setContentView(R.layout.activity_reading);
 
         holder = findViewById(R.id.image_view_holder);
-        holder.setOnClickListener(v -> {
+        holder.setOnClickListener(ThrottledOnClickListener.wrap(v -> {
             if(loadingImage) return;
             if(book == null) return;
             if(!changePage(1)) return;
             showCurrentPage();
             cacheNextPage();
-        });
+        }));
 
         scroller = findViewById(R.id.scroller);
 
@@ -52,21 +54,21 @@ public class ReadingActivity extends Activity {
         scroller_fill.post(() -> scroller_fill.setMinimumHeight(layout.getHeight()));
 
         ImageView prev10 = findViewById(R.id.prev_10);
-        prev10.setOnClickListener(v -> {
+        prev10.setOnClickListener(ThrottledOnClickListener.wrap(v -> {
             if(loadingImage) return;
             if(book == null) return;
             changePage(-10);
             showCurrentPage();
-        });
+        }));
 
         ImageView next10 = findViewById(R.id.next_10);
-        next10.setOnClickListener(v -> {
+        next10.setOnClickListener(ThrottledOnClickListener.wrap(v -> {
             if(loadingImage) return;
             if(book == null) return;
             changePage(10);
             showCurrentPage();
             cacheNextPage();
-        });
+        }));
 
         requestListener = new LoadedRequestListener();
 
@@ -100,6 +102,12 @@ public class ReadingActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        long now = SystemClock.elapsedRealtime();
+        if(now - lastBackPressMillis > ThrottledOnClickListener.THRESHOLD_MILLIS) onThrottledBackPress();
+        lastBackPressMillis = now;
+    }
+
+    private void onThrottledBackPress() {
         if(loadingImage) return;
         if(changePage(-1)) showCurrentPage();
         else finish();
