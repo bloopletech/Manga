@@ -86,7 +86,13 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
-        if(savedInstanceState != null) libraryRootId = savedInstanceState.getLong("libraryRootId");
+        if(savedInstanceState == null) loadLibrary();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        libraryRootId = savedInstanceState.getLong("libraryRootId");
         loadLibrary();
     }
 
