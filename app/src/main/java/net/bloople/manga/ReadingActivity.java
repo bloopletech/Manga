@@ -27,6 +27,7 @@ public class ReadingActivity extends Activity {
     private FrameLayout holder;
     private RequestListener<GlideUrl, GlideDrawable> requestListener;
     private ScrollView scroller;
+    private boolean loadingImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class ReadingActivity extends Activity {
 
         holder = findViewById(R.id.image_view_holder);
         holder.setOnClickListener(v -> {
+            if(loadingImage) return;
             if(book == null) return;
             if(!changePage(1)) return;
             showCurrentPage();
@@ -51,6 +53,7 @@ public class ReadingActivity extends Activity {
 
         ImageView prev10 = findViewById(R.id.prev_10);
         prev10.setOnClickListener(v -> {
+            if(loadingImage) return;
             if(book == null) return;
             changePage(-10);
             showCurrentPage();
@@ -58,6 +61,7 @@ public class ReadingActivity extends Activity {
 
         ImageView next10 = findViewById(R.id.next_10);
         next10.setOnClickListener(v -> {
+            if(loadingImage) return;
             if(book == null) return;
             changePage(10);
             showCurrentPage();
@@ -96,6 +100,7 @@ public class ReadingActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        if(loadingImage) return;
         if(changePage(-1)) showCurrentPage();
         else finish();
     }
@@ -125,6 +130,8 @@ public class ReadingActivity extends Activity {
     }
 
     private void showCurrentPage() {
+        loadingImage = true;
+
         ImageView imageView = (ImageView)LayoutInflater.from(this)
                 .inflate(R.layout.reading_image_view, holder, false);
 
@@ -183,6 +190,7 @@ public class ReadingActivity extends Activity {
         @Override
         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target,
         boolean isFirstResource) {
+            loadingImage = false;
             if(e != null) e.printStackTrace();
             return false;
         }
@@ -193,6 +201,8 @@ public class ReadingActivity extends Activity {
             scroller.scrollTo(0, 0);
 
             for(int i = 1; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(1);
+
+            loadingImage = false;
 
             return false;
         }
