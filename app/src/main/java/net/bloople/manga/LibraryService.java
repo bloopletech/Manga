@@ -25,12 +25,9 @@ class LibraryService {
             listener.onLibraryLoaded(current);
         }
         else {
-            LibraryService service = new LibraryService(context, libraryRoot, new LibraryLoadedListener() {
-                @Override
-                public void onLibraryLoaded(Library library) {
-                    current = library;
-                    listener.onLibraryLoaded(library);
-                }
+            LibraryService service = new LibraryService(context, libraryRoot, library -> {
+                current = library;
+                listener.onLibraryLoaded(library);
             });
             service.ensureLibrary();
         }

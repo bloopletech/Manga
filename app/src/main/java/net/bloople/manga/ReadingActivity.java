@@ -36,14 +36,11 @@ public class ReadingActivity extends Activity {
         setContentView(R.layout.activity_reading);
 
         holder = (FrameLayout)findViewById(R.id.image_view_holder);
-        holder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(book == null) return;
-                if(!changePage(1)) return;
-                showCurrentPage();
-                cacheNextPage();
-            }
+        holder.setOnClickListener(v -> {
+            if(book == null) return;
+            if(!changePage(1)) return;
+            showCurrentPage();
+            cacheNextPage();
         });
 
         scroller = (ScrollView)findViewById(R.id.scroller);
@@ -51,32 +48,21 @@ public class ReadingActivity extends Activity {
         final FrameLayout layout = (FrameLayout)findViewById(R.id.layout);
         final Space scroller_fill = (Space)findViewById(R.id.scroller_fill);
 
-        scroller_fill.post(new Runnable() {
-            @Override
-            public void run() {
-                scroller_fill.setMinimumHeight(layout.getHeight());
-            }
-        });
+        scroller_fill.post(() -> scroller_fill.setMinimumHeight(layout.getHeight()));
 
         ImageView prev10 = (ImageView)findViewById(R.id.prev_10);
-        prev10.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(book == null) return;
-                changePage(-10);
-                showCurrentPage();
-            }
+        prev10.setOnClickListener(v -> {
+            if(book == null) return;
+            changePage(-10);
+            showCurrentPage();
         });
 
         ImageView next10 = (ImageView)findViewById(R.id.next_10);
-        next10.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(book == null) return;
-                changePage(10);
-                showCurrentPage();
-                cacheNextPage();
-            }
+        next10.setOnClickListener(v -> {
+            if(book == null) return;
+            changePage(10);
+            showCurrentPage();
+            cacheNextPage();
         });
 
         requestListener = new LoadedRequestListener();
@@ -88,26 +74,23 @@ public class ReadingActivity extends Activity {
         final Intent intent = getIntent();
         long libraryRootId = intent.getLongExtra("libraryRootId", -1);
 
-        LibraryService.ensureLibrary(this, libraryRootId, new LibraryService.LibraryLoadedListener() {
-            @Override
-            public void onLibraryLoaded(Library library) {
-                long bookId = intent.getLongExtra("_id", -1);
-                book = library.books().get(bookId);
-                bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
+        LibraryService.ensureLibrary(this, libraryRootId, library -> {
+            long bookId = intent.getLongExtra("_id", -1);
+            book = library.books().get(bookId);
+            bookMetadata = BookMetadata.findOrCreateByBookId(getApplicationContext(), bookId);
 
-                int newPage = 0;
-                if(pageFromBundle != -1) {
-                    newPage = pageFromBundle;
-                }
-                else if(intent.getBooleanExtra("resume", false)) {
-                    int lastReadPosition = bookMetadata.lastReadPosition();
-                    if(lastReadPosition < lastPage()) newPage = lastReadPosition;
-                }
+            int newPage = 0;
+            if(pageFromBundle != -1) {
+                newPage = pageFromBundle;
+            }
+            else if(intent.getBooleanExtra("resume", false)) {
+                int lastReadPosition = bookMetadata.lastReadPosition();
+                if(lastReadPosition < lastPage()) newPage = lastReadPosition;
+            }
 
-                if(changePage(newPage)) {
-                    showCurrentPage();
-                    cacheNextPage();
-                }
+            if(changePage(newPage)) {
+                showCurrentPage();
+                cacheNextPage();
             }
         });
     }

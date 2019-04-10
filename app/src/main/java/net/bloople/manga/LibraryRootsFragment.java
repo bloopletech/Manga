@@ -54,31 +54,20 @@ public class LibraryRootsFragment extends Fragment implements LibraryRootEditFra
         libraryRootsView.setAdapter(libraryRootsAdapter);
         updateCursor();
 
-        libraryRootsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                long libraryRootId = parent.getItemIdAtPosition(position);
-                listener.onLibraryRootSelected(libraryRootId);
-            }
+        libraryRootsView.setOnItemClickListener((parent, v, position, id) -> {
+            long libraryRootId = parent.getItemIdAtPosition(position);
+            listener.onLibraryRootSelected(libraryRootId);
         });
 
-        libraryRootsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                long libraryRootId = parent.getItemIdAtPosition(position);
-                edit(libraryRootId);
+        libraryRootsView.setOnItemLongClickListener((parent, v, position, id) -> {
+            long libraryRootId = parent.getItemIdAtPosition(position);
+            edit(libraryRootId);
 
-                return true;
-            }
+            return true;
         });
 
         ImageButton newLibrary = view.findViewById(R.id.new_library);
-        newLibrary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newLibrary();
-            }
-        });
+        newLibrary.setOnClickListener(v -> newLibrary());
     }
 
     @Override

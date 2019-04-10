@@ -41,50 +41,44 @@ class BookListAdapter extends CursorAdapter {
         nameView.setVisibility(View.VISIBLE);
         editNameView.setVisibility(View.GONE);
 
-        editNameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId != EditorInfo.IME_ACTION_DONE) return false;
+        editNameView.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId != EditorInfo.IME_ACTION_DONE) return false;
+
+            InputMethodManager in = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(editNameView.getWindowToken(), 0);
+            editNameView.clearFocus();
+
+            BookList list = BookList.findById(context, listId);
+            list.name(editNameView.getText().toString());
+            list.save(context);
+
+            nameView.setText(editNameView.getText().toString());
+            nameView.setVisibility(View.VISIBLE);
+            editNameView.setVisibility(View.GONE);
+
+            return true;
+        });
+
+        editNameView.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_RIGHT = 2;
+
+            if(event.getAction() == MotionEvent.ACTION_UP) {
+                int clickIndex = editNameView.getRight() -
+                        editNameView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+
+                if(event.getRawX() < clickIndex) return false;
 
                 InputMethodManager in = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 in.hideSoftInputFromWindow(editNameView.getWindowToken(), 0);
                 editNameView.clearFocus();
 
-                BookList list = BookList.findById(context, listId);
-                list.name(editNameView.getText().toString());
-                list.save(context);
-
-                nameView.setText(editNameView.getText().toString());
                 nameView.setVisibility(View.VISIBLE);
                 editNameView.setVisibility(View.GONE);
 
                 return true;
             }
-        });
 
-        editNameView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    int clickIndex = editNameView.getRight() -
-                            editNameView.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
-
-                    if(event.getRawX() < clickIndex) return false;
-
-                    InputMethodManager in = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(editNameView.getWindowToken(), 0);
-                    editNameView.clearFocus();
-
-                    nameView.setVisibility(View.VISIBLE);
-                    editNameView.setVisibility(View.GONE);
-
-                    return true;
-                }
-
-                return false;
-            }
+            return false;
         });
     }
 

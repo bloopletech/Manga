@@ -1,7 +1,6 @@
 package net.bloople.manga;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,54 +75,45 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             imageView = (ImageView)view.findViewById(R.id.image_view);
             selectableView = (ImageView)view.findViewById(R.id.selectable);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+            view.setOnClickListener(v -> {
+                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
 
-                    if(selectable) {
-                        if(selectedBookIds.contains(bookId)) {
-                            selectedBookIds.remove(bookId);
-                            v.setActivated(false);
-                        }
-                        else {
-                            selectedBookIds.add(bookId);
-                            v.setActivated(true);
-                        }
-
-                        notifyItemChanged(getAdapterPosition());
+                if(selectable) {
+                    if(selectedBookIds.contains(bookId)) {
+                        selectedBookIds.remove(bookId);
+                        v.setActivated(false);
                     }
                     else {
-                        openBook(bookId, true);
+                        selectedBookIds.add(bookId);
+                        v.setActivated(true);
                     }
+
+                    notifyItemChanged(getAdapterPosition());
+                }
+                else {
+                    openBook(bookId, true);
                 }
             });
 
-            view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if(selectable) return false;
+            view.setOnLongClickListener(v -> {
+                if(selectable) return false;
 
-                    long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
-                    openBook(bookId, false);
+                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+                openBook(bookId, false);
 
-                    return true;
-                }
+                return true;
             });
 
-            textView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    if(selectable) return false;
+            textView.setOnLongClickListener(v -> {
+                if(selectable) return false;
 
-                    IndexActivity indexActivity = (IndexActivity)itemView.getContext();
+                IndexActivity indexActivity = (IndexActivity)itemView.getContext();
 
-                    Book book = library.books().get(BooksAdapter.this.getItemId(getAdapterPosition()));
-                    TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags().toArray(new String[0]));
-                    tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
+                Book book = library.books().get(BooksAdapter.this.getItemId(getAdapterPosition()));
+                TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags().toArray(new String[0]));
+                tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
 
-                    return true;
-                }
+                return true;
             });
         }
 

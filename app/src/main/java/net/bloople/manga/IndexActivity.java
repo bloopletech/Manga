@@ -50,41 +50,35 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
 
         searchField = findViewById(R.id.search_field);
 
-        searchField.setOnEditorActionListener(new OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if(actionId == EditorInfo.IME_ACTION_SEARCH || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    InputMethodManager in = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    in.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
-                    searchField.clearFocus();
+        searchField.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if(actionId == EditorInfo.IME_ACTION_SEARCH || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                InputMethodManager in = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
+                searchField.clearFocus();
 
-                    resolve();
+                resolve();
 
-                    handled = true;
-                }
-                return handled;
+                handled = true;
             }
+            return handled;
         });
 
-        searchField.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_RIGHT = 2;
+        searchField.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_RIGHT = 2;
 
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    int clickIndex = searchField.getRight() -
-                            searchField.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+            if(event.getAction() == MotionEvent.ACTION_UP) {
+                int clickIndex = searchField.getRight() -
+                        searchField.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
 
-                    if(event.getRawX() >= clickIndex) {
-                        searchField.setText("");
-                        resolve();
+                if(event.getRawX() >= clickIndex) {
+                    searchField.setText("");
+                    resolve();
 
-                        return true;
-                    }
+                    return true;
                 }
-                return false;
             }
+            return false;
         });
 
         booksView = findViewById(R.id.books_view);
@@ -111,11 +105,7 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
         new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to exit?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        IndexActivity.this.finish();
-                    }
-                })
+                .setPositiveButton("Yes", (dialog, id) -> IndexActivity.this.finish())
                 .setNegativeButton("No", null)
                 .show();
     }
@@ -155,12 +145,9 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
     }
 
     private void loadLibrary() {
-        LibraryService.ensureLibrary(this, libraryRootId, new LibraryService.LibraryLoadedListener() {
-            @Override
-            public void onLibraryLoaded(Library library) {
-                IndexActivity.this.library = library;
-                resolve();
-            }
+        LibraryService.ensureLibrary(this, libraryRootId, library -> {
+            IndexActivity.this.library = library;
+            resolve();
         });
     }
 

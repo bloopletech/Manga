@@ -22,11 +22,9 @@ public class TagChooserFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Search for tag")
-                .setItems(tags, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        IndexActivity activity = (IndexActivity)getActivity();
-                        activity.useTag(tags[which]);
-                    }
+                .setItems(tags, (dialog, which) -> {
+                    IndexActivity activity = (IndexActivity)getActivity();
+                    activity.useTag(tags[which]);
                 });
         return builder.create();
     }

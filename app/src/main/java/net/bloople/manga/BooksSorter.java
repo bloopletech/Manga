@@ -45,20 +45,17 @@ class BooksSorter {
             sortLastOpened(context, books);
         }
         else {
-            Collections.sort(books, new Comparator<Book>() {
-                @Override
-                public int compare(Book a, Book b) {
-                    switch(sortMethod) {
-                        case SORT_ALPHABETIC:
-                            return a.normalisedTitle().compareTo(b.normalisedTitle());
-                        case SORT_AGE:
-                            return Integer.compare(a.publishedOn(), b.publishedOn());
-                        case SORT_LENGTH:
-                            return Integer.compare(a.pages(), b.pages());
-                    }
-
-                    return 0;
+            Collections.sort(books, (a, b) -> {
+                switch(sortMethod) {
+                    case SORT_ALPHABETIC:
+                        return a.normalisedTitle().compareTo(b.normalisedTitle());
+                    case SORT_AGE:
+                        return Integer.compare(a.publishedOn(), b.publishedOn());
+                    case SORT_LENGTH:
+                        return Integer.compare(a.pages(), b.pages());
                 }
+
+                return 0;
             });
 
             if(!sortDirectionAsc) Collections.reverse(books);
@@ -68,19 +65,16 @@ class BooksSorter {
     private void sortLastOpened(Context context, ArrayList<Book> books) {
         final HashMap<Long, BookMetadata> booksMetadata = metadataForBooks(context, books);
 
-        Collections.sort(books, new Comparator<Book>() {
-            @Override
-            public int compare(Book a, Book b) {
-                BookMetadata abm = booksMetadata.get(a.id());
-                BookMetadata bbm = booksMetadata.get(b.id());
+        Collections.sort(books, (a, b) -> {
+            BookMetadata abm = booksMetadata.get(a.id());
+            BookMetadata bbm = booksMetadata.get(b.id());
 
-                if(abm == null && bbm == null) return 0;
-                if(abm == null) return 1;
-                if(bbm == null) return -1;
+            if(abm == null && bbm == null) return 0;
+            if(abm == null) return 1;
+            if(bbm == null) return -1;
 
-                if(sortDirectionAsc) return Long.compare(abm.lastOpenedAt(), bbm.lastOpenedAt());
-                else return Long.compare(bbm.lastOpenedAt(), abm.lastOpenedAt());
-            }
+            if(sortDirectionAsc) return Long.compare(abm.lastOpenedAt(), bbm.lastOpenedAt());
+            else return Long.compare(bbm.lastOpenedAt(), abm.lastOpenedAt());
         });
     }
 

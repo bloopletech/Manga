@@ -58,31 +58,13 @@ public class LibraryRootEditFragment extends DialogFragment {
         rootView.setText(libraryRoot.root());
 
         Button cancelButton = view.findViewById(R.id.cancel);
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancel();
-            }
-        });
+        cancelButton.setOnClickListener(v -> cancel());
 
         Button saveButton = view.findViewById(R.id.save);
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                update();
-            }
-        });
+        saveButton.setOnClickListener(v -> update());
 
         Button destroyButton = view.findViewById(R.id.destroy);
-
-        destroyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                destroy();
-            }
-        });
+        destroyButton.setOnClickListener(v -> destroy());
     }
 
     @Override

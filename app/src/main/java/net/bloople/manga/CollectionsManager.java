@@ -34,84 +34,58 @@ class CollectionsManager {
         sidebar.setAdapter(bookListAdapter);
         updateCursor();
 
-        sidebar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0) list = null;
-                else list = BookList.findById(activity, parent.getItemIdAtPosition(position));
+        sidebar.setOnItemClickListener((parent, view, position, id) -> {
+            if(position == 0) list = null;
+            else list = BookList.findById(activity, parent.getItemIdAtPosition(position));
 
-                activity.useList(list);
+            activity.useList(list);
 
-                view.setActivated(true);
+            view.setActivated(true);
 
-                if(list == null) {
-                    adapter.clearSelectedBookIds();
-                    adapter.setSelectable(false);
+            if(list == null) {
+                adapter.clearSelectedBookIds();
+                adapter.setSelectable(false);
 
-                    newCollection.setVisibility(View.VISIBLE);
-                    editCollection.setVisibility(View.GONE);
-                    destroyCollection.setVisibility(View.GONE);
-                    saveCollection.setVisibility(View.GONE);
-                }
-                else {
-                    newCollection.setVisibility(View.GONE);
-                    editCollection.setVisibility(View.VISIBLE);
-                    destroyCollection.setVisibility(View.VISIBLE);
-                }
+                newCollection.setVisibility(View.VISIBLE);
+                editCollection.setVisibility(View.GONE);
+                destroyCollection.setVisibility(View.GONE);
+                saveCollection.setVisibility(View.GONE);
+            }
+            else {
+                newCollection.setVisibility(View.GONE);
+                editCollection.setVisibility(View.VISIBLE);
+                destroyCollection.setVisibility(View.VISIBLE);
             }
         });
 
-        sidebar.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final TextView nameView = (TextView)view.findViewById(R.id.name);
-                final EditText editNameView = (EditText)view.findViewById(R.id.edit_name);
+        sidebar.setOnItemLongClickListener((parent, view, position, id) -> {
+            final TextView nameView = (TextView)view.findViewById(R.id.name);
+            final EditText editNameView = (EditText)view.findViewById(R.id.edit_name);
 
-                if(nameView == null) return false;
+            if(nameView == null) return false;
 
-                editNameView.setText(nameView.getText());
-                nameView.setVisibility(View.GONE);
-                editNameView.setVisibility(View.VISIBLE);
+            editNameView.setText(nameView.getText());
+            nameView.setVisibility(View.GONE);
+            editNameView.setVisibility(View.VISIBLE);
 
-                editNameView.requestFocusFromTouch();
-                InputMethodManager in = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                in.showSoftInput(editNameView, 0);
+            editNameView.requestFocusFromTouch();
+            InputMethodManager in = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.showSoftInput(editNameView, 0);
 
-                return true;
-            }
+            return true;
         });
 
         newCollection = (ImageButton)activity.findViewById(R.id.new_collection);
-        newCollection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newCollection();
-            }
-        });
+        newCollection.setOnClickListener(v -> newCollection());
 
         saveCollection = (Button)activity.findViewById(R.id.save_collection);
-        saveCollection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateCollection();
-            }
-        });
+        saveCollection.setOnClickListener(v -> updateCollection());
 
         editCollection = (ImageButton)activity.findViewById(R.id.edit_collection);
-        editCollection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editCollection();
-            }
-        });
+        editCollection.setOnClickListener(v -> editCollection());
 
         destroyCollection = (ImageButton)activity.findViewById(R.id.destroy_collection);
-        destroyCollection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                destroyCollection();
-            }
-        });
+        destroyCollection.setOnClickListener(v -> destroyCollection());
 
         newCollection.setVisibility(View.VISIBLE);
         editCollection.setVisibility(View.GONE);
