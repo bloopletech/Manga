@@ -17,7 +17,7 @@ public class LibraryRootsFragment extends Fragment implements LibraryRootEditFra
     private OnLibraryRootSelectedListener listener;
     private SimpleCursorAdapter libraryRootsAdapter;
 
-    public interface OnLibraryRootSelectedListener {
+    interface OnLibraryRootSelectedListener {
         void onLibraryRootSelected(long libraryRootId);
     }
 

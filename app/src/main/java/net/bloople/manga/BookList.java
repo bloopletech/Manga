@@ -35,15 +35,15 @@ class BookList {
         name = result.getString(result.getColumnIndex("name"));
     }
 
-    public long id() {
+    long id() {
         return _id;
     }
 
-    public String name() {
+    String name() {
         return name;
     }
 
-    public void name(String name) {
+    void name(String name) {
         this.name = name;
     }
 

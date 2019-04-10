@@ -52,27 +52,27 @@ class LibraryRoot {
         root = result.getString(result.getColumnIndex("root"));
     }
 
-    public long id() {
+    long id() {
         return _id;
     }
 
-    public String name() {
+    String name() {
         return name;
     }
 
-    public void name(String name) {
+    void name(String name) {
         this.name = name;
     }
 
-    public String root() {
+    String root() {
         return root;
     }
 
-    public void root(String root) {
+    void root(String root) {
         this.root = root;
     }
 
-    public Uri rootUri() {
+    Uri rootUri() {
         return Uri.parse(root);
     }
 

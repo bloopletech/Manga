@@ -17,7 +17,7 @@ class LibraryService {
     private LibraryLoadedListener listener;
     private ProgressDialog loadingLibraryDialog;
 
-    public static void ensureLibrary(Context context, long libraryRootId, final LibraryLoadedListener listener) {
+    static void ensureLibrary(Context context, long libraryRootId, final LibraryLoadedListener listener) {
         LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
         if(libraryRoot == null) libraryRoot = LibraryRoot.findDefault(context);
 
@@ -33,7 +33,7 @@ class LibraryService {
         }
     }
 
-    public interface LibraryLoadedListener {
+    interface LibraryLoadedListener {
         void onLibraryLoaded(Library library);
     }
 

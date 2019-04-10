@@ -6,7 +6,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 
 public class TagChooserFragment extends DialogFragment {
-    public static TagChooserFragment newInstance(String[] tags) {
+    static TagChooserFragment newInstance(String[] tags) {
         TagChooserFragment fragment = new TagChooserFragment();
         Bundle args = new Bundle();
         args.putStringArray("tags", tags);

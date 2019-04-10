@@ -7,10 +7,10 @@ package net.bloople.manga;
  * Utilities method for manipulating String.
  * @author zemian 1/1/13
  */
-public class StringNextUtil {
+class StringNextUtil {
 
     /** Calculate string successor value. Similar to Ruby's String#next() method. */
-    public static String next(String text) {
+    static String next(String text) {
         // We will not process empty string
         int len = text.length();
         if (len == 0)

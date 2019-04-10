@@ -11,7 +11,7 @@ class BookMetadata {
     private long lastOpenedAt;
     private int lastReadPosition;
 
-    public static BookMetadata findById(Context context, long id) {
+    static BookMetadata findById(Context context, long id) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
         Cursor result = db.rawQuery("SELECT * FROM books_metadata WHERE _id=?", new String[] { String.valueOf(id) });
@@ -56,7 +56,7 @@ class BookMetadata {
         lastReadPosition = result.getInt(result.getColumnIndex("last_read_position"));
     }
 
-    public long id() {
+    long id() {
         return _id;
     }
 

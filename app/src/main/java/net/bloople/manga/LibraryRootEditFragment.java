@@ -16,11 +16,11 @@ public class LibraryRootEditFragment extends DialogFragment {
     private EditText nameView;
     private EditText rootView;
 
-    public interface OnLibraryRootEditFinishedListener {
+    interface OnLibraryRootEditFinishedListener {
         void onLibraryRootEditFinished(LibraryRoot libraryRoot);
     }
 
-    public static LibraryRootEditFragment newInstance(long libraryRootId) {
+    static LibraryRootEditFragment newInstance(long libraryRootId) {
         LibraryRootEditFragment fragment = new LibraryRootEditFragment();
         Bundle args = new Bundle();
         args.putLong("libraryRootId", libraryRootId);

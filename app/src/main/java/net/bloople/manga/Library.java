@@ -14,16 +14,16 @@ class Library {
         this.books = books;
     }
 
-    public Uri root() {
+    Uri root() {
         return root;
     }
 
-    public Uri mangos() {
+    Uri mangos() {
         if(mangos == null) mangos = root.buildUpon().appendEncodedPath(".mangos").build();
         return mangos;
     }
 
-    public HashMap<Long, Book> books() {
+    HashMap<Long, Book> books() {
         return books;
     }
 }

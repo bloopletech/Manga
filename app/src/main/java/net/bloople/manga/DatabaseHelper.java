@@ -73,7 +73,7 @@ class DatabaseHelper {
         return instance;
     }
 
-    public static void deleteDatabase(Context context) {
+    static void deleteDatabase(Context context) {
         context.getApplicationContext().deleteDatabase(DB_NAME);
         instance = null;
     }
