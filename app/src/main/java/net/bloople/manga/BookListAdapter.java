@@ -2,7 +2,6 @@ package net.bloople.manga;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
