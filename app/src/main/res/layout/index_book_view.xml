@@ -27,7 +27,7 @@
         android:id="@+id/page_count_view"
         android:layout_gravity="top|end"
         android:background="#fff"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textColor="#000"
         android:padding="2dp"
         />
@@ -42,5 +42,5 @@
         android:maxLines="6"
         android:padding="2dp"
         android:textColor="#000"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
 </FrameLayout>
