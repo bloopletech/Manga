@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 class DatabaseHelper {
     private static final String DB_NAME = "books";
-    private static SQLiteDatabase mInstance;
+    private static SQLiteDatabase instance;
 
     private static SQLiteDatabase obtainDatabase(Context context) {
         SQLiteDatabase db = context.getApplicationContext().openOrCreateDatabase(DB_NAME,
@@ -66,15 +66,15 @@ class DatabaseHelper {
     }
 
     static SQLiteDatabase instance(Context context) {
-        if(mInstance == null) {
-            mInstance = obtainDatabase(context);
+        if(instance == null) {
+            instance = obtainDatabase(context);
         }
 
-        return mInstance;
+        return instance;
     }
 
     public static void deleteDatabase(Context context) {
         context.getApplicationContext().deleteDatabase(DB_NAME);
-        mInstance = null;
+        instance = null;
     }
 }

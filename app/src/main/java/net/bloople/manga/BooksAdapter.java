@@ -1,6 +1,7 @@
 package net.bloople.manga;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,8 +133,9 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
-    public BooksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BooksAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.index_book_view, parent, false);
 
         final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 4.0 / 197.0;
@@ -144,7 +146,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         long bookId = getItemId(position);
         Book book = library.books().get(bookId);
 

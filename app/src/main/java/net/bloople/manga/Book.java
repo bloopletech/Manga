@@ -44,15 +44,15 @@ class Book {
         return publishedOn;
     }
 
-    public String key() {
+    String key() {
       return key;
     }
 
-    public ArrayList<String> tags() {
+    ArrayList<String> tags() {
         return tags;
     }
 
-    public long id() {
+    long id() {
         return _id;
     }
 
