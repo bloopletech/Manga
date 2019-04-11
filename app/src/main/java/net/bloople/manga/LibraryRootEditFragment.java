@@ -1,12 +1,12 @@
 package net.bloople.manga;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 public class LibraryRootEditFragment extends DialogFragment {
@@ -29,6 +29,29 @@ public class LibraryRootEditFragment extends DialogFragment {
     }
 
     @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Edit Library");
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.library_root_edit_fragment, null);
+        builder.setView(view);
+
+        nameView = view.findViewById(R.id.name);
+        rootView = view.findViewById(R.id.root);
+
+        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
+        nameView.setText(libraryRoot.name());
+        rootView.setText(libraryRoot.root());
+
+        builder.setPositiveButton("Save", (dialog, which) -> update());
+        builder.setNegativeButton("Cancel", (dialog, which) -> cancel());
+        builder.setNeutralButton("Delete", (dialog, which) -> destroy());
+
+        return builder.create();
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
@@ -42,32 +65,6 @@ public class LibraryRootEditFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.library_root_edit_fragment, parent, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        nameView = view.findViewById(R.id.name);
-        rootView = view.findViewById(R.id.root);
-
-        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
-        nameView.setText(libraryRoot.name());
-        rootView.setText(libraryRoot.root());
-
-        Button cancelButton = view.findViewById(R.id.cancel);
-        cancelButton.setOnClickListener(v -> cancel());
-
-        Button saveButton = view.findViewById(R.id.save);
-        saveButton.setOnClickListener(v -> update());
-
-        Button destroyButton = view.findViewById(R.id.destroy);
-        destroyButton.setOnClickListener(v -> destroy());
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         this.context = null;
@@ -75,7 +72,6 @@ public class LibraryRootEditFragment extends DialogFragment {
 
     private void cancel() {
         listener.onLibraryRootEditFinished(null);
-        dismiss();
     }
 
     private void update() {
@@ -84,13 +80,11 @@ public class LibraryRootEditFragment extends DialogFragment {
         libraryRoot.root(rootView.getText().toString());
         libraryRoot.save(context);
         listener.onLibraryRootEditFinished(libraryRoot);
-        dismiss();
     }
 
     private void destroy() {
         LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
         libraryRoot.destroy(context);
         listener.onLibraryRootEditFinished(libraryRoot);
-        dismiss();
     }
 }
