@@ -61,12 +61,8 @@ class Book {
         return pagePaths;
     }
 
-    private String relativePageUrl(int index) {
-        return Uri.encode(path) + "/" + Uri.encode(pagePaths().get(index));
-    }
-
     Uri pageUrl(int index) {
-        return library.root().buildUpon().appendEncodedPath(relativePageUrl(index)).build();
+        return library.root().buildUpon().appendPath(path).appendPath(pagePaths().get(index)).build();
     }
 
     int pages() {
