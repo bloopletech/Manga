@@ -79,7 +79,8 @@ public class ReadingActivity extends Activity {
     }
 
     private void onThrottledBackPress() {
-        if(!navigateAndShow(-1)) finish();
+        if(session == null || session.isBeginning()) finish();
+        else navigateAndShow(-1);
     }
 
     @Override
@@ -106,12 +107,11 @@ public class ReadingActivity extends Activity {
         super.onSaveInstanceState(outState);
     }
 
-    private boolean navigateAndShow(int change) {
-        if(loadingImage) return true;
-        if(session == null) return true;
-        boolean pageChanged = session.go(change);
-        if(pageChanged) showCurrentPage();
-        return pageChanged;
+    private void navigateAndShow(int change) {
+        if(loadingImage) return;
+        if(session == null) return;
+        session.go(change);
+        showCurrentPage();
     }
 
     private void showCurrentPage() {

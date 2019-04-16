@@ -17,8 +17,10 @@ class ReadingSession {
         return book.pages() - 1;
     }
 
-    private boolean validPage(int page) {
-        return page >= 0 && page <= lastPage();
+    private int clamp(int page) {
+        if(page < 0) return 0;
+        if(page > lastPage()) return lastPage();
+        return page;
     }
 
     int page() {
@@ -26,19 +28,19 @@ class ReadingSession {
     }
 
     void page(int page) {
-        if(validPage(page)) currentPage = page;
+        currentPage = clamp(page);
+    }
+
+    boolean isBeginning() {
+        return currentPage == 0;
     }
 
     int nextPage() {
-        return Math.min(currentPage + 1, lastPage());
+        return clamp(currentPage + 1);
     }
 
-    boolean go(int change) {
-        int page = currentPage + change;
-        if(!validPage(page)) return false;
-        if(page == currentPage) return false;
-        currentPage = page;
-        return true;
+    void go(int change) {
+        currentPage = clamp(currentPage + change);
     }
 
     void bookmark() {
@@ -57,7 +59,6 @@ class ReadingSession {
     }
 
     Uri url(int page) {
-        if(!validPage(page)) return null;
-        return book.pageUrl(page);
+        return book.pageUrl(clamp(page));
     }
 }
