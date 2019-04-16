@@ -79,7 +79,7 @@ class LibraryService {
 
         protected void onPostExecute(LibraryLoader loader) {
             if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
-            listener.onLibraryLoaded(loader.library());
+            listener.onLibraryLoaded(loader == null ? null : loader.library());
         }
     }
 }

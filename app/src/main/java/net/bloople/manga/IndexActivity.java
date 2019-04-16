@@ -148,6 +148,7 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
 
     private void loadLibrary() {
         LibraryService.ensureLibrary(this, libraryRootId, library -> {
+            if(library == null) return;
             IndexActivity.this.library = library;
             resolve();
         });
