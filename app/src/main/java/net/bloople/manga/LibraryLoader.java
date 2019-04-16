@@ -21,8 +21,8 @@ class LibraryLoader {
 
     private Library library;
 
-    LibraryLoader(Uri root) {
-        library = new Library(root, new HashMap<>());
+    LibraryLoader(LibraryRoot libraryRoot) {
+        library = new Library(libraryRoot.rootUri(), new HashMap<>(), libraryRoot.name());
     }
 
     Library library() {

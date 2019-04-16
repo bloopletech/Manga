@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@android:style/Theme.Material.Light">
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <!-- Hide the status bar -->
         <item name="android:windowFullscreen">true</item>
         <!-- Skip showing the application title -->

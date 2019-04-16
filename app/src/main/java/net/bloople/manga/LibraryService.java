@@ -55,12 +55,12 @@ class LibraryService {
     private void ensureLibrary() {
         showLoadingLibraryDialog();
         LoadLibraryTask loader = new LoadLibraryTask();
-        loader.execute(libraryRoot.rootUri());
+        loader.execute(libraryRoot);
     }
 
-    class LoadLibraryTask extends AsyncTask<Uri, Void, LibraryLoader> {
-        protected LibraryLoader doInBackground(Uri... urls) {
-            LibraryLoader loader = new LibraryLoader(urls[0]);
+    class LoadLibraryTask extends AsyncTask<LibraryRoot, Void, LibraryLoader> {
+        protected LibraryLoader doInBackground(LibraryRoot... libraryRoots) {
+            LibraryLoader loader = new LibraryLoader(libraryRoots[0]);
 
             try {
                 loader.load();

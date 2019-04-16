@@ -8,10 +8,12 @@ class Library {
     private Uri root;
     private Uri mangos;
     private HashMap<Long, Book> books;
+    private String name;
 
-    Library(Uri root, HashMap<Long, Book> books) {
+    Library(Uri root, HashMap<Long, Book> books, String name) {
         this.root = root;
         this.books = books;
+        this.name = name;
     }
 
     Uri root() {
@@ -25,5 +27,9 @@ class Library {
 
     HashMap<Long, Book> books() {
         return books;
+    }
+
+    String name() {
+        return name;
     }
 }

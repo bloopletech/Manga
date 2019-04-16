@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 public class IndexActivity extends Activity implements LibraryRootsFragment.OnLibraryRootSelectedListener {
     private long libraryRootId = -1;
     private Library library;
+    private TextView libraryNameView;
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private EditText searchField;
@@ -76,6 +78,8 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
             }
             return false;
         });
+
+        libraryNameView = findViewById(R.id.library_name);
 
         booksView = findViewById(R.id.books_view);
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
@@ -150,6 +154,7 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
         LibraryService.ensureLibrary(this, libraryRootId, library -> {
             if(library == null) return;
             IndexActivity.this.library = library;
+            libraryNameView.setText(library.name());
             resolve();
         });
     }

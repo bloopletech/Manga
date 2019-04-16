@@ -6,20 +6,26 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="0dp"
         android:background="#ffffff"
         android:focusableInTouchMode="true">
-        <Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-                 android:id="@+id/toolbar"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:minHeight="?android:attr/actionBarSize"
-                 android:background="?android:attr/colorPrimary"
-                 android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar">
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?android:attr/actionBarSize"
+            android:background="?android:attr/colorPrimary"
+            android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar">
+            <TextView
+                android:id="@+id/library_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@android:style/TextAppearance.Material.Widget.ActionBar.Title"
+                android:paddingEnd="16dp"
+                />
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
