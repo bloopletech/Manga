@@ -10,21 +10,21 @@ class LibraryService {
     private static Library current;
 
     private Context context;
-    private LibraryRoot libraryRoot;
+    private Library library;
     private LibraryLoadedListener listener;
     private ProgressDialog loadingLibraryDialog;
 
-    static void ensureLibrary(Context context, long libraryRootId, final LibraryLoadedListener listener) {
-        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
-        if(libraryRoot == null) libraryRoot = LibraryRoot.findDefault(context);
+    static void ensureLibrary(Context context, long libraryId, final LibraryLoadedListener listener) {
+        Library library = Library.findById(context, libraryId);
+        if(library == null) library = Library.findDefault(context);
 
-        if(current != null && current.root().equals(libraryRoot.rootUri())) {
+        if(current != null && current.rootUri().equals(library.rootUri())) {
             listener.onLibraryLoaded(current);
         }
         else {
-            LibraryService service = new LibraryService(context, libraryRoot, library -> {
-                current = library;
-                listener.onLibraryLoaded(library);
+            LibraryService service = new LibraryService(context, library, libraryResult -> {
+                current = libraryResult;
+                listener.onLibraryLoaded(libraryResult);
             });
             service.ensureLibrary();
         }
@@ -34,9 +34,9 @@ class LibraryService {
         void onLibraryLoaded(Library library);
     }
 
-    private LibraryService(Context context, LibraryRoot libraryRoot, LibraryLoadedListener listener) {
+    private LibraryService(Context context, Library library, LibraryLoadedListener listener) {
         this.context = context;
-        this.libraryRoot = libraryRoot;
+        this.library = library;
         this.listener = listener;
     }
 
@@ -44,7 +44,7 @@ class LibraryService {
         if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
         loadingLibraryDialog = ProgressDialog.show(
                 context,
-                "Loading " + libraryRoot.name(),
+                "Loading " + library.name(),
                 "Please wait while the library is loaded...",
                 true);
     }
@@ -52,12 +52,12 @@ class LibraryService {
     private void ensureLibrary() {
         showLoadingLibraryDialog();
         LoadLibraryTask loader = new LoadLibraryTask();
-        loader.execute(libraryRoot);
+        loader.execute(library);
     }
 
-    class LoadLibraryTask extends AsyncTask<LibraryRoot, Void, LibraryLoader> {
-        protected LibraryLoader doInBackground(LibraryRoot... libraryRoots) {
-            LibraryLoader loader = new LibraryLoader(libraryRoots[0]);
+    class LoadLibraryTask extends AsyncTask<Library, Void, LibraryLoader> {
+        protected LibraryLoader doInBackground(Library... libraries) {
+            LibraryLoader loader = new LibraryLoader(libraries[0]);
 
             try {
                 loader.load();

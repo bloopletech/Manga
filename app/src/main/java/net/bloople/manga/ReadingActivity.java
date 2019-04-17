@@ -53,9 +53,9 @@ public class ReadingActivity extends Activity {
         requestListener = new LoadedRequestListener();
 
         final Intent intent = getIntent();
-        long libraryRootId = intent.getLongExtra("libraryRootId", -1);
+        long libraryId = intent.getLongExtra("libraryId", -1);
 
-        LibraryService.ensureLibrary(this, libraryRootId, library -> {
+        LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
             long bookId = intent.getLongExtra("_id", -1);
             session = new ReadingSession(getApplicationContext(), library.books().get(bookId));

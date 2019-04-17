@@ -9,21 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-public class LibraryRootEditFragment extends DialogFragment {
+public class LibraryEditFragment extends DialogFragment {
     private Context context;
-    private OnLibraryRootEditFinishedListener listener;
-    private long libraryRootId;
+    private OnLibraryEditFinishedListener listener;
+    private long libraryId;
     private EditText nameView;
     private EditText rootView;
 
-    interface OnLibraryRootEditFinishedListener {
-        void onLibraryRootEditFinished(LibraryRoot libraryRoot);
+    interface OnLibraryEditFinishedListener {
+        void onLibraryEditFinished(Library library);
     }
 
-    static LibraryRootEditFragment newInstance(long libraryRootId) {
-        LibraryRootEditFragment fragment = new LibraryRootEditFragment();
+    static LibraryEditFragment newInstance(long libraryId) {
+        LibraryEditFragment fragment = new LibraryEditFragment();
         Bundle args = new Bundle();
-        args.putLong("libraryRootId", libraryRootId);
+        args.putLong("libraryId", libraryId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -34,15 +34,15 @@ public class LibraryRootEditFragment extends DialogFragment {
         builder.setTitle("Edit Library");
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.library_root_edit_fragment, null);
+        View view = inflater.inflate(R.layout.library_edit_fragment, null);
         builder.setView(view);
 
         nameView = view.findViewById(R.id.name);
         rootView = view.findViewById(R.id.root);
 
-        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
-        nameView.setText(libraryRoot.name());
-        rootView.setText(libraryRoot.root());
+        Library library = Library.findById(context, libraryId);
+        nameView.setText(library.name());
+        rootView.setText(library.root());
 
         builder.setPositiveButton("Save", (dialog, which) -> update());
         builder.setNegativeButton("Cancel", (dialog, which) -> cancel());
@@ -55,13 +55,13 @@ public class LibraryRootEditFragment extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        this.listener = (OnLibraryRootEditFinishedListener)getParentFragment();
+        this.listener = (OnLibraryEditFinishedListener)getParentFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        libraryRootId = getArguments().getLong("libraryRootId", -1);
+        libraryId = getArguments().getLong("libraryId", -1);
     }
 
     @Override
@@ -71,20 +71,20 @@ public class LibraryRootEditFragment extends DialogFragment {
     }
 
     private void cancel() {
-        listener.onLibraryRootEditFinished(null);
+        listener.onLibraryEditFinished(null);
     }
 
     private void update() {
-        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
-        libraryRoot.name(nameView.getText().toString());
-        libraryRoot.root(rootView.getText().toString());
-        libraryRoot.save(context);
-        listener.onLibraryRootEditFinished(libraryRoot);
+        Library library = Library.findById(context, libraryId);
+        library.name(nameView.getText().toString());
+        library.root(rootView.getText().toString());
+        library.save(context);
+        listener.onLibraryEditFinished(library);
     }
 
     private void destroy() {
-        LibraryRoot libraryRoot = LibraryRoot.findById(context, libraryRootId);
-        libraryRoot.destroy(context);
-        listener.onLibraryRootEditFinished(libraryRoot);
+        Library library = Library.findById(context, libraryId);
+        library.destroy(context);
+        listener.onLibraryEditFinished(library);
     }
 }

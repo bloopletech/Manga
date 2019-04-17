@@ -11,8 +11,8 @@ class LibraryLoader {
     private static final String DATA_JSON_PATH = "/data.json";
     private Library library;
 
-    LibraryLoader(LibraryRoot libraryRoot) {
-        library = new Library(libraryRoot.rootUri(), libraryRoot.name());
+    LibraryLoader(Library library) {
+        this.library = library;
     }
 
     Library library() {

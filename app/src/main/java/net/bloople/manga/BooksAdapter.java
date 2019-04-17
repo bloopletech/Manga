@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
-    private long libraryRootId;
     private Library library;
     private ArrayList<Long> bookIds = new ArrayList<>();
     private ArrayList<Long> selectedBookIds = new ArrayList<>();
@@ -58,8 +57,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         return bookIds.size();
     }
 
-    void update(long libraryRootId, Library library, ArrayList<Long> inBookIds) {
-        this.libraryRootId = libraryRootId;
+    void update(Library library, ArrayList<Long> inBookIds) {
         this.library = library;
         bookIds = inBookIds;
         notifyDataSetChanged();
@@ -128,7 +126,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", resume);
-            intent.putExtra("libraryRootId", libraryRootId);
+            intent.putExtra("libraryId", library.id());
 
             itemView.getContext().startActivity(intent);
         }

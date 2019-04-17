@@ -22,8 +22,8 @@ import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
-public class IndexActivity extends Activity implements LibraryRootsFragment.OnLibraryRootSelectedListener {
-    private long libraryRootId = -1;
+public class IndexActivity extends Activity implements LibrariesFragment.OnLibrarySelectedListener {
+    private long libraryId = -1;
     private Library library;
     private TextView libraryNameView;
     private RecyclerView booksView;
@@ -96,13 +96,13 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        libraryRootId = savedInstanceState.getLong("libraryRootId");
+        libraryId = savedInstanceState.getLong("libraryId");
         loadLibrary();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong("libraryRootId", libraryRootId);
+        savedInstanceState.putLong("libraryId", libraryId);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -151,7 +151,7 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
     }
 
     private void loadLibrary() {
-        LibraryService.ensureLibrary(this, libraryRootId, library -> {
+        LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
             IndexActivity.this.library = library;
             libraryNameView.setText(library.name());
@@ -171,11 +171,11 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
         resolve();
     }
 
-    public void onLibraryRootSelected(long libraryRootId) {
+    public void onLibrarySelected(long libraryId) {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(Gravity.RIGHT);
 
-        this.libraryRootId = libraryRootId;
+        this.libraryId = libraryId;
         loadLibrary();
     }
 
@@ -197,7 +197,7 @@ public class IndexActivity extends Activity implements LibraryRootsFragment.OnLi
 
         @Override
         protected void onPostExecute(ArrayList<Long> bookIds) {
-            adapter.update(libraryRootId, library, bookIds);
+            adapter.update(library, bookIds);
             booksView.scrollToPosition(0);
         }
     }

@@ -90,8 +90,8 @@
         android:clickable="true">
 
         <fragment
-            android:name="net.bloople.manga.LibraryRootsFragment"
-            android:id="@+id/library_roots_fragment"
+            android:name="net.bloople.manga.LibrariesFragment"
+            android:id="@+id/libraries_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
