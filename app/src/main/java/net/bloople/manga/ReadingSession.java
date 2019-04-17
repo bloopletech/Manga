@@ -1,7 +1,6 @@
 package net.bloople.manga;
 
 import android.content.Context;
-import android.net.Uri;
 
 class ReadingSession {
     private Context context;
@@ -14,7 +13,7 @@ class ReadingSession {
     }
 
     private int lastPage() {
-        return book.pages() - 1;
+        return book.pages - 1;
     }
 
     private int clamp(int page) {
@@ -54,11 +53,11 @@ class ReadingSession {
         page(bookMetadata.lastReadPosition());
     }
 
-    Uri url() {
+    String url() {
         return book.pageUrl(currentPage);
     }
 
-    Uri url(int page) {
+    String url(int page) {
         return book.pageUrl(clamp(page));
     }
 }

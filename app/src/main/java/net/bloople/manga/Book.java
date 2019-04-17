@@ -1,55 +1,35 @@
 package net.bloople.manga;
 
-import android.net.Uri;
+import com.dslplatform.json.CompiledJson;
+
 import java.util.ArrayList;
+import java.util.List;
 
-class Book {
+@CompiledJson(onUnknown = CompiledJson.Behavior.FAIL)
+public class Book {
+    public String path;
+    public String pagePaths;
+    public int pages; //We are trusting the server that pages matches pagePathsList().size()
+    public int publishedOn;
+    public String key;
+    public List<String> tags;
+
     private Library library;
-    private String path;
-    private String pagesDeflated;
-    private ArrayList<String> pagePaths;
-    private int pagesCount;
+    private String title;
     private String normalisedTitle;
-    private int publishedOn;
-    private String key;
-    private ArrayList<String> tags;
     private long _id;
+    private ArrayList<String> pagePathsList;
 
-    Book(Library library, String path, String pagesDeflated, int pagesCount, String normalisedTitle,
-         int publishedOn, String key, ArrayList<String> tags, long _id) {
-        this.library = library;
-        this.path = path;
-        this.pagesDeflated = pagesDeflated;
-        this.pagesCount = pagesCount;
-        this.normalisedTitle = normalisedTitle;
-        this.publishedOn = publishedOn;
-        this.key = key;
-        this.tags = tags;
-        this._id = _id;
-    }
-
-    Uri thumbnailUrl() {
-        return library.mangos().buildUpon().appendEncodedPath("img/thumbnails/" + key + ".jpg").build();
+    String thumbnailUrl() {
+        return library.mangos() + "/img/thumbnails/" + key + ".jpg";
     }
 
     String title() {
-      return path.replaceAll("\\s+", " ");
+        return title;
     }
 
     String normalisedTitle() {
         return normalisedTitle;
-    }
-
-    int publishedOn() {
-        return publishedOn;
-    }
-
-    String key() {
-      return key;
-    }
-
-    ArrayList<String> tags() {
-        return tags;
     }
 
     long id() {
@@ -57,16 +37,19 @@ class Book {
     }
 
     private ArrayList<String> pagePaths() {
-        if(pagePaths == null) pagePaths = new PagesInflater(pagesDeflated).inflate();
-        return pagePaths;
+        if(pagePathsList == null) pagePathsList = new PagesInflater(pagePaths).inflate();
+        return pagePathsList;
     }
 
-    Uri pageUrl(int index) {
-        return library.root().buildUpon().appendPath(path).appendPath(pagePaths().get(index)).build();
+    String pageUrl(int index) {
+        return library.root() + "/" + path + "/" + pagePaths().get(index);
     }
 
-    int pages() {
-        //We are trusting the server that mPagesCount matches pagePaths().size()
-        return pagesCount;
+    void inflate(Library library) {
+        this.library = library;
+        _id = Long.parseLong(key.substring(0, 15), 16); //Using substring of key would be dangerous for large N
+        normalisedTitle = path.replaceAll("[^A-Za-z0-9]+", "").toLowerCase();
+        title = path.replaceAll("\\s+", " ");
+        this.library.books().put(_id, this);
     }
 }

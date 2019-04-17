@@ -2,10 +2,7 @@ package net.bloople.manga;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 
@@ -64,10 +61,6 @@ class LibraryService {
 
             try {
                 loader.load();
-            }
-            catch(JSONException e) {
-                e.printStackTrace();
-                return null;
             }
             catch(IOException e) {
                 e.printStackTrace();

@@ -72,8 +72,8 @@ class LibraryRoot {
         this.root = root;
     }
 
-    Uri rootUri() {
-        return Uri.parse(root);
+    String rootUri() {
+        return Uri.parse(root).toString();
     }
 
     void save(Context context) {

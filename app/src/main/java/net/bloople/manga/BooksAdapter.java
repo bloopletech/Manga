@@ -157,7 +157,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             IndexActivity indexActivity = (IndexActivity)itemView.getContext();
 
             Book book = library.books().get(bookId);
-            TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags().toArray(new String[0]));
+            TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags.toArray(new String[0]));
             tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
         }
     }
@@ -186,7 +186,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.setText(book.title());
 
-        holder.pageCountView.setText(String.format("%,d", book.pages()));
+        holder.pageCountView.setText(String.format("%,d", book.pages));
 
         Glide.clear(holder.imageView);
         holder.imageView.setImageDrawable(null);

@@ -2,7 +2,6 @@ package net.bloople.manga;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.KeyEvent;
@@ -145,8 +144,8 @@ public class ReadingActivity extends Activity {
                 .preload();
     }
 
-    private GlideUrl urlWithContentHint(Uri uri) {
-        return new GlideUrl(uri.toString(), new LazyHeaders.Builder()
+    private GlideUrl urlWithContentHint(String uri) {
+        return new GlideUrl(uri, new LazyHeaders.Builder()
                 .addHeader("Width", MAX_IMAGE_DIMENSION)
                 .build());
     }

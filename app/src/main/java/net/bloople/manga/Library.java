@@ -1,28 +1,23 @@
 package net.bloople.manga;
 
-import android.net.Uri;
-
 import java.util.HashMap;
 
 class Library {
-    private Uri root;
-    private Uri mangos;
-    private HashMap<Long, Book> books;
+    private String root;
+    private HashMap<Long, Book> books = new HashMap<>();
     private String name;
 
-    Library(Uri root, HashMap<Long, Book> books, String name) {
+    Library(String root, String name) {
         this.root = root;
-        this.books = books;
         this.name = name;
     }
 
-    Uri root() {
+    String root() {
         return root;
     }
 
-    Uri mangos() {
-        if(mangos == null) mangos = root.buildUpon().appendEncodedPath(".mangos").build();
-        return mangos;
+    String mangos() {
+        return root + "/.mangos";
     }
 
     HashMap<Long, Book> books() {

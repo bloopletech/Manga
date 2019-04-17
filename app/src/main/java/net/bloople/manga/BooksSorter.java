@@ -48,9 +48,9 @@ class BooksSorter {
                     case SORT_ALPHABETIC:
                         return a.normalisedTitle().compareTo(b.normalisedTitle());
                     case SORT_AGE:
-                        return Integer.compare(a.publishedOn(), b.publishedOn());
+                        return Integer.compare(a.publishedOn, b.publishedOn);
                     case SORT_LENGTH:
-                        return Integer.compare(a.pages(), b.pages());
+                        return Integer.compare(a.pages, b.pages);
                 }
 
                 return 0;

@@ -41,13 +41,13 @@ class BooksSearcher {
                     String realSearchTerm = searchTerm.substring(1);
 
                     if(realSearchTerm.equals(SPECIAL_LONG_BOOK)) {
-                        if(b.pages() >= LONG_BOOK_PAGES) continue bookLoop;
+                        if(b.pages >= LONG_BOOK_PAGES) continue bookLoop;
                     }
                     else if(compareTitle.contains(realSearchTerm)) continue bookLoop;
                 }
                 else {
                     if(searchTerm.equals(SPECIAL_LONG_BOOK)) {
-                        if(b.pages() < LONG_BOOK_PAGES) continue bookLoop;
+                        if(b.pages < LONG_BOOK_PAGES) continue bookLoop;
                     }
                     else if(!compareTitle.contains(searchTerm)) continue bookLoop;
                 }
