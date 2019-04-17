@@ -6,9 +6,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.dslplatform.json.DslJson;
+
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.List;
 
 class Library {
+    private static final String DATA_JSON_PATH = "/data.json";
+
     private long _id = -1L;
     private String name;
     private String root;
@@ -87,6 +95,15 @@ class Library {
 
     HashMap<Long, Book> books() {
         return books;
+    }
+
+    void inflate() throws IOException {
+        URLConnection connection = new URL(mangos() + DATA_JSON_PATH).openConnection();
+
+        DslJson<Object> dslJson = new DslJson<>();
+
+        List<Book> books = dslJson.deserializeList(Book.class, connection.getInputStream());
+        for(Book book : books) book.inflate(this);
     }
 
     void save(Context context) {

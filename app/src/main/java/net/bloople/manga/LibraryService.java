@@ -55,24 +55,24 @@ class LibraryService {
         loader.execute(library);
     }
 
-    class LoadLibraryTask extends AsyncTask<Library, Void, LibraryLoader> {
-        protected LibraryLoader doInBackground(Library... libraries) {
-            LibraryLoader loader = new LibraryLoader(libraries[0]);
+    class LoadLibraryTask extends AsyncTask<Library, Void, Library> {
+        protected Library doInBackground(Library... libraries) {
+            Library library = libraries[0];
 
             try {
-                loader.load();
+                library.inflate();
             }
             catch(IOException e) {
                 e.printStackTrace();
                 return null;
             }
 
-            return loader;
+            return library;
         }
 
-        protected void onPostExecute(LibraryLoader loader) {
+        protected void onPostExecute(Library library) {
             if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
-            listener.onLibraryLoaded(loader == null ? null : loader.library());
+            listener.onLibraryLoaded(library);
         }
     }
 }
