@@ -18,7 +18,7 @@ class LibraryService {
         Library library = Library.findById(context, libraryId);
         if(library == null) library = Library.findDefault(context);
 
-        if(current != null && current.rootUri().equals(library.rootUri())) {
+        if(current != null && current.root().equals(library.root())) {
             listener.onLibraryLoaded(current);
         }
         else {

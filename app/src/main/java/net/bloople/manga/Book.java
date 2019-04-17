@@ -42,7 +42,7 @@ public class Book {
     }
 
     String pageUrl(int index) {
-        return library.rootUri() + "/" + path + "/" + pagePaths().get(index);
+        return library.root() + "/" + path + "/" + pagePaths().get(index);
     }
 
     void inflate(Library library) {

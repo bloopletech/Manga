@@ -21,7 +21,6 @@ class Library {
     private String name;
     private String root;
     private HashMap<Long, Book> books = new HashMap<>();
-    private String rootUri;
 
     static Library findById(Context context, long id) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
@@ -61,7 +60,7 @@ class Library {
     Library(Cursor result) {
         _id = result.getLong(result.getColumnIndex("_id"));
         name = result.getString(result.getColumnIndex("name"));
-        root = result.getString(result.getColumnIndex("root"));
+        root(result.getString(result.getColumnIndex("root")));
     }
 
     long id() {
@@ -81,16 +80,11 @@ class Library {
     }
 
     void root(String root) {
-        this.root = root;
-    }
-
-    String rootUri() {
-        if(rootUri == null) rootUri = Uri.parse(root).toString();
-        return rootUri;
+        this.root = Uri.parse(root).toString();
     }
 
     String mangos() {
-        return rootUri() + "/.mangos";
+        return root + "/.mangos";
     }
 
     HashMap<Long, Book> books() {
