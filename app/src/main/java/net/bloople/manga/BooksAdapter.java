@@ -3,10 +3,12 @@ package net.bloople.manga;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -105,14 +107,14 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
                 return true;
             });
 
+            textView.setOnClickListener(v -> {
+                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+                showFullBookTitle(bookId);
+            });
+
             textView.setOnLongClickListener(v -> {
-                if(selectable) return false;
-
-                IndexActivity indexActivity = (IndexActivity)itemView.getContext();
-
-                Book book = library.books().get(BooksAdapter.this.getItemId(getAdapterPosition()));
-                TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags().toArray(new String[0]));
-                tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
+                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+                showBookTags(bookId);
 
                 return true;
             });
@@ -129,6 +131,34 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             intent.putExtra("libraryRootId", libraryRootId);
 
             itemView.getContext().startActivity(intent);
+        }
+
+        private void showFullBookTitle(long bookId) {
+            Book book = library.books().get(bookId);
+
+            View popupView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.index_book_title_popup, null, false);
+            TextView bookTitleView = popupView.findViewById(R.id.book_title);
+            bookTitleView.setText(book.title());
+
+            int popupWidth = textView.getWidth() + bookTitleView.getPaddingStart() + bookTitleView.getPaddingEnd();
+            PopupWindow popup = new PopupWindow(popupView, popupWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            popup.setFocusable(true);
+            popup.setOutsideTouchable(true);
+            popup.setElevation(24);
+
+            popupView.setOnClickListener(v -> {
+                popup.dismiss();
+            });
+
+            popup.showAsDropDown(textView, -bookTitleView.getPaddingStart(), -textView.getHeight(), Gravity.TOP | Gravity.START);
+        }
+
+        private void showBookTags(long bookId) {
+            IndexActivity indexActivity = (IndexActivity)itemView.getContext();
+
+            Book book = library.books().get(bookId);
+            TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags().toArray(new String[0]));
+            tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
         }
     }
 
