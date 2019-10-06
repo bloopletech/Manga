@@ -79,14 +79,14 @@ public class ReadingActivity extends Activity {
     }
 
     private void onThrottledBackPress() {
-        if(session == null || session.isBeginning()) finish();
+        if(session == null || session.isBeginning()) finishSession();
         else navigateAndShow(-1);
     }
 
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
+            finishSession();
             return true;
         }
         return super.onKeyLongPress(keyCode, event);
@@ -112,6 +112,11 @@ public class ReadingActivity extends Activity {
         if(session == null) return;
         session.go(change);
         showCurrentPage();
+    }
+
+    private void finishSession() {
+        if(session != null) session.finish();
+        finish();
     }
 
     private void showCurrentPage() {

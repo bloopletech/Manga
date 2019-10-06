@@ -53,6 +53,13 @@ class ReadingSession {
         page(bookMetadata.lastReadPosition());
     }
 
+    void finish() {
+        if(currentPage == lastPage()) {
+            currentPage = 0;
+            bookmark();
+        }
+    }
+
     String url() {
         return book.pageUrl(currentPage);
     }
