@@ -5,17 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class LibrariesFragment extends Fragment implements LibraryEditFragment.OnLibraryEditFinishedListener {
     private Context context;
     private OnLibrarySelectedListener listener;
-    private SimpleCursorAdapter librariesAdapter;
+    private LibrariesAdapter librariesAdapter;
 
     interface OnLibrarySelectedListener {
         void onLibrarySelected(long libraryId);
@@ -42,31 +41,14 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        librariesAdapter = new SimpleCursorAdapter(context,
-                R.layout.library,
-                null,
-                new String[] { "name" },
-                new int[] { R.id.name },
-                0);
+        RecyclerView librariesView = view.findViewById(R.id.libraries);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        librariesView.setLayoutManager(layoutManager);
 
-        ListView librariesView = view.findViewById(R.id.libraries);
+        librariesAdapter = new LibrariesAdapter(this);
         librariesView.setAdapter(librariesAdapter);
+
         updateCursor();
-
-        librariesView.setOnItemClickListener((parent, v, position, id) -> {
-            long libraryId = parent.getItemIdAtPosition(position);
-            listener.onLibrarySelected(libraryId);
-        });
-
-        librariesView.setOnItemLongClickListener((parent, v, position, id) -> {
-            long libraryId = parent.getItemIdAtPosition(position);
-            edit(libraryId);
-
-            return true;
-        });
-
-        ImageButton newLibrary = view.findViewById(R.id.new_library);
-        newLibrary.setOnClickListener(v -> newLibrary());
     }
 
     @Override
@@ -81,7 +63,15 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
         updateCursor();
     }
 
-    private void newLibrary() {
+    void setCurrentLibraryId(long libraryId) {
+        librariesAdapter.setCurrentLibraryId(libraryId);
+    }
+
+    void show(long libraryId) {
+        listener.onLibrarySelected(libraryId);
+    }
+
+    void newLibrary() {
         Library library = new Library();
         library.name("New Library");
         library.root("http://example.com/");
@@ -90,7 +80,7 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
         updateCursor();
     }
 
-    private void edit(long libraryId) {
+    void edit(long libraryId) {
         LibraryEditFragment childFragment = LibraryEditFragment.newInstance(libraryId);
         childFragment.show(getChildFragmentManager(), null);
     }

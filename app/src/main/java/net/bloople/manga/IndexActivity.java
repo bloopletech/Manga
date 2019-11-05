@@ -5,10 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +23,7 @@ import java.util.ArrayList;
 public class IndexActivity extends Activity implements LibrariesFragment.OnLibrarySelectedListener {
     private long libraryId = -1;
     private Library library;
-    private TextView libraryNameView;
+    private LibrariesFragment librariesFragment;
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private EditText searchField;
@@ -42,6 +40,8 @@ public class IndexActivity extends Activity implements LibrariesFragment.OnLibra
         }
 
         setContentView(R.layout.activity_index);
+
+        librariesFragment = (LibrariesFragment) getFragmentManager().findFragmentById(R.id.libraries_fragment);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
@@ -78,8 +78,6 @@ public class IndexActivity extends Activity implements LibrariesFragment.OnLibra
             }
             return false;
         });
-
-        libraryNameView = findViewById(R.id.library_name);
 
         booksView = findViewById(R.id.books_view);
         booksView.setLayoutManager(new GridLayoutManager(this, 4));
@@ -154,7 +152,7 @@ public class IndexActivity extends Activity implements LibrariesFragment.OnLibra
         LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
             IndexActivity.this.library = library;
-            libraryNameView.setText(library.name());
+            librariesFragment.setCurrentLibraryId(library.id());
             resolve();
         });
     }
@@ -172,9 +170,6 @@ public class IndexActivity extends Activity implements LibrariesFragment.OnLibra
     }
 
     public void onLibrarySelected(long libraryId) {
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.closeDrawer(Gravity.RIGHT);
-
         this.libraryId = libraryId;
         loadLibrary();
     }
