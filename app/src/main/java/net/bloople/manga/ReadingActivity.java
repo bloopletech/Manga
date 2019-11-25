@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 public class ReadingActivity extends Activity {
     public static final String MAX_IMAGE_DIMENSION = "1500";
     private ReadingSession session;
+    private FrameLayout layout;
     private FrameLayout holder;
     private RequestListener<GlideUrl, GlideDrawable> requestListener;
     private ScrollView scroller;
@@ -39,7 +40,7 @@ public class ReadingActivity extends Activity {
 
         scroller = findViewById(R.id.scroller);
 
-        final FrameLayout layout = findViewById(R.id.layout);
+        layout = findViewById(R.id.layout);
         final Space scroller_fill = findViewById(R.id.scroller_fill);
 
         scroller_fill.post(() -> scroller_fill.setMinimumHeight(layout.getHeight()));
@@ -67,7 +68,7 @@ public class ReadingActivity extends Activity {
                 if(pageFromBundle != -1) session.page(pageFromBundle);
             }
 
-            showCurrentPage();
+            scroller_fill.post(this::showCurrentPage);
         });
     }
 
@@ -132,7 +133,7 @@ public class ReadingActivity extends Activity {
         Glide
                 .with(this)
                 .load(urlWithContentHint(session.url()))
-                .transform(new AutoRotateTransformation(this, imageView))
+                .transform(new AutoRotateTransformation(this, layout.getHeight()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .listener(requestListener)
