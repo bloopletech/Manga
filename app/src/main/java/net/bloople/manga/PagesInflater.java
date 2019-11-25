@@ -19,15 +19,15 @@ class PagesInflater {
                 String name = partParts[0];
                 int count = Integer.valueOf(partParts[1]);
 
-                String[] nameParts = name.split("\\.");
-                String lastBase = nameParts[0];
-                String lastExt = nameParts[1];
+                int lastPeriod = name.lastIndexOf(".");
+                String lastBase = name.substring(0, lastPeriod);
+                String lastExt = name.substring(lastPeriod);
 
                 paths.add(name);
 
                 for(int i = 0; i < count; i++) {
                     lastBase = StringNextUtil.next(lastBase);
-                    paths.add(lastBase + "." + lastExt);
+                    paths.add(lastBase + lastExt);
                 }
             }
             else {
