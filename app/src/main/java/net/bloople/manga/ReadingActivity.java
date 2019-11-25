@@ -132,7 +132,7 @@ public class ReadingActivity extends Activity {
         Glide
                 .with(this)
                 .load(urlWithContentHint(session.url()))
-                .fitCenter()
+                .transform(new AutoRotateTransformation(this, imageView))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .listener(requestListener)
