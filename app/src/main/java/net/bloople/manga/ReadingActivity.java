@@ -160,7 +160,10 @@ public class ReadingActivity extends Activity {
         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target,
         boolean isFirstResource) {
             loadingImage = false;
-            if(e != null) e.printStackTrace();
+            if(e != null) {
+                e.printStackTrace();
+                System.out.println("URL: " + model.toStringUrl());
+            }
             return false;
         }
 
