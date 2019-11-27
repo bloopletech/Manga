@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager;
 
 public class ReadingActivity extends AppCompatActivity {
     private ReadingSession session;
-    private boolean loadingImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,9 @@ public class ReadingActivity extends AppCompatActivity {
         LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
             long bookId = intent.getLongExtra("_id", -1);
-            session = new ReadingSession(getApplicationContext(), this, pager, library.books().get(bookId));
+
+            session = new ReadingSession(getApplicationContext(), library.books().get(bookId));
+            session.bind(getSupportFragmentManager(), pager);
 
             if(intent.getBooleanExtra("resume", false)) session.resume();
 

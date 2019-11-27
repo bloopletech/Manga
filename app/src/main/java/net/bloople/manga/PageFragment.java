@@ -1,6 +1,7 @@
 package net.bloople.manga;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class PageFragment extends Fragment {
     public static final String MAX_IMAGE_DIMENSION = "1500";
@@ -59,6 +65,7 @@ public class PageFragment extends Fragment {
 
         RequestListener<GlideUrl, GlideDrawable> requestListener = new LoadedRequestListener();
 
+        System.out.println("Rendering url " + url);
         Glide
                 .with(context)
                 .load(new GlideUrl(url))
@@ -75,14 +82,6 @@ public class PageFragment extends Fragment {
         this.context = null;
     }
 
-//    private void cacheNextPage() {
-//        Glide
-//                .with(context)
-//                .load(urlWithContentHint(session.url(session.nextPage())))
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .preload();
-//    }
-
     private GlideUrl urlWithContentHint(String uri) {
         return new GlideUrl(uri, new LazyHeaders.Builder()
                 .addHeader("Width", MAX_IMAGE_DIMENSION)
@@ -93,7 +92,6 @@ public class PageFragment extends Fragment {
         @Override
         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target,
                                    boolean isFirstResource) {
-            //loadingImage = false;
             if(e != null) {
                 e.printStackTrace();
                 System.out.println("URL: " + model.toStringUrl());
@@ -106,9 +104,27 @@ public class PageFragment extends Fragment {
                                        boolean isFromMemoryCache, boolean isFirstResource) {
             scroller.scrollTo(0, 0);
 
-            //loadingImage = false;
-
             return false;
         }
+    }
+
+    public static void cacheUrls(Context context, ArrayList<String> urls) {
+        AsyncTask.execute(() -> {
+            for(String url : urls) {
+                System.out.println("Caching url " + url);
+
+                FutureTarget<File> future = Glide.with(context)
+                        .load(new GlideUrl(url))
+                        .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+
+                try {
+                    future.get();
+                }
+                catch(ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                    System.out.println("URL: " + url);
+                }
+            }
+        });
     }
 }

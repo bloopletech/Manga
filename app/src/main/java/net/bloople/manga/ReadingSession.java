@@ -1,27 +1,44 @@
 package net.bloople.manga;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.Target;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 class ReadingSession {
+    public static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
     private ViewPager pager;
     private Book book;
 
-    ReadingSession(Context context, AppCompatActivity activity, ViewPager pager, Book book) {
+    ReadingSession(Context context, Book book) {
         this.context = context;
-        this.pager = pager;
         this.book = book;
+    }
 
-        PagesPagerAdapter pagesPagerAdapter = new PagesPagerAdapter(activity.getSupportFragmentManager(), this);
-        pager.setAdapter(pagesPagerAdapter);
+    void bind(FragmentManager fm, ViewPager pager) {
+        this.pager = pager;
+
+        pager.setAdapter(new BookPagerAdapter(fm));
 
         pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 bookmark(position);
+                PageFragment.cacheUrls(context, cacheNextUrls(position));
             }
         });
     }
@@ -44,6 +61,12 @@ class ReadingSession {
         bookMetadata.save(context);
     }
 
+    private ArrayList<String> cacheNextUrls(int currentPage) {
+        ArrayList<String> cacheUrls = new ArrayList<>();
+        for(int i = currentPage + 1, j = 0; i < book.pages && j < CACHE_PAGES_LIMIT; i++, j++) cacheUrls.add(book.pageUrl(i));
+        return cacheUrls;
+    }
+
     void resume() {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         page(bookMetadata.lastReadPosition());
@@ -53,11 +76,24 @@ class ReadingSession {
         if(page() == book.pages - 1)  bookmark(0);
     }
 
-    int count() {
-        return book.pages;
-    }
+    class BookPagerAdapter extends FragmentStatePagerAdapter {
+        BookPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-    String url(int page) {
-        return book.pageUrl(page);
+        @Override
+        public Fragment getItem(int i) {
+            return PageFragment.newInstance(book.pageUrl(i));
+        }
+
+        @Override
+        public int getCount() {
+            return book.pages;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "OBJECT " + (position + 1);
+        }
     }
 }
