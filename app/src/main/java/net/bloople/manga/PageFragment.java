@@ -13,13 +13,11 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 public class PageFragment extends Fragment {
-    public static final String MAX_IMAGE_DIMENSION = "1500";
     private Context context;
     private ScrollView scroller;
     private String url;
@@ -76,12 +74,6 @@ public class PageFragment extends Fragment {
         this.context = null;
     }
 
-    private GlideUrl urlWithContentHint(String uri) {
-        return new GlideUrl(uri, new LazyHeaders.Builder()
-                .addHeader("Width", MAX_IMAGE_DIMENSION)
-                .build());
-    }
-
     private class LoadedRequestListener implements RequestListener<GlideUrl, GlideDrawable> {
         @Override
         public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target,
@@ -96,8 +88,6 @@ public class PageFragment extends Fragment {
         @Override
         public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
                                        boolean isFromMemoryCache, boolean isFirstResource) {
-            scroller.scrollTo(0, 0);
-
             return false;
         }
     }

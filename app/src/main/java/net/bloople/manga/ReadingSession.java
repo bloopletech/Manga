@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 class ReadingSession {
-    public static final int CACHE_PAGES_LIMIT = 5;
+    private static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
     private ViewPager pager;
     private Book book;
@@ -45,7 +45,7 @@ class ReadingSession {
         pager.setCurrentItem(pager.getCurrentItem() + change);
     }
 
-    void bookmark(int page) {
+    private void bookmark(int page) {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         bookMetadata.lastReadPosition(page);
         bookMetadata.save(context);
