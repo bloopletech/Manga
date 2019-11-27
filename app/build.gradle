@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "net.bloople.manga"
-        minSdkVersion 26
-        targetSdkVersion 26
+        minSdkVersion 28
+        targetSdkVersion 28
         final def version = 36
         versionCode version
         versionName version.toString()
