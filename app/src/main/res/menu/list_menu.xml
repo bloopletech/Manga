@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/sort_alphabetic"
         android:title="Title"
-        android:showAsAction="always"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/sort_size"
         android:title="Pages"
-        android:showAsAction="always"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/sort_age"
         android:title="Age"
         android:icon="@drawable/ic_history_white_24dp"
-        android:showAsAction="always"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/sort_last_opened"
         android:title="Last Opened"
         android:icon="@drawable/ic_visibility_white_24dp"
-        android:showAsAction="always"/>
+        app:showAsAction="always"/>
 </menu>

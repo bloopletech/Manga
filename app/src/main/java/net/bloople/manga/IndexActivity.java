@@ -1,10 +1,12 @@
 package net.bloople.manga;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -15,11 +17,10 @@ import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 
-public class IndexActivity extends Activity implements LibrariesFragment.OnLibrarySelectedListener {
+public class IndexActivity extends AppCompatActivity implements LibrariesFragment.OnLibrarySelectedListener {
     private long libraryId = -1;
     private Library library;
     private LibrariesFragment librariesFragment;
@@ -43,7 +44,7 @@ public class IndexActivity extends Activity implements LibrariesFragment.OnLibra
         librariesFragment = (LibrariesFragment) getFragmentManager().findFragmentById(R.id.libraries_fragment);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         searchField = findViewById(R.id.search_field);
 
