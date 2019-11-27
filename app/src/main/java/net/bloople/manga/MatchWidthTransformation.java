@@ -1,6 +1,6 @@
 package net.bloople.manga;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -8,8 +8,8 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 
 public class MatchWidthTransformation extends BitmapTransformation {
-    MatchWidthTransformation(Activity activity) {
-        super(activity);
+    MatchWidthTransformation(Context context) {
+        super(context);
     }
 
     @Override

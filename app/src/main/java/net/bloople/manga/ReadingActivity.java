@@ -2,32 +2,15 @@ package net.bloople.manga;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
-import android.widget.Space;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import androidx.viewpager.widget.ViewPager;
 
 public class ReadingActivity extends AppCompatActivity {
-    public static final String MAX_IMAGE_DIMENSION = "1500";
     private ReadingSession session;
-    private FrameLayout holder;
-    private RequestListener<GlideUrl, GlideDrawable> requestListener;
-    private ScrollView scroller;
     private boolean loadingImage = false;
-    private long lastBackPressMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +18,13 @@ public class ReadingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_reading);
 
-        holder = findViewById(R.id.image_view_holder);
-        holder.setOnClickListener(ThrottledOnClickListener.wrap(v -> navigateAndShow(1)));
-
-        scroller = findViewById(R.id.scroller);
-
-        final FrameLayout layout = findViewById(R.id.layout);
-        Space scroller_fill = findViewById(R.id.scroller_fill);
-
-        scroller_fill.post(() -> scroller_fill.setMinimumHeight(layout.getHeight()));
+        final ViewPager pager = findViewById(R.id.pager);
 
         ImageView prev10 = findViewById(R.id.prev_10);
-        prev10.setOnClickListener(ThrottledOnClickListener.wrap(v -> navigateAndShow(-10)));
+        prev10.setOnClickListener(ThrottledOnClickListener.wrap(v -> session.go(-10)));
 
         ImageView next10 = findViewById(R.id.next_10);
-        next10.setOnClickListener(ThrottledOnClickListener.wrap(v -> navigateAndShow(10)));
-
-        requestListener = new LoadedRequestListener();
+        next10.setOnClickListener(ThrottledOnClickListener.wrap(v -> session.go(10)));
 
         final Intent intent = getIntent();
         long libraryId = intent.getLongExtra("libraryId", -1);
@@ -59,7 +32,7 @@ public class ReadingActivity extends AppCompatActivity {
         LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
             long bookId = intent.getLongExtra("_id", -1);
-            session = new ReadingSession(getApplicationContext(), library.books().get(bookId));
+            session = new ReadingSession(getApplicationContext(), this, pager, library.books().get(bookId));
 
             if(intent.getBooleanExtra("resume", false)) session.resume();
 
@@ -67,21 +40,7 @@ public class ReadingActivity extends AppCompatActivity {
                 int pageFromBundle = savedInstanceState.getInt("page", -1);
                 if(pageFromBundle != -1) session.page(pageFromBundle);
             }
-
-            showCurrentPage();
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        long now = SystemClock.elapsedRealtime();
-        if(now - lastBackPressMillis > ThrottledOnClickListener.THRESHOLD_MILLIS) onThrottledBackPress();
-        lastBackPressMillis = now;
-    }
-
-    private void onThrottledBackPress() {
-        if(session == null || session.isBeginning()) finishSession();
-        else navigateAndShow(-1);
     }
 
     @Override
@@ -108,76 +67,8 @@ public class ReadingActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    private void navigateAndShow(int change) {
-        if(loadingImage) return;
-        if(session == null) return;
-        session.go(change);
-        showCurrentPage();
-    }
-
     private void finishSession() {
         if(session != null) session.finish();
         finish();
-    }
-
-    private void showCurrentPage() {
-        loadingImage = true;
-
-        cacheNextPage();
-
-        ImageView imageView = (ImageView)LayoutInflater.from(this)
-                .inflate(R.layout.reading_image_view, holder, false);
-
-        holder.addView(imageView);
-
-        Glide
-                .with(this)
-                .load(urlWithContentHint(session.url()))
-                .transform(new MatchWidthTransformation(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .listener(requestListener)
-                .into(imageView);
-
-        session.bookmark();
-    }
-
-    private void cacheNextPage() {
-        Glide
-                .with(this)
-                .load(urlWithContentHint(session.url(session.nextPage())))
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .preload();
-    }
-
-    private GlideUrl urlWithContentHint(String uri) {
-        return new GlideUrl(uri, new LazyHeaders.Builder()
-                .addHeader("Width", MAX_IMAGE_DIMENSION)
-                .build());
-    }
-
-    private class LoadedRequestListener implements RequestListener<GlideUrl, GlideDrawable> {
-        @Override
-        public boolean onException(Exception e, GlideUrl model, Target<GlideDrawable> target,
-        boolean isFirstResource) {
-            loadingImage = false;
-            if(e != null) {
-                e.printStackTrace();
-                System.out.println("URL: " + model.toStringUrl());
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, GlideUrl model, Target<GlideDrawable> target,
-        boolean isFromMemoryCache, boolean isFirstResource) {
-            scroller.scrollTo(0, 0);
-
-            for(int i = 1; i < (holder.getChildCount() - 1); i++) holder.removeViewAt(1);
-
-            loadingImage = false;
-
-            return false;
-        }
     }
 }

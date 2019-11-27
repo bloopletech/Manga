@@ -5,21 +5,10 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ScrollView
-        android:id="@+id/scroller"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#333333">
-        <FrameLayout
-            android:id="@+id/image_view_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <Space
-                android:id="@+id/scroller_fill"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </FrameLayout>
-    </ScrollView>
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/next_10"

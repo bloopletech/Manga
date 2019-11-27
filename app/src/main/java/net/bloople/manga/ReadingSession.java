@@ -2,49 +2,45 @@ package net.bloople.manga;
 
 import android.content.Context;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 class ReadingSession {
     private Context context;
+    private ViewPager pager;
     private Book book;
-    private int currentPage;
 
-    ReadingSession(Context context, Book book) {
+    ReadingSession(Context context, AppCompatActivity activity, ViewPager pager, Book book) {
         this.context = context;
+        this.pager = pager;
         this.book = book;
-    }
 
-    private int lastPage() {
-        return book.pages - 1;
-    }
+        PagesPagerAdapter pagesPagerAdapter = new PagesPagerAdapter(activity.getSupportFragmentManager(), this);
+        pager.setAdapter(pagesPagerAdapter);
 
-    private int clamp(int page) {
-        if(page < 0) return 0;
-        if(page > lastPage()) return lastPage();
-        return page;
+        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                bookmark(position);
+            }
+        });
     }
 
     int page() {
-        return currentPage;
+        return pager.getCurrentItem();
     }
 
     void page(int page) {
-        currentPage = clamp(page);
-    }
-
-    boolean isBeginning() {
-        return currentPage == 0;
-    }
-
-    int nextPage() {
-        return clamp(currentPage + 1);
+        pager.setCurrentItem(page);
     }
 
     void go(int change) {
-        currentPage = clamp(currentPage + change);
+        pager.setCurrentItem(pager.getCurrentItem() + change);
     }
 
-    void bookmark() {
+    void bookmark(int page) {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
-        bookMetadata.lastReadPosition(currentPage);
+        bookMetadata.lastReadPosition(page);
         bookMetadata.save(context);
     }
 
@@ -54,17 +50,14 @@ class ReadingSession {
     }
 
     void finish() {
-        if(currentPage == lastPage()) {
-            currentPage = 0;
-            bookmark();
-        }
+        if(page() == book.pages - 1)  bookmark(0);
     }
 
-    String url() {
-        return book.pageUrl(currentPage);
+    int count() {
+        return book.pages;
     }
 
     String url(int page) {
-        return book.pageUrl(clamp(page));
+        return book.pageUrl(page);
     }
 }
