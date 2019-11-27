@@ -57,7 +57,7 @@ class ReadingSession {
     }
 
     void finish() {
-        if(page() == book.pages - 1)  bookmark(0);
+        if(page() == book.pages - 1) bookmark(0);
     }
 
     class BookPagerAdapter extends FragmentStatePagerAdapter {
