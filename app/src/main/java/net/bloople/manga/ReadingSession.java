@@ -1,22 +1,11 @@
 package net.bloople.manga;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.target.Target;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 class ReadingSession {
     public static final int CACHE_PAGES_LIMIT = 5;
@@ -38,9 +27,10 @@ class ReadingSession {
             @Override
             public void onPageSelected(int position) {
                 bookmark(position);
-                PageFragment.cacheUrls(context, cacheNextUrls(position));
             }
         });
+
+        pager.setOffscreenPageLimit(CACHE_PAGES_LIMIT);
     }
 
     int page() {
@@ -59,12 +49,6 @@ class ReadingSession {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         bookMetadata.lastReadPosition(page);
         bookMetadata.save(context);
-    }
-
-    private ArrayList<String> cacheNextUrls(int currentPage) {
-        ArrayList<String> cacheUrls = new ArrayList<>();
-        for(int i = currentPage + 1, j = 0; i < book.pages && j < CACHE_PAGES_LIMIT; i++, j++) cacheUrls.add(book.pageUrl(i));
-        return cacheUrls;
     }
 
     void resume() {
