@@ -13,6 +13,12 @@ class DatabaseHelper {
         SQLiteDatabase db = context.getApplicationContext().openOrCreateDatabase(DB_NAME,
                 Context.MODE_PRIVATE, null);
 
+        loadSchema(db);
+
+        return db;
+    }
+
+    private static void loadSchema(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS books ( " +
                 "key TEXT PRIMARY KEY, " +
                 "last_opened_at INTEGER DEFAULT 0" +
@@ -45,24 +51,7 @@ class DatabaseHelper {
                 "last_read_position INTEGER DEFAULT 0" +
                 ")");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS library_roots ( " +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "name TEXT, " +
-                "root TEXT" +
-                ")");
-
-        result = db.rawQuery("SELECT COUNT(*) FROM library_roots", new String[] {});
-        result.moveToFirst();
-
-        if(result.getInt(0) == 0) {
-            ContentValues values = new ContentValues();
-            values.put("name", "Manga");
-            values.put("root", "http://192.168.1.100:9292/h/Manga-OG/");
-            db.insert("library_roots", null, values);
-        }
-        result.close();
-
-        return db;
+        createLibraryRootsSchema(db);
     }
 
     static SQLiteDatabase instance(Context context) {
@@ -76,5 +65,41 @@ class DatabaseHelper {
     static void deleteDatabase(Context context) {
         context.getApplicationContext().deleteDatabase(DB_NAME);
         instance = null;
+    }
+
+    private static void createLibraryRootsSchema(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS library_roots ( " +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
+                "root TEXT" +
+                ")");
+
+        boolean alreadyHasPosition = false;
+        Cursor columns = db.rawQuery("PRAGMA table_info(library_roots)", null);
+
+        while(columns.moveToNext()) {
+            if(columns.getString(columns.getColumnIndex("name")).equals("position")) {
+                alreadyHasPosition = true;
+                break;
+            }
+        }
+
+        columns.close();
+
+        if(!alreadyHasPosition) {
+            db.execSQL("ALTER TABLE library_roots ADD COLUMN position INTEGER");
+            db.execSQL("UPDATE library_roots SET position=_id");
+        }
+
+        Cursor result = db.rawQuery("SELECT COUNT(*) FROM library_roots", new String[] {});
+        result.moveToFirst();
+
+        if(result.getInt(0) == 0) {
+            ContentValues values = new ContentValues();
+            values.put("name", "Manga");
+            values.put("root", "http://192.168.1.100:9292/h/Manga-OG/");
+            db.insert("library_roots", null, values);
+        }
+        result.close();
     }
 }

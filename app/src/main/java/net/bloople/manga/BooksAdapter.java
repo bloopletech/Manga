@@ -156,7 +156,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
 
             Book book = library.books().get(bookId);
             TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags.toArray(new String[0]));
-            tagChooser.show(indexActivity.getFragmentManager(), "tag_chooser");
+            tagChooser.show(indexActivity.getSupportFragmentManager(), "tag_chooser");
         }
     }
 

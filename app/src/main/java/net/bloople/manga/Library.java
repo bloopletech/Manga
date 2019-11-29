@@ -19,6 +19,7 @@ class Library {
 
     private long _id = -1L;
     private String name;
+    private int position;
     private String root;
     private HashMap<Long, Book> books = new HashMap<>();
 
@@ -41,7 +42,7 @@ class Library {
     static Library findDefault(Context context) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
-        Cursor result = db.rawQuery("SELECT * FROM library_roots ORDER BY _id ASC LIMIT 1", new String[] {});
+        Cursor result = db.rawQuery("SELECT * FROM library_roots ORDER BY position ASC LIMIT 1", new String[] {});
         result.moveToFirst();
 
         if(result.getCount() > 0) {
@@ -54,12 +55,29 @@ class Library {
         }
     }
 
+    static int findHighestPosition(Context context) {
+        SQLiteDatabase db = DatabaseHelper.instance(context);
+
+        Cursor result = db.rawQuery("SELECT position FROM library_roots ORDER BY position DESC LIMIT 1", new String[] {});
+        result.moveToFirst();
+
+        if(result.getCount() > 0) {
+            int position = result.getInt(result.getColumnIndex("position"));
+            result.close();
+            return position;
+        }
+        else {
+            return 0;
+        }
+    }
+
     Library() {
     }
 
     Library(Cursor result) {
         _id = result.getLong(result.getColumnIndex("_id"));
         name = result.getString(result.getColumnIndex("name"));
+        position = result.getInt(result.getColumnIndex("position"));
         root(result.getString(result.getColumnIndex("root")));
     }
 
@@ -73,6 +91,14 @@ class Library {
 
     void name(String name) {
         this.name = name;
+    }
+
+    int position() {
+        return position;
+    }
+
+    void position(int position) {
+        this.position = position;
     }
 
     String root() {
@@ -103,6 +129,7 @@ class Library {
     void save(Context context) {
         ContentValues values = new ContentValues();
         values.put("name", name);
+        values.put("position", position);
         values.put("root", root);
 
         SQLiteDatabase db = DatabaseHelper.instance(context);

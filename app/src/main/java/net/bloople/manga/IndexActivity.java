@@ -41,7 +41,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
 
         setContentView(R.layout.activity_index);
 
-        librariesFragment = (LibrariesFragment) getFragmentManager().findFragmentById(R.id.libraries_fragment);
+        librariesFragment = (LibrariesFragment) getSupportFragmentManager().findFragmentById(R.id.libraries_fragment);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
