@@ -3,11 +3,13 @@ package net.bloople.manga;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.LruCache;
 
 import java.io.IOException;
 
 class LibraryService {
-    private static Library current;
+    private static final int LIBRARY_CACHE_MAX_COUNT = 5;
+    private static LruCache<Long, Library> currentLibraries = new LruCache<>(LIBRARY_CACHE_MAX_COUNT);
 
     private Context context;
     private Library library;
@@ -18,16 +20,23 @@ class LibraryService {
         Library library = Library.findById(context, libraryId);
         if(library == null) library = Library.findDefault(context);
 
+        if(library == null) {
+            listener.onLibraryLoaded(null);
+            return;
+        }
+
+        Library current = currentLibraries.get(library.id());
+
         if(current != null && current.root().equals(library.root())) {
             listener.onLibraryLoaded(current);
+            return;
         }
-        else {
-            LibraryService service = new LibraryService(context, library, libraryResult -> {
-                current = libraryResult;
-                listener.onLibraryLoaded(libraryResult);
-            });
-            service.ensureLibrary();
-        }
+
+        LibraryService service = new LibraryService(context, library, libraryResult -> {
+            if(libraryResult != null) currentLibraries.put(libraryResult.id(), libraryResult);
+            listener.onLibraryLoaded(libraryResult);
+        });
+        service.ensureLibrary();
     }
 
     interface LibraryLoadedListener {
