@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
     private ImageButton startEditingButton;
     private ImageButton finishEditingButton;
     private ImageButton newLibraryButton;
+    private ItemTouchHelper touchHelper;
     private boolean editingMode = false;
 
     interface OnLibrarySelectedListener {
@@ -74,6 +76,39 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
         newLibraryButton = view.findViewById(R.id.new_library);
         newLibraryButton.setOnClickListener(v -> create());
 
+        touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                LibrariesAdapter.ViewHolder holderA = (LibrariesAdapter.ViewHolder)viewHolder;
+                LibrariesAdapter.ViewHolder holderB = (LibrariesAdapter.ViewHolder)target;
+
+                swap(holderA.libraryId, holderB.libraryId);
+                librariesAdapter.notifyItemMoved(holderA.getAdapterPosition(), holderB.getAdapterPosition());
+
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                // no-op
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return makeMovementFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
+            }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                return false;
+            }
+
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                return false;
+            }
+        });
+        touchHelper.attachToRecyclerView(librariesView);
+
         updateCursor();
     }
 
@@ -91,6 +126,10 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
 
     boolean isEditingMode() {
         return editingMode;
+    }
+
+    void startDrag(LibrariesAdapter.ViewHolder holder) {
+        touchHelper.startDrag(holder);
     }
 
     void setCurrentLibraryId(long libraryId) {
@@ -112,6 +151,18 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
         library.position(Library.findHighestPosition(context) + 1);
         library.root("http://example.com/");
         library.save(context);
+
+        updateCursor();
+    }
+
+    void swap(long libraryAId, long libraryBId) {
+        Library libraryA = Library.findById(context, libraryAId);
+        Library libraryB = Library.findById(context, libraryBId);
+        int aPosition = libraryA.position();
+        libraryA.position(libraryB.position());
+        libraryB.position(aPosition);
+        libraryA.save(context);
+        libraryB.save(context);
 
         updateCursor();
     }

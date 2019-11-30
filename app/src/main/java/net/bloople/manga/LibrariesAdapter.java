@@ -37,7 +37,15 @@ class LibrariesAdapter extends CursorRecyclerAdapter<LibrariesAdapter.ViewHolder
                 else fragment.show(libraryId);
             });
 
-            view.setOnLongClickListener(v -> !fragment.isEditingMode());
+            view.setOnLongClickListener(v -> {
+                if(fragment.isEditingMode()) {
+                    fragment.startDrag(ViewHolder.this);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
         }
     }
 
