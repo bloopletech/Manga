@@ -13,11 +13,13 @@ class ReadingSession {
     private static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
     private ViewPager pager;
+    private Library library;
     private Book book;
     private BooksAuditor auditor;
 
-    ReadingSession(Context context, Book book) {
+    ReadingSession(Context context, Library library, Book book) {
         this.context = context;
+        this.library = library;
         this.book = book;
         auditor = new BooksAuditor(context);
     }
@@ -27,7 +29,7 @@ class ReadingSession {
         metadata.lastOpenedAt(System.currentTimeMillis());
         metadata.save(context);
 
-        auditor.opened(book);
+        auditor.opened(library, book);
     }
 
     void bind(FragmentManager fm, ViewPager pager) {
@@ -63,18 +65,18 @@ class ReadingSession {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         bookMetadata.lastReadPosition(page);
         bookMetadata.save(context);
-        auditor.bookmarked(book, page);
+        auditor.bookmarked(library, book, page);
     }
 
     void resume() {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         page(bookMetadata.lastReadPosition());
-        auditor.resumed(book, bookMetadata.lastReadPosition());
+        auditor.resumed(library, book, bookMetadata.lastReadPosition());
     }
 
     void finish() {
         if(page() == book.pages - 1) bookmark(0);
-        auditor.closed(book);
+        auditor.closed(library, book);
     }
 
     class BookPagerAdapter extends FragmentStatePagerAdapter {

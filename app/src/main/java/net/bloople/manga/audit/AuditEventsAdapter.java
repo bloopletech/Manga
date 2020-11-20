@@ -3,16 +3,20 @@ package net.bloople.manga.audit;
 import android.content.Intent;
 import android.database.Cursor;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import net.bloople.manga.Book;
 import net.bloople.manga.R;
 import net.bloople.manga.ReadingActivity;
 
@@ -21,7 +25,6 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
         TextView whenView;
         TextView actionView;
         ImageButton openResourceView;
-        TextView resourceIdView;
         TextView resourceNameView;
         TextView detailView;
 
@@ -36,12 +39,18 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
                 long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
                 AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
 
-                if(event.resourceType() == ResourceType.BOOK) {
+                if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
                     openBook(event.resourceContextId(), event.resourceId());
                 }
             });
 
             resourceNameView = view.findViewById(R.id.resource_name);
+            resourceNameView.setOnClickListener(v -> {
+                long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
+                AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
+                showFullResourceName(event.resourceName());
+            });
+
             detailView = view.findViewById(R.id.detail);
         }
 
@@ -52,6 +61,33 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
             intent.putExtra("libraryId", libraryId);
 
             openResourceView.getContext().startActivity(intent);
+        }
+
+        private void showFullResourceName(String resourceName) {
+            View popupView = LayoutInflater.from(resourceNameView.getContext()).inflate(
+                R.layout.audit_audit_event_resource_name_popup,
+                null,
+                false
+            );
+            TextView resourceNamePopupView = popupView.findViewById(R.id.resource_name);
+            resourceNamePopupView.setText(resourceName);
+
+            int popupWidth = resourceNameView.getWidth() + resourceNamePopupView.getPaddingStart() + resourceNamePopupView.getPaddingEnd();
+            PopupWindow popup = new PopupWindow(popupView, popupWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+            popup.setFocusable(true);
+            popup.setOutsideTouchable(true);
+            popup.setElevation(24);
+
+            popupView.setOnClickListener(v -> {
+                popup.dismiss();
+            });
+
+            popup.showAsDropDown(
+                resourceNameView,
+                -resourceNamePopupView.getPaddingStart(),
+                -resourceNameView.getHeight(),
+                Gravity.TOP | Gravity.START
+            );
         }
     }
 
@@ -83,8 +119,6 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
         holder.whenView.setText(age);
 
         holder.actionView.setText(event.action().toString());
-        holder.resourceTypeView.setText(event.resourceType().toString());
-        holder.resourceIdView.setText(String.valueOf(event.resourceId()));
         holder.resourceNameView.setText(event.resourceName());
         holder.detailView.setText(event.detail());
     }

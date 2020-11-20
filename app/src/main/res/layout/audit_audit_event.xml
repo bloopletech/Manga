@@ -1,59 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff">
 
     <TextView
         android:id="@+id/when"
-        android:layout_width="180dp"
-        android:layout_height="match_parent"
-        android:background="#fff"
-        android:textSize="16sp"
-        android:textColor="#000"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
-
-    <TextView
-        android:id="@+id/action"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:background="#fff"
         android:textSize="16sp"
         android:textColor="#000"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/action"
+        android:layout_width="175dp"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:textSize="16sp"
+        android:textColor="#000"
+        android:padding="4dp" />
 
     <ImageButton
         android:id="@+id/open_resource"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="9dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/baseline_launch_24"
-        android:background="?android:attr/colorPrimary"/>
+        android:src="@drawable/baseline_launch_black_24"
+        android:background="#fff"
+        android:padding="4dp" />
 
     <TextView
         android:id="@+id/resource_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="0.5"
         android:background="#fff"
+        android:gravity="start"
+        android:maxLines="6"
         android:textSize="16sp"
         android:textColor="#000"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
+        android:padding="4dp"
+        android:clickable="true" />
 
     <TextView
         android:id="@+id/detail"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="0.5"
         android:background="#fff"
         android:textSize="16sp"
         android:textColor="#000"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp" />
+        android:padding="4dp" />
 </LinearLayout>
