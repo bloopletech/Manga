@@ -34,6 +34,7 @@ public class ReadingActivity extends AppCompatActivity {
 
             session = new ReadingSession(getApplicationContext(), library.books().get(bookId));
             session.bind(getSupportFragmentManager(), pager);
+            session.start();
 
             if(intent.getBooleanExtra("resume", false)) session.resume();
 

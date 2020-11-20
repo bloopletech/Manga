@@ -24,7 +24,7 @@ public class Book {
         return library.mangos() + "/img/thumbnails/" + key + ".jpg";
     }
 
-    String title() {
+    public String title() {
         return title;
     }
 
@@ -32,7 +32,7 @@ public class Book {
         return normalisedTitle;
     }
 
-    long id() {
+    public long id() {
         return _id;
     }
 

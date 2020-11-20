@@ -18,6 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ReadingActivity"></activity>
+        <activity android:name=".audit.AuditEventsActivity"></activity>
     </application>
 
 </manifest>

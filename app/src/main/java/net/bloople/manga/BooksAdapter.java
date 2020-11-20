@@ -119,10 +119,6 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         }
 
         private void openBook(long bookId, boolean resume) {
-            BookMetadata metadata = BookMetadata.findOrCreateByBookId(itemView.getContext(), bookId);
-            metadata.lastOpenedAt(System.currentTimeMillis());
-            metadata.save(itemView.getContext());
-
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", resume);

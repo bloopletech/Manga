@@ -8,13 +8,16 @@ import android.net.Uri;
 
 import com.dslplatform.json.DslJson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 
-class Library {
+public class Library {
     private static final String DATA_JSON_PATH = "/data.json";
 
     private long _id = -1L;
@@ -81,11 +84,11 @@ class Library {
         root(result.getString(result.getColumnIndex("root")));
     }
 
-    long id() {
+    public long id() {
         return _id;
     }
 
-    String name() {
+    public String name() {
         return name;
     }
 
@@ -145,5 +148,14 @@ class Library {
     void destroy(Context context) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
         db.delete("library_roots", "_id=?", new String[] { String.valueOf(_id) });
+    }
+
+    public JSONObject toJSON() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put("id", _id);
+        result.put("name", name);
+        result.put("position", position);
+        result.put("root", root);
+        return result;
     }
 }

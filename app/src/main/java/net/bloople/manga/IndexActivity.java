@@ -153,6 +153,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
             if(library == null) return;
             IndexActivity.this.library = library;
             librariesFragment.setCurrentLibraryId(library.id());
+            //AuditEventHelper.activeLibraryChanged(IndexActivity.this, library);
             resolve();
         });
     }

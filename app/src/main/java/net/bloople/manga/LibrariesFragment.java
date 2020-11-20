@@ -1,6 +1,7 @@
 package net.bloople.manga;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,11 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import net.bloople.manga.audit.AuditEventsActivity;
+
 public class LibrariesFragment extends Fragment implements LibraryEditFragment.OnLibraryEditFinishedListener {
     private Context context;
     private OnLibrarySelectedListener listener;
     private LibrariesAdapter librariesAdapter;
 
+    private ImageButton viewAuditEventsButton;
     private ImageButton startEditingButton;
     private ImageButton finishEditingButton;
     private ImageButton newLibraryButton;
@@ -56,6 +60,12 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
 
         librariesAdapter = new LibrariesAdapter(this, null);
         librariesView.setAdapter(librariesAdapter);
+
+        viewAuditEventsButton = view.findViewById(R.id.view_audit_events);
+        viewAuditEventsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, AuditEventsActivity.class);
+            startActivity(intent);
+        });
 
         startEditingButton = view.findViewById(R.id.start_editing);
         startEditingButton.setOnClickListener(v -> {

@@ -7,15 +7,27 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import net.bloople.manga.audit.BooksAuditor;
+
 class ReadingSession {
     private static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
     private ViewPager pager;
     private Book book;
+    private BooksAuditor auditor;
 
     ReadingSession(Context context, Book book) {
         this.context = context;
         this.book = book;
+        auditor = new BooksAuditor(context);
+    }
+
+    void start() {
+        BookMetadata metadata = BookMetadata.findOrCreateByBookId(context, book.id());
+        metadata.lastOpenedAt(System.currentTimeMillis());
+        metadata.save(context);
+
+        auditor.opened(book);
     }
 
     void bind(FragmentManager fm, ViewPager pager) {
@@ -31,6 +43,8 @@ class ReadingSession {
         });
 
         pager.setOffscreenPageLimit(CACHE_PAGES_LIMIT);
+
+
     }
 
     int page() {
@@ -49,15 +63,18 @@ class ReadingSession {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         bookMetadata.lastReadPosition(page);
         bookMetadata.save(context);
+        auditor.bookmarked(book, page);
     }
 
     void resume() {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         page(bookMetadata.lastReadPosition());
+        auditor.resumed(book, bookMetadata.lastReadPosition());
     }
 
     void finish() {
         if(page() == book.pages - 1) bookmark(0);
+        auditor.closed(book);
     }
 
     class BookPagerAdapter extends FragmentStatePagerAdapter {
