@@ -55,7 +55,13 @@ class AuditEvent {
     AuditEvent(Cursor result) {
         _id = result.getLong(result.getColumnIndex("_id"));
         when = result.getLong(result.getColumnIndex("when"));
-        action = Action.valueOf(result.getString(result.getColumnIndex("action")));
+        String actionText = result.getString(result.getColumnIndex("action"));
+        try {
+            action = Action.valueOf(actionText);
+        }
+        catch(IllegalArgumentException e) {
+            action = Action.UNKNOWN;
+        }
         resourceContextType = ResourceType.valueOf(result.getString(result.getColumnIndex("resource_context_type")));
         resourceContextId = result.getLong(result.getColumnIndex("resource_context_id"));
         resourceType = ResourceType.valueOf(result.getString(result.getColumnIndex("resource_type")));

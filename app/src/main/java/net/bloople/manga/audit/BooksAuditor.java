@@ -26,34 +26,6 @@ public class BooksAuditor {
         event.save(context);
     }
 
-    public void bookmarked(Library library, Book book, int page) {
-        AuditEvent event = new AuditEvent(
-            System.currentTimeMillis(),
-            Action.BOOK_BOOKMARKED,
-            ResourceType.LIBRARY,
-            library.id(),
-            ResourceType.BOOK,
-            book.id(),
-            book.title(),
-            "Page " + page
-        );
-        event.save(context);
-    }
-
-    public void resumed(Library library, Book book, int page) {
-        AuditEvent event = new AuditEvent(
-            System.currentTimeMillis(),
-            Action.BOOK_RESUMED,
-            ResourceType.LIBRARY,
-            library.id(),
-            ResourceType.BOOK,
-            book.id(),
-            book.title(),
-            "Page " + page
-        );
-        event.save(context);
-    }
-
     public void closed(Library library, Book book, int page) {
         AuditEvent event = new AuditEvent(
             System.currentTimeMillis(),
