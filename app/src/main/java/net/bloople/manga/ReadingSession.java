@@ -15,17 +15,19 @@ class ReadingSession {
     private ViewPager pager;
     private Library library;
     private Book book;
+    private BookMetadata metadata;
     private BooksAuditor auditor;
 
     ReadingSession(Context context, Library library, Book book) {
         this.context = context;
         this.library = library;
         this.book = book;
+        metadata = BookMetadata.findOrCreateByBookId(context, book.id());
         auditor = new BooksAuditor(context);
+
     }
 
     void start() {
-        BookMetadata metadata = BookMetadata.findOrCreateByBookId(context, book.id());
         metadata.lastOpenedAt(System.currentTimeMillis());
         metadata.save(context);
 
@@ -60,14 +62,12 @@ class ReadingSession {
     }
 
     private void bookmark(int page) {
-        BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
-        bookMetadata.lastReadPosition(page);
-        bookMetadata.save(context);
+        metadata.lastReadPosition(page);
+        metadata.save(context);
     }
 
     void resume() {
-        BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
-        page(bookMetadata.lastReadPosition());
+        page(metadata.lastReadPosition());
     }
 
     void finish() {
