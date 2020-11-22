@@ -29,7 +29,7 @@ class ReadingSession {
         metadata.lastOpenedAt(System.currentTimeMillis());
         metadata.save(context);
 
-        auditor.opened(library, book);
+        auditor.opened(library, book, page());
     }
 
     void bind(FragmentManager fm, ViewPager pager) {
@@ -45,8 +45,6 @@ class ReadingSession {
         });
 
         pager.setOffscreenPageLimit(CACHE_PAGES_LIMIT);
-
-
     }
 
     int page() {
@@ -65,18 +63,16 @@ class ReadingSession {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         bookMetadata.lastReadPosition(page);
         bookMetadata.save(context);
-        auditor.bookmarked(library, book, page);
     }
 
     void resume() {
         BookMetadata bookMetadata = BookMetadata.findOrCreateByBookId(context, book.id());
         page(bookMetadata.lastReadPosition());
-        auditor.resumed(library, book, bookMetadata.lastReadPosition());
     }
 
     void finish() {
         if(page() == book.pages - 1) bookmark(0);
-        auditor.closed(library, book);
+        auditor.closed(library, book, page());
     }
 
     class BookPagerAdapter extends FragmentStatePagerAdapter {

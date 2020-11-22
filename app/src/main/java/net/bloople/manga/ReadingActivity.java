@@ -2,7 +2,6 @@ package net.bloople.manga;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,7 +33,6 @@ public class ReadingActivity extends AppCompatActivity {
 
             session = new ReadingSession(getApplicationContext(), library, library.books().get(bookId));
             session.bind(getSupportFragmentManager(), pager);
-            session.start();
 
             if(intent.getBooleanExtra("resume", false)) session.resume();
 
@@ -42,30 +40,15 @@ public class ReadingActivity extends AppCompatActivity {
                 int pageFromBundle = savedInstanceState.getInt("page", -1);
                 if(pageFromBundle != -1) session.page(pageFromBundle);
             }
+
+            session.start();
         });
     }
 
     @Override
-    public void onBackPressed() {
-        finishSession();
-    }
-
-    @Override
-    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finishSession();
-            return true;
-        }
-        return super.onKeyLongPress(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            event.startTracking();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onRestart() {
+        super.onRestart();
+        session.start();
     }
 
     @Override
@@ -74,8 +57,9 @@ public class ReadingActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    private void finishSession() {
-        if(session != null) session.finish();
-        finish();
+    @Override
+    public void onStop() {
+        session.finish();
+        super.onStop();
     }
 }

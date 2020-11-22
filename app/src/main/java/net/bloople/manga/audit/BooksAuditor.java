@@ -12,7 +12,7 @@ public class BooksAuditor {
         this.context = context;
     }
 
-    public void opened(Library library, Book book) {
+    public void opened(Library library, Book book, int page) {
         AuditEvent event = new AuditEvent(
             System.currentTimeMillis(),
             Action.BOOK_OPENED,
@@ -21,7 +21,7 @@ public class BooksAuditor {
             ResourceType.BOOK,
             book.id(),
             book.title(),
-            ""
+            "Page " + page
         );
         event.save(context);
     }
@@ -35,7 +35,7 @@ public class BooksAuditor {
             ResourceType.BOOK,
             book.id(),
             book.title(),
-            "Bookmarked at page " + page
+            "Page " + page
         );
         event.save(context);
     }
@@ -49,12 +49,12 @@ public class BooksAuditor {
             ResourceType.BOOK,
             book.id(),
             book.title(),
-            "Resumed at page " + page
+            "Page " + page
         );
         event.save(context);
     }
 
-    public void closed(Library library, Book book) {
+    public void closed(Library library, Book book, int page) {
         AuditEvent event = new AuditEvent(
             System.currentTimeMillis(),
             Action.BOOK_CLOSED,
@@ -63,7 +63,7 @@ public class BooksAuditor {
             ResourceType.BOOK,
             book.id(),
             book.title(),
-            ""
+            "Page " + page
         );
         event.save(context);
     }
