@@ -29,6 +29,7 @@ class ReadingSession {
 
     void start() {
         metadata.lastOpenedAt(System.currentTimeMillis());
+        metadata.openedCount(metadata.openedCount() + 1);
         metadata.save(context);
 
         auditor.opened(library, book, page());

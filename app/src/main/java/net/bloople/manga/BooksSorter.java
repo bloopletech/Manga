@@ -13,6 +13,7 @@ class BooksSorter {
     static final int SORT_AGE = 1;
     static final int SORT_LENGTH = 2;
     static final int SORT_LAST_OPENED = 3;
+    static final int SORT_OPENED_COUNT = 4;
 
     private int sortMethod = SORT_AGE;
     private boolean sortDirectionAsc = false;
@@ -41,6 +42,9 @@ class BooksSorter {
 
         if(sortMethod == SORT_LAST_OPENED) {
             sortLastOpened(context, books);
+        }
+        else if(sortMethod == SORT_OPENED_COUNT) {
+            sortOpenedCount(context, books);
         }
         else {
             Collections.sort(books, (a, b) -> {
@@ -73,6 +77,22 @@ class BooksSorter {
 
             if(sortDirectionAsc) return Long.compare(abm.lastOpenedAt(), bbm.lastOpenedAt());
             else return Long.compare(bbm.lastOpenedAt(), abm.lastOpenedAt());
+        });
+    }
+
+    private void sortOpenedCount(Context context, ArrayList<Book> books) {
+        final HashMap<Long, BookMetadata> booksMetadata = metadataForBooks(context, books);
+
+        Collections.sort(books, (a, b) -> {
+            BookMetadata abm = booksMetadata.get(a.id());
+            BookMetadata bbm = booksMetadata.get(b.id());
+
+            if(abm == null && bbm == null) return 0;
+            if(abm == null) return 1;
+            if(bbm == null) return -1;
+
+            if(sortDirectionAsc) return Integer.compare(abm.openedCount(), bbm.openedCount());
+            else return Integer.compare(bbm.openedCount(), abm.openedCount());
         });
     }
 

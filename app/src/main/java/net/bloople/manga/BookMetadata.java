@@ -10,6 +10,7 @@ class BookMetadata {
     private long bookId;
     private long lastOpenedAt;
     private int lastReadPosition;
+    private int openedCount = 0;
 
     static BookMetadata findById(Context context, long id) {
         SQLiteDatabase db = DatabaseHelper.instance(context);
@@ -54,6 +55,7 @@ class BookMetadata {
         bookId = result.getLong(result.getColumnIndex("book_id"));
         lastOpenedAt = result.getLong(result.getColumnIndex("last_opened_at"));
         lastReadPosition = result.getInt(result.getColumnIndex("last_read_position"));
+        openedCount = result.getInt(result.getColumnIndex("opened_count"));
     }
 
     long id() {
@@ -84,16 +86,25 @@ class BookMetadata {
         lastReadPosition = inLastReadPosition;
     }
 
+    int openedCount() {
+        return openedCount;
+    }
+
+    void openedCount(int openedCount) {
+        this.openedCount = openedCount;
+    }
+
     void save(Context context) {
         ContentValues values = new ContentValues();
         values.put("book_id", bookId);
         values.put("last_opened_at", lastOpenedAt);
         values.put("last_read_position", lastReadPosition);
+        values.put("opened_count", openedCount);
 
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
         if(_id == -1L) {
-            _id = db.insert("books_metadata", null, values);
+            _id = db.insertOrThrow("books_metadata", null, values);
         }
         else {
             db.update("books_metadata", values, "_id=?", new String[] { String.valueOf(_id) });

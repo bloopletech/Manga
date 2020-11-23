@@ -155,6 +155,10 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
             if(sorter.getSortMethod() == BooksSorter.SORT_LAST_OPENED) sorter.flipSortDirection();
             sorter.setSortMethod(BooksSorter.SORT_LAST_OPENED);
         }
+        else if(menuItem.getItemId() == R.id.sort_opened_count) {
+            if(sorter.getSortMethod() == BooksSorter.SORT_OPENED_COUNT) sorter.flipSortDirection();
+            sorter.setSortMethod(BooksSorter.SORT_OPENED_COUNT);
+        }
 
         resolve();
 

@@ -130,9 +130,11 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         private void showFullBookTitle(long bookId) {
             Book book = library.books().get(bookId);
 
+            BookMetadata metadata = BookMetadata.findOrCreateByBookId(itemView.getContext(), book.id());
+
             View popupView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.index_book_title_popup, null, false);
             TextView bookTitleView = popupView.findViewById(R.id.book_title);
-            bookTitleView.setText(book.title());
+            bookTitleView.setText(book.title() + "\nOpened Count: " + metadata.openedCount());
 
             int popupWidth = textView.getWidth() + bookTitleView.getPaddingStart() + bookTitleView.getPaddingEnd();
             PopupWindow popup = new PopupWindow(popupView, popupWidth, ViewGroup.LayoutParams.WRAP_CONTENT);

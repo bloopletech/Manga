@@ -44,12 +44,7 @@ class DatabaseHelper {
         }
         result.close();
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS books_metadata ( " +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "book_id INTEGER, " +
-                "last_opened_at INTEGER DEFAULT 0, " +
-                "last_read_position INTEGER DEFAULT 0" +
-                ")");
+        createBooksMetadataSchema(db);
 
         createLibraryRootsSchema(db);
     }
@@ -65,6 +60,32 @@ class DatabaseHelper {
     static void deleteDatabase(Context context) {
         context.getApplicationContext().deleteDatabase(DB_NAME);
         instance = null;
+    }
+
+    private static void createBooksMetadataSchema(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS books_metadata ( " +
+            "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "book_id INTEGER, " +
+            "last_opened_at INTEGER DEFAULT 0, " +
+            "last_read_position INTEGER DEFAULT 0" +
+            ")");
+
+        boolean alreadyHasOpenedCount = false;
+        Cursor columns = db.rawQuery("PRAGMA table_info(books_metadata)", null);
+
+        while(columns.moveToNext()) {
+            if(columns.getString(columns.getColumnIndex("name")).equals("opened_count")) {
+                alreadyHasOpenedCount = true;
+                break;
+            }
+        }
+
+        columns.close();
+
+        if(!alreadyHasOpenedCount) {
+            db.execSQL("ALTER TABLE books_metadata ADD COLUMN opened_count INTEGER");
+            db.execSQL("UPDATE books_metadata SET opened_count=0");
+        }
     }
 
     private static void createLibraryRootsSchema(SQLiteDatabase db) {
