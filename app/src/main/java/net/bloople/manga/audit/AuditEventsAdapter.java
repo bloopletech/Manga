@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import net.bloople.manga.Book;
+import net.bloople.manga.CursorRecyclerAdapter;
 import net.bloople.manga.IndexActivity;
 import net.bloople.manga.LibraryService;
 import net.bloople.manga.R;
