@@ -113,7 +113,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
         }
     }
 
-    private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy h:m a",
+    private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d MMM yyyy h:mm a",
         Locale.getDefault());
 
     AuditEventsAdapter(Cursor cursor) {
