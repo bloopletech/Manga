@@ -2,6 +2,7 @@ package net.bloople.manga;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -18,12 +19,15 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import net.bloople.manga.audit.LibrariesAuditor;
+
 import java.util.ArrayList;
 
 public class IndexActivity extends AppCompatActivity implements LibrariesFragment.OnLibrarySelectedListener {
     private long libraryId = -1;
     private Library library;
     private LibrariesFragment librariesFragment;
+    private LibrariesAuditor auditor;
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private EditText searchField;
@@ -42,6 +46,8 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         setContentView(R.layout.activity_index);
 
         librariesFragment = (LibrariesFragment) getSupportFragmentManager().findFragmentById(R.id.libraries_fragment);
+
+        auditor = new LibrariesAuditor(getApplicationContext());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,7 +94,14 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();
 
-        if(savedInstanceState == null) loadLibrary();
+        final Intent intent = getIntent();
+        long intentLibraryId = intent.getLongExtra("libraryId", -1);
+
+        if(intentLibraryId != -1) {
+            libraryId = intentLibraryId;
+            loadLibrary();
+        }
+        else if(savedInstanceState == null) loadLibrary();
     }
 
     @Override
@@ -153,7 +166,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
             if(library == null) return;
             IndexActivity.this.library = library;
             librariesFragment.setCurrentLibraryId(library.id());
-            //AuditEventHelper.activeLibraryChanged(IndexActivity.this, library);
+            auditor.selected(library);
             resolve();
         });
     }

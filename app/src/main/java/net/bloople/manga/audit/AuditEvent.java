@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 class AuditEvent {
+    static long UNKNOWN_ID = -1L;
+
     private long _id = -1L;
     private long when;
     private Action action;

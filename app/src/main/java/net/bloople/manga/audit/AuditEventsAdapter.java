@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import net.bloople.manga.Book;
+import net.bloople.manga.IndexActivity;
 import net.bloople.manga.LibraryService;
 import net.bloople.manga.R;
 import net.bloople.manga.ReadingActivity;
@@ -44,9 +45,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
                 long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
                 AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
 
-                if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
-                    openBook(event.resourceContextId(), event.resourceId());
-                }
+                openResource(event);
             });
 
             openResourceView = view.findViewById(R.id.open_resource);
@@ -54,9 +53,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
                 long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
                 AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
 
-                if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
-                    openBook(event.resourceContextId(), event.resourceId());
-                }
+                openResource(event);
             });
 
             resourceNameView = view.findViewById(R.id.resource_name);
@@ -69,10 +66,26 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
             detailView = view.findViewById(R.id.detail);
         }
 
+        private void openResource(AuditEvent event) {
+            if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
+                openBook(event.resourceContextId(), event.resourceId());
+            }
+            else if(event.resourceType() == ResourceType.LIBRARY) {
+                openLibrary(event.resourceId());
+            }
+        }
+
         private void openBook(long libraryId, long bookId) {
-            Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
+            Intent intent = new Intent(openResourceView.getContext(), ReadingActivity.class);
             intent.putExtra("_id", bookId);
             intent.putExtra("resume", true);
+            intent.putExtra("libraryId", libraryId);
+
+            openResourceView.getContext().startActivity(intent);
+        }
+
+        private void openLibrary(long libraryId) {
+            Intent intent = new Intent(openResourceView.getContext(), IndexActivity.class);
             intent.putExtra("libraryId", libraryId);
 
             openResourceView.getContext().startActivity(intent);
