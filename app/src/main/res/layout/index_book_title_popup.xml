@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/book_title"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
-    android:gravity="start"
-    android:padding="10dp"
-    android:textColor="#000"
-    android:textSize="16sp"/>
+    android:background="#fff">
+    <TextView
+        android:id="@+id/book_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:gravity="start"
+        android:padding="10dp"
+        android:textColor="#000"
+        android:textSize="16sp" />
+    <ImageButton
+        android:id="@+id/view_audit_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_change_history_black_24"
+        android:background="#fff"
+        android:padding="4dp" />
+</LinearLayout>

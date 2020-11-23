@@ -7,11 +7,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+
+import net.bloople.manga.audit.AuditEventsActivity;
 
 import java.util.ArrayList;
 
@@ -135,6 +138,14 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             View popupView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.index_book_title_popup, null, false);
             TextView bookTitleView = popupView.findViewById(R.id.book_title);
             bookTitleView.setText(book.title() + "\nOpened Count: " + metadata.openedCount());
+
+            ImageButton viewAuditEventsButton = popupView.findViewById(R.id.view_audit_events);
+            viewAuditEventsButton.setOnClickListener(v -> {
+                Intent intent = new Intent(viewAuditEventsButton.getContext(), AuditEventsActivity.class);
+                intent.putExtra("resourceId", book.id());
+
+                viewAuditEventsButton.getContext().startActivity(intent);
+            });
 
             int popupWidth = textView.getWidth() + bookTitleView.getPaddingStart() + bookTitleView.getPaddingEnd();
             PopupWindow popup = new PopupWindow(popupView, popupWidth, ViewGroup.LayoutParams.WRAP_CONTENT);

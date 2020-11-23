@@ -1,5 +1,6 @@
 package net.bloople.manga.audit;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -28,7 +29,9 @@ public class AuditEventsActivity extends AppCompatActivity {
         adapter = new AuditEventsAdapter(null);
         auditEventsView.setAdapter(adapter);
 
-        loadAuditEvents();
+        final Intent intent = getIntent();
+        long resourceId = intent.getLongExtra("resourceId", -1);
+        loadAuditEvents(resourceId);
     }
 
     @Override
@@ -49,25 +52,41 @@ public class AuditEventsActivity extends AppCompatActivity {
         finish();
     }
 
-    private void loadAuditEvents() {
+    private void loadAuditEvents(long resourceId) {
         ResolverTask resolver = new ResolverTask();
-        resolver.execute();
+        resolver.execute(resourceId);
     }
 
-    class ResolverTask extends AsyncTask<Void, Void, Cursor> {
+    class ResolverTask extends AsyncTask<Long, Void, Cursor> {
         @Override
-        protected Cursor doInBackground(Void... voids) {
+        protected Cursor doInBackground(Long... resourceIds) {
+            long resourceId = resourceIds[0];
+
             SQLiteDatabase db = DatabaseHelper.instance(AuditEventsActivity.this);
 
-            Cursor cursor = db.query(
-                "audit_events",
-                null,
-                null,
-                null,
-                null,
-                null,
-                "\"when\" DESC"
-            );
+            Cursor cursor;
+            if(resourceId != -1) {
+                cursor = db.query(
+                    "audit_events",
+                    null,
+                    "resource_id = ?",
+                    new String[] { String.valueOf(resourceId) },
+                    null,
+                    null,
+                    "\"when\" DESC"
+                );
+            }
+            else {
+                cursor = db.query(
+                    "audit_events",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    "\"when\" DESC"
+                );
+            }
 
             cursor.moveToFirst();
 
