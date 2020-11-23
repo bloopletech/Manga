@@ -72,6 +72,19 @@ public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder> 
         }
     }
 
+    //Following method modified from https://android.googlesource.com/platform/packages/apps/Messaging/+/master/src/com/android/messaging/ui/CursorRecyclerAdapter.java
+    /**
+     * @see androidx.recyclerview.widget.RecyclerView.Adapter#getItem(int)
+     */
+    public Cursor getItem(final int position) {
+        if (mDataValid && mCursor != null) {
+            mCursor.moveToPosition(position);
+            return mCursor;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public long getItemId (int position) {
         if(hasStableIds() && mDataValid && mCursor != null){

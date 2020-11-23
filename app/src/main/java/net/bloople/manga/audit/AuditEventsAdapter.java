@@ -43,24 +43,22 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
 
             imageView = view.findViewById(R.id.image_view);
             imageView.setOnClickListener(v -> {
-                long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
-                AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
-
+                Cursor cursor = getItem(getAdapterPosition());
+                AuditEvent event = new AuditEvent(cursor);
                 openResource(event);
             });
 
             openResourceView = view.findViewById(R.id.open_resource);
             openResourceView.setOnClickListener(v -> {
-                long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
-                AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
-
+                Cursor cursor = getItem(getAdapterPosition());
+                AuditEvent event = new AuditEvent(cursor);
                 openResource(event);
             });
 
             resourceNameView = view.findViewById(R.id.resource_name);
             resourceNameView.setOnClickListener(v -> {
-                long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
-                AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
+                Cursor cursor = getItem(getAdapterPosition());
+                AuditEvent event = new AuditEvent(cursor);
                 showFullResourceName(event.resourceName());
             });
 
