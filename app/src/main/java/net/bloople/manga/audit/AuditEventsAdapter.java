@@ -28,6 +28,7 @@ import net.bloople.manga.ReadingActivity;
 
 class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder {
+        AuditEvent event;
         TextView whenView;
         TextView actionView;
         ImageView imageView;
@@ -43,22 +44,16 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
 
             imageView = view.findViewById(R.id.image_view);
             imageView.setOnClickListener(v -> {
-                Cursor cursor = getItem(getAdapterPosition());
-                AuditEvent event = new AuditEvent(cursor);
                 openResource(event);
             });
 
             openResourceView = view.findViewById(R.id.open_resource);
             openResourceView.setOnClickListener(v -> {
-                Cursor cursor = getItem(getAdapterPosition());
-                AuditEvent event = new AuditEvent(cursor);
                 openResource(event);
             });
 
             resourceNameView = view.findViewById(R.id.resource_name);
             resourceNameView.setOnClickListener(v -> {
-                Cursor cursor = getItem(getAdapterPosition());
-                AuditEvent event = new AuditEvent(cursor);
                 showFullResourceName(event.resourceName());
             });
 
@@ -141,6 +136,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
     @Override
     public void onBindViewHolder(AuditEventsAdapter.ViewHolder holder, Cursor cursor) {
         AuditEvent event = new AuditEvent(cursor);
+        holder.event = event;
 
         String age = DATE_FORMAT.format(new Date(event.when()));
         holder.whenView.setText(age);
