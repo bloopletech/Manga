@@ -24,9 +24,16 @@
         android:textColor="#000"
         android:padding="4dp" />
 
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitStart">
+    </ImageView>
+
     <ImageButton
         android:id="@+id/open_resource"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_launch_black_24"
         android:background="#fff"

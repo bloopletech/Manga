@@ -116,7 +116,7 @@ public class Library {
         return root + "/.mangos";
     }
 
-    HashMap<Long, Book> books() {
+    public HashMap<Long, Book> books() {
         return books;
     }
 

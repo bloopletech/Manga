@@ -7,7 +7,7 @@ import android.util.LruCache;
 
 import java.io.IOException;
 
-class LibraryService {
+public class LibraryService {
     private static final int LIBRARY_CACHE_MAX_COUNT = 5;
     private static LruCache<Long, Library> currentLibraries = new LruCache<>(LIBRARY_CACHE_MAX_COUNT);
 
@@ -16,7 +16,7 @@ class LibraryService {
     private LibraryLoadedListener listener;
     private ProgressDialog loadingLibraryDialog;
 
-    static void ensureLibrary(Context context, long libraryId, final LibraryLoadedListener listener) {
+    public static void ensureLibrary(Context context, long libraryId, final LibraryLoadedListener listener) {
         Library library = Library.findById(context, libraryId);
         if(library == null) library = Library.findDefault(context);
 
@@ -39,7 +39,7 @@ class LibraryService {
         service.ensureLibrary();
     }
 
-    interface LibraryLoadedListener {
+    public interface LibraryLoadedListener {
         void onLibraryLoaded(Library library);
     }
 

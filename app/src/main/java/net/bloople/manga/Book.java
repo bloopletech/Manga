@@ -20,7 +20,7 @@ public class Book {
     private long _id;
     private ArrayList<String> pagePathsList;
 
-    String thumbnailUrl() {
+    public String thumbnailUrl() {
         return library.mangos() + "/img/thumbnails/" + key + ".jpg";
     }
 

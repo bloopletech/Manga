@@ -9,14 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import net.bloople.manga.Book;
+import net.bloople.manga.LibraryService;
 import net.bloople.manga.R;
 import net.bloople.manga.ReadingActivity;
 
@@ -24,6 +28,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView whenView;
         TextView actionView;
+        ImageView imageView;
         ImageButton openResourceView;
         TextView resourceNameView;
         TextView detailView;
@@ -33,6 +38,16 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
 
             whenView = view.findViewById(R.id.when);
             actionView = view.findViewById(R.id.action);
+
+            imageView = view.findViewById(R.id.image_view);
+            imageView.setOnClickListener(v -> {
+                long auditEventId = AuditEventsAdapter.this.getItemId(getAdapterPosition());
+                AuditEvent event = AuditEvent.findById(openResourceView.getContext(), auditEventId);
+
+                if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
+                    openBook(event.resourceContextId(), event.resourceId());
+                }
+            });
 
             openResourceView = view.findViewById(R.id.open_resource);
             openResourceView.setOnClickListener(v -> {
@@ -121,5 +136,26 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
         holder.actionView.setText(event.action().toString());
         holder.resourceNameView.setText(event.resourceName());
         holder.detailView.setText(event.detail());
+
+        Glide.clear(holder.imageView);
+        holder.imageView.setImageDrawable(null);
+
+        if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
+            LibraryService.ensureLibrary(holder.imageView.getContext(), event.resourceContextId(), library -> {
+                holder.openResourceView.setVisibility(View.GONE);
+                holder.imageView.setVisibility(View.VISIBLE);
+
+                Book book = library.books().get(event.resourceId());
+
+                final double viewWidthToBitmapWidthRatio = (double)holder.imageView.getLayoutParams().width / 197.0;
+                holder.imageView.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
+
+                Glide.with(holder.imageView.getContext()).load(book.thumbnailUrl()).dontAnimate().into(holder.imageView);
+            });
+        }
+        else {
+            holder.openResourceView.setVisibility(View.VISIBLE);
+            holder.imageView.setVisibility(View.GONE);
+        }
     }
 }
