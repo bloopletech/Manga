@@ -9,9 +9,9 @@
         <!--We will be using the toolbar so no need to show ActionBar-->
         <item name="android:windowActionBar">false</item>
         <!-- colorPrimary is used for the default action bar background -->
-        <item name="android:colorPrimary">#3F51B5</item>
+        <item name="colorPrimary">#3F51B5</item>
         <!-- colorPrimaryDark is used for the status bar -->
-        <item name="android:colorPrimaryDark">#303F9F</item>
+        <item name="colorPrimaryVariant">#303F9F</item>
     </style>
 
     <style name="LibraryTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
