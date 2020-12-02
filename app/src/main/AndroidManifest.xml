@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ReadingActivity"></activity>
+        <activity android:name=".ReadingActivity" android:configChanges="orientation|screenSize"></activity>
         <activity android:name=".audit.AuditEventsActivity"></activity>
     </application>
 
