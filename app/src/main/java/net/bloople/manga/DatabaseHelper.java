@@ -47,6 +47,8 @@ class DatabaseHelper {
         createBooksMetadataSchema(db);
 
         createLibraryRootsSchema(db);
+
+        createQueriesSchema(db);
     }
 
     static SQLiteDatabase instance(Context context) {
@@ -122,5 +124,15 @@ class DatabaseHelper {
             db.insert("library_roots", null, values);
         }
         result.close();
+    }
+
+    private static void createQueriesSchema(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS queries ( " +
+            "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "\"text\" TEXT, " +
+            "created_at INTEGER, " +
+            "last_used_at INTEGER, " +
+            "used_count INTEGER" +
+            ")");
     }
 }
