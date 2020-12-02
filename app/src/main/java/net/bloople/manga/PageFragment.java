@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 
 import androidx.fragment.app.Fragment;
 
@@ -19,7 +18,6 @@ import com.bumptech.glide.request.target.Target;
 
 public class PageFragment extends Fragment {
     private Context context;
-    private ScrollView scroller;
     private String url;
 
     static PageFragment newInstance(String url) {
@@ -51,13 +49,10 @@ public class PageFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        scroller = view.findViewById(R.id.scroller);
-
         ImageView imageView = view.findViewById(R.id.image);
 
         RequestListener<GlideUrl, GlideDrawable> requestListener = new LoadedRequestListener();
 
-        System.out.println("Rendering url " + url);
         Glide
                 .with(context)
                 .load(new GlideUrl(url))
