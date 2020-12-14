@@ -3,19 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:theme="@style/AppTheme.ActionBar">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/libraries"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="?android:attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+        android:layout_weight="1" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="?android:attr/colorPrimary">
+        android:orientation="horizontal">
         <ImageButton
             android:id="@+id/new_library"
             android:layout_width="wrap_content"
@@ -27,7 +25,6 @@
             android:paddingEnd="12dp"
             android:layout_marginTop="10dp"
             android:src="@drawable/ic_add_white_24dp"
-            android:background="?android:attr/colorPrimary"
             android:visibility="gone"/>
         <ImageButton
             android:id="@+id/start_editing"
@@ -39,8 +36,7 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/baseline_edit_white_24"
-            android:background="?android:attr/colorPrimary"/>
+            android:src="@drawable/baseline_edit_24"/>
         <ImageButton
             android:id="@+id/finish_editing"
             android:layout_width="wrap_content"
@@ -51,8 +47,7 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/baseline_done_white_24"
-            android:background="?android:attr/colorPrimary"
+            android:src="@drawable/baseline_done_24"
             android:visibility="gone"/>
         <ImageButton
             android:id="@+id/view_audit_events"
@@ -64,7 +59,6 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/baseline_change_history_white_24"
-            android:background="?android:attr/colorPrimary"/>
+            android:src="@drawable/baseline_change_history_24"/>
     </LinearLayout>
 </LinearLayout>

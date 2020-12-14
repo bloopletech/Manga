@@ -10,9 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/colorPrimary"
-        android:minHeight="?android:attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        android:theme="@style/AppTheme.ActionBar"
         app:title="History">
     </androidx.appcompat.widget.Toolbar>
 

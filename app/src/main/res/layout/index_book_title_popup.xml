@@ -4,21 +4,19 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff">
+    android:background="?attr/colorSurface">
     <TextView
         android:id="@+id/book_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
         android:gravity="start"
-        android:padding="10dp"
-        android:textColor="#000"
-        android:textSize="16sp" />
+        android:padding="10dp" />
     <ImageButton
         android:id="@+id/view_audit_events"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_change_history_black_24"
-        android:background="#fff"
+        android:src="@drawable/baseline_change_history_24"
+        android:background="?attr/colorSurface"
+        android:tint="?attr/colorOnSurface"
         android:padding="4dp" />
 </LinearLayout>
