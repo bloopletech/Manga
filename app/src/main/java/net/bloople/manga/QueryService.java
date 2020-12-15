@@ -17,8 +17,8 @@ public class QueryService {
         adapter.setFilterQueryProvider(constraint -> {
             SQLiteDatabase db = DatabaseHelper.instance(context);
             return db.rawQuery(
-                "SELECT _id, text FROM queries WHERE text LIKE ? ORDER BY last_used_at DESC LIMIT " + FILTER_QUERIES_LIMIT,
-                new String[] { constraint + "%" }
+                "SELECT _id, text FROM queries WHERE text LIKE ? OR text LIKE ? ORDER BY last_used_at DESC LIMIT " + FILTER_QUERIES_LIMIT,
+                new String[] { constraint + "%", "\"" + constraint + "%" }
             );
         });
 
