@@ -14,12 +14,14 @@
         android:id="@+id/next_10"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_gravity="bottom|right"/>
+        android:layout_gravity="bottom|right"
+        android:background="#00000000"/>
 
     <ImageView
         android:id="@+id/prev_10"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_gravity="bottom|left"/>
+        android:layout_gravity="bottom|left"
+        android:background="#00000000"/>
 </FrameLayout>
 
