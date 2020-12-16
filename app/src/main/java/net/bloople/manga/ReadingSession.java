@@ -2,17 +2,18 @@ package net.bloople.manga;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import net.bloople.manga.audit.BooksAuditor;
 
 class ReadingSession {
     private static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
-    private ViewPager pager;
+    private ViewPager2 pager;
     private Library library;
     private Book book;
     private BookMetadata metadata;
@@ -24,7 +25,6 @@ class ReadingSession {
         this.book = book;
         metadata = BookMetadata.findOrCreateByBookId(context, book.id());
         auditor = new BooksAuditor(context);
-
     }
 
     void start() {
@@ -35,12 +35,12 @@ class ReadingSession {
         auditor.opened(library, book, page());
     }
 
-    void bind(FragmentManager fm, ViewPager pager) {
+    void bind(FragmentActivity fa, ViewPager2 pager) {
         this.pager = pager;
 
-        pager.setAdapter(new BookPagerAdapter(fm));
+        pager.setAdapter(new BookPagerAdapter(fa));
 
-        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 bookmark(position);
@@ -55,11 +55,11 @@ class ReadingSession {
     }
 
     void page(int page) {
-        pager.setCurrentItem(page);
+        pager.setCurrentItem(page, false);
     }
 
     void go(int change) {
-        pager.setCurrentItem(pager.getCurrentItem() + change);
+        pager.setCurrentItem(pager.getCurrentItem() + change, false);
     }
 
     private void bookmark(int page) {
@@ -76,24 +76,20 @@ class ReadingSession {
         auditor.closed(library, book, page());
     }
 
-    class BookPagerAdapter extends FragmentStatePagerAdapter {
-        BookPagerAdapter(FragmentManager fm) {
-            super(fm);
+    class BookPagerAdapter extends FragmentStateAdapter {
+        BookPagerAdapter(FragmentActivity fa) {
+            super(fa);
         }
 
+        @NonNull
         @Override
-        public Fragment getItem(int i) {
+        public Fragment createFragment(int i) {
             return PageFragment.newInstance(book.pageUrl(i));
         }
 
         @Override
-        public int getCount() {
+        public int getItemCount() {
             return book.pages;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
         }
     }
 }
