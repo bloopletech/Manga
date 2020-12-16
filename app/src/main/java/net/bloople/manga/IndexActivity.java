@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import net.bloople.manga.audit.LibrariesAuditor;
 
@@ -31,6 +32,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     private RecyclerView booksView;
     private BooksAdapter adapter;
     private AutoCompleteTextView searchField;
+    private TextView searchResultsToolbar;
 
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
@@ -48,6 +50,8 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        searchResultsToolbar = findViewById(R.id.search_results_toolbar);
 
         searchField = findViewById(R.id.search_field);
 
@@ -178,6 +182,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         String text = searchField.getText().toString();
         searcher.setSearchText(text);
         queryService.onSearch(text);
+        searchResultsToolbar.setText(sorter.description());
         ResolverTask resolver = new ResolverTask();
         resolver.execute();
     }

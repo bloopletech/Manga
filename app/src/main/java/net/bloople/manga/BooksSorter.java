@@ -37,6 +37,25 @@ class BooksSorter {
         sortDirectionAsc = !sortDirectionAsc;
     }
 
+    String description() {
+        return "Sorted by " + sortMethodDescription().toLowerCase() + " " + sortDirectionDescription().toLowerCase();
+    }
+
+    String sortMethodDescription() {
+        switch(sortMethod) {
+            case SORT_ALPHABETIC: return "Title";
+            case SORT_AGE: return "Published Date";
+            case SORT_LENGTH: return "Page Count";
+            case SORT_LAST_OPENED: return "Last Opened At";
+            case SORT_OPENED_COUNT: return "Opened Count";
+            default: throw new IllegalStateException("sort_method not in valid range");
+        }
+    }
+
+    String sortDirectionDescription() {
+        return sortDirectionAsc ? "Ascending" : "Descending";
+    }
+
     void sort(Context context, ArrayList<Book> books) {
         if(books.isEmpty()) return;
 
