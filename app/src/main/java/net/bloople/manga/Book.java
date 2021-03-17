@@ -1,9 +1,14 @@
 package net.bloople.manga;
 
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaderFactory;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.dslplatform.json.CompiledJson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Credentials;
 
 @CompiledJson(onUnknown = CompiledJson.Behavior.FAIL)
 public class Book {
@@ -20,8 +25,13 @@ public class Book {
     private long _id;
     private ArrayList<String> pagePathsList;
 
-    public String thumbnailUrl() {
-        return library.mangos() + "/img/thumbnails/" + key + ".jpg";
+    public GlideUrl thumbnailUrl() {
+        String url = library.mangos() + "/img/thumbnails/" + key + ".jpg";
+
+        if(!library.hasCredentials()) return new GlideUrl(url);
+
+        String credential = Credentials.basic(library.username(), library.password());
+        return new GlideUrl(url, new LazyHeaders.Builder().addHeader("Authorization", credential).build());
     }
 
     public String title() {

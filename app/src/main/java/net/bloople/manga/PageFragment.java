@@ -12,18 +12,25 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import okhttp3.Credentials;
+
 public class PageFragment extends Fragment {
     private Context context;
     private String url;
+    private String username;
+    private String password;
 
-    static PageFragment newInstance(String url) {
+    static PageFragment newInstance(String url, String username, String password) {
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
         args.putString("url", url);
+        args.putString("username", username);
+        args.putString("password", password);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,6 +45,8 @@ public class PageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         url = getArguments().getString("url");
+        username = getArguments().getString("username");
+        password = getArguments().getString("password");
     }
 
     @Override
@@ -53,9 +62,18 @@ public class PageFragment extends Fragment {
 
         RequestListener<GlideUrl, GlideDrawable> requestListener = new LoadedRequestListener();
 
+        GlideUrl glideUrl;
+        if(username != null && password != null) {
+            String credential = Credentials.basic(username, password);
+            glideUrl = new GlideUrl(url, new LazyHeaders.Builder().addHeader("Authorization", credential).build());
+        }
+        else {
+            glideUrl = new GlideUrl(url);
+        }
+
         Glide
                 .with(context)
-                .load(new GlideUrl(url))
+                .load(glideUrl)
                 .transform(new MatchWidthTransformation(context))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()

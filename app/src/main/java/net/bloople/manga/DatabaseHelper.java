@@ -72,19 +72,7 @@ class DatabaseHelper {
             "last_read_position INTEGER DEFAULT 0" +
             ")");
 
-        boolean alreadyHasOpenedCount = false;
-        Cursor columns = db.rawQuery("PRAGMA table_info(books_metadata)", null);
-
-        while(columns.moveToNext()) {
-            if(columns.getString(columns.getColumnIndex("name")).equals("opened_count")) {
-                alreadyHasOpenedCount = true;
-                break;
-            }
-        }
-
-        columns.close();
-
-        if(!alreadyHasOpenedCount) {
+        if(!hasColumn(db, "books_metadata", "opened_count")) {
             db.execSQL("ALTER TABLE books_metadata ADD COLUMN opened_count INTEGER");
             db.execSQL("UPDATE books_metadata SET opened_count=0");
         }
@@ -97,25 +85,18 @@ class DatabaseHelper {
                 "root TEXT" +
                 ")");
 
-        boolean alreadyHasPosition = false;
-        Cursor columns = db.rawQuery("PRAGMA table_info(library_roots)", null);
-
-        while(columns.moveToNext()) {
-            if(columns.getString(columns.getColumnIndex("name")).equals("position")) {
-                alreadyHasPosition = true;
-                break;
-            }
-        }
-
-        columns.close();
-
-        if(!alreadyHasPosition) {
+        if(!hasColumn(db, "library_roots", "position")) {
             db.execSQL("ALTER TABLE library_roots ADD COLUMN position INTEGER");
             db.execSQL("UPDATE library_roots SET position=_id");
         }
 
         Cursor result = db.rawQuery("SELECT COUNT(*) FROM library_roots", new String[] {});
         result.moveToFirst();
+
+        if(!hasColumn(db, "library_roots", "username")) {
+            db.execSQL("ALTER TABLE library_roots ADD COLUMN username TEXT");
+            db.execSQL("ALTER TABLE library_roots ADD COLUMN password TEXT");
+        }
 
         if(result.getInt(0) == 0) {
             ContentValues values = new ContentValues();
@@ -134,5 +115,21 @@ class DatabaseHelper {
             "last_used_at INTEGER, " +
             "used_count INTEGER" +
             ")");
+    }
+
+    private static boolean hasColumn(SQLiteDatabase db, String tableName, String columnName) {
+        boolean success = false;
+        Cursor columns = db.rawQuery("PRAGMA table_info(" + tableName +")", null);
+
+        while(columns.moveToNext()) {
+            if(columns.getString(columns.getColumnIndex("name")).equals(columnName)) {
+                success = true;
+                break;
+            }
+        }
+
+        columns.close();
+
+        return success;
     }
 }

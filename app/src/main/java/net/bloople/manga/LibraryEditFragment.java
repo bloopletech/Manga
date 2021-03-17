@@ -16,6 +16,8 @@ public class LibraryEditFragment extends DialogFragment {
     private long libraryId;
     private EditText nameView;
     private EditText rootView;
+    private EditText usernameView;
+    private EditText passwordView;
 
     interface OnLibraryEditFinishedListener {
         void onLibraryEditFinished(Library library);
@@ -40,10 +42,14 @@ public class LibraryEditFragment extends DialogFragment {
 
         nameView = view.findViewById(R.id.name);
         rootView = view.findViewById(R.id.root);
+        usernameView = view.findViewById(R.id.username);
+        passwordView = view.findViewById(R.id.password);
 
         Library library = Library.findById(context, libraryId);
         nameView.setText(library.name());
         rootView.setText(library.root());
+        usernameView.setText(library.username());
+        passwordView.setText(library.password());
 
         builder.setPositiveButton("Save", (dialog, which) -> update());
         builder.setNegativeButton("Cancel", (dialog, which) -> cancel());
@@ -79,6 +85,8 @@ public class LibraryEditFragment extends DialogFragment {
         Library library = Library.findById(context, libraryId);
         library.name(nameView.getText().toString());
         library.root(rootView.getText().toString());
+        library.username(usernameView.getText().toString());
+        library.password(passwordView.getText().toString());
         library.save(context);
         listener.onLibraryEditFinished(library);
     }

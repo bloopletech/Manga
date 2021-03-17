@@ -17,6 +17,13 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 
+import okhttp3.Authenticator;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
+
 public class Library {
     private static final String DATA_JSON_PATH = "/data.json";
 
@@ -24,6 +31,8 @@ public class Library {
     private String name;
     private int position;
     private String root;
+    private String username;
+    private String password;
     private HashMap<Long, Book> books = new HashMap<>();
 
     static Library findById(Context context, long id) {
@@ -82,6 +91,8 @@ public class Library {
         name = result.getString(result.getColumnIndex("name"));
         position = result.getInt(result.getColumnIndex("position"));
         root(result.getString(result.getColumnIndex("root")));
+        username = result.getString(result.getColumnIndex("username"));
+        password = result.getString(result.getColumnIndex("password"));
     }
 
     public long id() {
@@ -112,6 +123,22 @@ public class Library {
         this.root = Uri.parse(root).toString();
     }
 
+    String username() {
+        return username;
+    }
+
+    void username(String username) {
+        this.username = username;
+    }
+
+    String password() {
+        return password;
+    }
+
+    void password(String password) {
+        this.password = password;
+    }
+
     String mangos() {
         return root + "/.mangos";
     }
@@ -120,13 +147,27 @@ public class Library {
         return books;
     }
 
+    boolean hasCredentials() {
+        return username != null && password != null;
+    }
+
     void inflate() throws IOException {
-        URLConnection connection = new URL(mangos() + DATA_JSON_PATH).openConnection();
+        URL url = new URL(mangos() + DATA_JSON_PATH);
+        OkHttpClient client = new OkHttpClient.Builder().authenticator((route, response) -> {
+            if(response.request().header("Authorization") != null) return null;
 
-        DslJson<Object> dslJson = new DslJson<>();
+            if(!hasCredentials()) return null;
+            String credential = Credentials.basic(username, password);
+            return response.request().newBuilder().header("Authorization", credential).build();
+        }).build();
+        Request request = new Request.Builder().url(url).build();
 
-        List<Book> books = dslJson.deserializeList(Book.class, connection.getInputStream());
-        for(Book book : books) book.inflate(this);
+        try(Response response = client.newCall(request).execute()) {
+            DslJson<Object> dslJson = new DslJson<>();
+
+            List<Book> books = dslJson.deserializeList(Book.class, response.body().byteStream());
+            for(Book book : books) book.inflate(this);
+        }
     }
 
     void save(Context context) {
@@ -134,6 +175,8 @@ public class Library {
         values.put("name", name);
         values.put("position", position);
         values.put("root", root);
+        values.put("username", username);
+        values.put("password", password);
 
         SQLiteDatabase db = DatabaseHelper.instance(context);
 
