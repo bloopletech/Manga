@@ -158,7 +158,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
                 final double viewWidthToBitmapWidthRatio = (double)holder.imageView.getLayoutParams().width / 197.0;
                 holder.imageView.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
 
-                Glide.with(holder.imageView.getContext()).load(book.thumbnailUrl()).dontAnimate().into(holder.imageView);
+                Glide.with(holder.imageView.getContext()).load(book.thumbnailUrl().toGlideUrl()).dontAnimate().into(holder.imageView);
             });
         }
         else {

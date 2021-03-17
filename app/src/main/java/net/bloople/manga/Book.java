@@ -25,13 +25,8 @@ public class Book {
     private long _id;
     private ArrayList<String> pagePathsList;
 
-    public GlideUrl thumbnailUrl() {
-        String url = library.mangos() + "/img/thumbnails/" + key + ".jpg";
-
-        if(!library.hasCredentials()) return new GlideUrl(url);
-
-        String credential = Credentials.basic(library.username(), library.password());
-        return new GlideUrl(url, new LazyHeaders.Builder().addHeader("Authorization", credential).build());
+    public MangosUrl thumbnailUrl() {
+        return library.mangos().withAppendedPath("/img/thumbnails/" + key + ".jpg");
     }
 
     public String title() {
@@ -51,8 +46,8 @@ public class Book {
         return pagePathsList;
     }
 
-    String pageUrl(int index) {
-        return library.root() + "/" + path + "/" + pagePaths().get(index);
+    MangosUrl pageUrl(int index) {
+        return library.rootUrl().withAppendedPath("/" + path + "/" + pagePaths().get(index));
     }
 
     void inflate(Library library) {

@@ -84,7 +84,7 @@ class ReadingSession {
         @NonNull
         @Override
         public Fragment createFragment(int i) {
-            return PageFragment.newInstance(book.pageUrl(i), library.username(), library.password());
+            return PageFragment.newInstance(book.pageUrl(i));
         }
 
         @Override

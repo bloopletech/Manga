@@ -12,17 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
-
-import okhttp3.Authenticator;
-import okhttp3.Credentials;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
 
 public class Library {
     private static final String DATA_JSON_PATH = "/data.json";
@@ -139,35 +131,25 @@ public class Library {
         this.password = password;
     }
 
-    String mangos() {
-        return root + "/.mangos";
+    MangosUrl rootUrl() {
+        return new MangosUrl(root, username, password);
+    }
+
+    MangosUrl mangos() {
+        return rootUrl().withAppendedPath("/.mangos");
     }
 
     public HashMap<Long, Book> books() {
         return books;
     }
 
-    boolean hasCredentials() {
-        return username != null && password != null;
-    }
-
     void inflate() throws IOException {
-        URL url = new URL(mangos() + DATA_JSON_PATH);
-        OkHttpClient client = new OkHttpClient.Builder().authenticator((route, response) -> {
-            if(response.request().header("Authorization") != null) return null;
+        URLConnection connection = mangos().withAppendedPath(DATA_JSON_PATH).toUrlConnection();
 
-            if(!hasCredentials()) return null;
-            String credential = Credentials.basic(username, password);
-            return response.request().newBuilder().header("Authorization", credential).build();
-        }).build();
-        Request request = new Request.Builder().url(url).build();
+        DslJson<Object> dslJson = new DslJson<>();
 
-        try(Response response = client.newCall(request).execute()) {
-            DslJson<Object> dslJson = new DslJson<>();
-
-            List<Book> books = dslJson.deserializeList(Book.class, response.body().byteStream());
-            for(Book book : books) book.inflate(this);
-        }
+        List<Book> books = dslJson.deserializeList(Book.class, connection.getInputStream());
+        for(Book book : books) book.inflate(this);
     }
 
     void save(Context context) {
