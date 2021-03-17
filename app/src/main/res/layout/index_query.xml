@@ -2,12 +2,12 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/android:colorBackground"
+    android:background="?attr/colorSurface"
     android:paddingStart="16dp"
     android:paddingTop="8dp"
     android:paddingEnd="8dp"
     android:paddingBottom="8dp"
-    android:textColor="?attr/colorOnBackground"
+    android:textColor="?attr/colorOnSurface"
     android:textSize="18sp">
 
 </TextView>
