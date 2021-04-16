@@ -30,6 +30,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     private LibrariesFragment librariesFragment;
     private LibrariesAuditor auditor;
     private RecyclerView booksView;
+    private GridLayoutManager booksLayoutManager;
     private BooksAdapter adapter;
     private AutoCompleteTextView searchField;
     private TextView searchResultsToolbar;
@@ -37,6 +38,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
     private QueryService queryService;
+    private int pendingFirstItemPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,8 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         });
 
         booksView = findViewById(R.id.books_view);
-        booksView.setLayoutManager(new GridLayoutManager(this, 4));
+        booksLayoutManager = new GridLayoutManager(this, 4);
+        booksView.setLayoutManager(booksLayoutManager);
 
         adapter = new BooksAdapter();
         booksView.setAdapter(adapter);
@@ -111,12 +114,19 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         libraryId = savedInstanceState.getLong("libraryId");
+        sorter.setSortMethod(savedInstanceState.getInt("sortMethod"));
+        sorter.setSortDirectionAsc(savedInstanceState.getBoolean("sortDirectionAsc"));
+        pendingFirstItemPosition = savedInstanceState.getInt("firstItemPosition");
         loadLibrary();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putLong("libraryId", libraryId);
+        savedInstanceState.putInt("sortMethod", sorter.getSortMethod());
+        savedInstanceState.putBoolean("sortDirectionAsc", sorter.getSortDirectionAsc());
+        int firstItemPosition = booksLayoutManager.findFirstCompletelyVisibleItemPosition();
+        savedInstanceState.putInt("firstItemPosition", firstItemPosition);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -217,7 +227,8 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         @Override
         protected void onPostExecute(ArrayList<Long> bookIds) {
             adapter.update(library, bookIds);
-            booksView.scrollToPosition(0);
+            booksView.scrollToPosition(pendingFirstItemPosition);
+            pendingFirstItemPosition = 0;
         }
     }
 }

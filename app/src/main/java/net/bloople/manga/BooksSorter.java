@@ -29,6 +29,10 @@ class BooksSorter {
         this.sortMethod = sortMethod;
     }
 
+    boolean getSortDirectionAsc() {
+        return sortDirectionAsc;
+    }
+
     void setSortDirectionAsc(boolean sortDirectionAsc) {
         this.sortDirectionAsc = sortDirectionAsc;
     }
