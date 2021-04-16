@@ -25,6 +25,7 @@
         android:id="@+id/page_count_view"
         android:layout_gravity="top|end"
         android:padding="2dp"
+        android:background="?android:attr/colorBackground"
         />
 
     <TextView
