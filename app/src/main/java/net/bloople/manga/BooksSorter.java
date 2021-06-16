@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Random;
 
 class BooksSorter {
     static final int SORT_ALPHABETIC = 0;
@@ -14,6 +15,7 @@ class BooksSorter {
     static final int SORT_LENGTH = 2;
     static final int SORT_LAST_OPENED = 3;
     static final int SORT_OPENED_COUNT = 4;
+    static final int SORT_RANDOM = 5;
 
     private int sortMethod = SORT_AGE;
     private boolean sortDirectionAsc = false;
@@ -52,6 +54,7 @@ class BooksSorter {
             case SORT_LENGTH: return "Page Count";
             case SORT_LAST_OPENED: return "Last Opened At";
             case SORT_OPENED_COUNT: return "Opened Count";
+            case SORT_RANDOM: return "Random";
             default: throw new IllegalStateException("sort_method not in valid range");
         }
     }
@@ -68,6 +71,9 @@ class BooksSorter {
         }
         else if(sortMethod == SORT_OPENED_COUNT) {
             sortOpenedCount(context, books);
+        }
+        else if(sortMethod == SORT_RANDOM) {
+            sortRandom(books);
         }
         else {
             Collections.sort(books, (a, b) -> {
@@ -117,6 +123,12 @@ class BooksSorter {
             if(sortDirectionAsc) return Integer.compare(abm.openedCount(), bbm.openedCount());
             else return Integer.compare(bbm.openedCount(), abm.openedCount());
         });
+    }
+
+    private void sortRandom(ArrayList<Book> books) {
+        long seed = System.currentTimeMillis() / (1000L * 60L * 30L);
+        Collections.shuffle(books, new Random(seed));
+        if(!sortDirectionAsc) Collections.reverse(books);
     }
 
     private HashMap<Long, BookMetadata> metadataForBooks(Context context, ArrayList<Book> books) {

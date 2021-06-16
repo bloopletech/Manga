@@ -23,4 +23,9 @@
         android:title="Opened Count"
         android:icon="@drawable/baseline_favorite_24"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/sort_random"
+        android:title="Random"
+        android:icon="@drawable/baseline_shuffle_24"
+        app:showAsAction="always"/>
 </menu>
