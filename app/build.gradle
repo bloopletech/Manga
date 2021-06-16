@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "net.bloople.manga"
         minSdkVersion 28
-        targetSdkVersion 28
+        targetSdkVersion 29
         final def version = 53
         versionCode version
         versionName version.toString()
