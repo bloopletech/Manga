@@ -3,11 +3,11 @@ package net.bloople.manga;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -22,29 +22,23 @@ import android.widget.TextView;
 
 import net.bloople.manga.audit.LibrariesAuditor;
 
-import java.util.ArrayList;
-
 public class IndexActivity extends AppCompatActivity implements LibrariesFragment.OnLibrarySelectedListener {
-    private long libraryId = -1;
-    private Library library;
+    private IndexViewModel model;
     private LibrariesFragment librariesFragment;
     private LibrariesAuditor auditor;
-    private RecyclerView booksView;
-    private GridLayoutManager booksLayoutManager;
     private BooksAdapter adapter;
     private AutoCompleteTextView searchField;
     private TextView searchResultsToolbar;
 
-    private BooksSearcher searcher = new BooksSearcher();
-    private BooksSorter sorter = new BooksSorter();
     private QueryService queryService;
-    private int pendingFirstItemPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_index);
+
+        model = new ViewModelProvider(this).get(IndexViewModel.class);
 
         librariesFragment = (LibrariesFragment) getSupportFragmentManager().findFragmentById(R.id.libraries_fragment);
 
@@ -55,6 +49,10 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
 
         searchResultsToolbar = findViewById(R.id.search_results_toolbar);
 
+        model.getSorterDescription().observe(this, description -> {
+            searchResultsToolbar.setText(description);
+        });
+
         searchField = findViewById(R.id.search_field);
 
         searchField.setOnEditorActionListener((v, actionId, event) -> {
@@ -64,7 +62,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
                 in.hideSoftInputFromWindow(searchField.getWindowToken(), 0);
                 searchField.clearFocus();
 
-                resolve();
+                onSearch(searchField.getText().toString());
 
                 handled = true;
             }
@@ -80,7 +78,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
 
                 if(event.getRawX() >= clickIndex) {
                     searchField.setText("");
-                    resolve();
+                    onSearch("");
 
                     return true;
                 }
@@ -88,8 +86,8 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
             return false;
         });
 
-        booksView = findViewById(R.id.books_view);
-        booksLayoutManager = new GridLayoutManager(this, 4);
+        RecyclerView booksView = findViewById(R.id.books_view);
+        GridLayoutManager booksLayoutManager = new GridLayoutManager(this, 4);
         booksView.setLayoutManager(booksLayoutManager);
 
         adapter = new BooksAdapter();
@@ -100,33 +98,31 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
 
         queryService = new QueryService(this, searchField);
 
+        model.getSearchResults().observe(this, searchResults -> {
+            adapter.update(searchResults.library(), searchResults.bookIds());
+        });
+
         final Intent intent = getIntent();
         long intentLibraryId = intent.getLongExtra("libraryId", -1);
 
         if(intentLibraryId != -1) {
-            libraryId = intentLibraryId;
-            loadLibrary();
+            loadLibrary(intentLibraryId);
         }
-        else if(savedInstanceState == null) loadLibrary();
+        else if(savedInstanceState == null) loadLibrary(-1L);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        libraryId = savedInstanceState.getLong("libraryId");
-        sorter.setSortMethod(savedInstanceState.getInt("sortMethod"));
-        sorter.setSortDirectionAsc(savedInstanceState.getBoolean("sortDirectionAsc"));
-        pendingFirstItemPosition = savedInstanceState.getInt("firstItemPosition");
-        loadLibrary();
+        model.setSort(savedInstanceState.getInt("sortMethod"), savedInstanceState.getBoolean("sortDirectionAsc"));
+        loadLibrary(savedInstanceState.getLong("libraryId"));
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong("libraryId", libraryId);
-        savedInstanceState.putInt("sortMethod", sorter.getSortMethod());
-        savedInstanceState.putBoolean("sortDirectionAsc", sorter.getSortDirectionAsc());
-        int firstItemPosition = booksLayoutManager.findFirstCompletelyVisibleItemPosition();
-        savedInstanceState.putInt("firstItemPosition", firstItemPosition);
+        savedInstanceState.putLong("libraryId", model.getLibrary().id());
+        savedInstanceState.putInt("sortMethod", model.getSortMethod());
+        savedInstanceState.putBoolean("sortDirectionAsc", model.getSortDirectionAsc());
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -152,87 +148,60 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+        int sortMethod = model.getSortMethod();
+        int newSortMethod = sortMethod;
+
         if(menuItem.getItemId() == R.id.sort_alphabetic) {
-            if(sorter.getSortMethod() == BooksSorter.SORT_ALPHABETIC) sorter.flipSortDirection();
-            sorter.setSortMethod(BooksSorter.SORT_ALPHABETIC);
+            newSortMethod = BooksSorter.SORT_ALPHABETIC;
         }
         else if(menuItem.getItemId() == R.id.sort_age) {
-            if(sorter.getSortMethod() == BooksSorter.SORT_AGE) sorter.flipSortDirection();
-            sorter.setSortMethod(BooksSorter.SORT_AGE);
+            newSortMethod = BooksSorter.SORT_AGE;
         }
         else if(menuItem.getItemId() == R.id.sort_size) {
-            if(sorter.getSortMethod() == BooksSorter.SORT_LENGTH) sorter.flipSortDirection();
-            sorter.setSortMethod(BooksSorter.SORT_LENGTH);
+            newSortMethod = BooksSorter.SORT_LENGTH;
         }
         else if(menuItem.getItemId() == R.id.sort_last_opened) {
-            if(sorter.getSortMethod() == BooksSorter.SORT_LAST_OPENED) sorter.flipSortDirection();
-            sorter.setSortMethod(BooksSorter.SORT_LAST_OPENED);
+            newSortMethod = BooksSorter.SORT_LAST_OPENED;
         }
         else if(menuItem.getItemId() == R.id.sort_opened_count) {
-            if(sorter.getSortMethod() == BooksSorter.SORT_OPENED_COUNT) sorter.flipSortDirection();
-            sorter.setSortMethod(BooksSorter.SORT_OPENED_COUNT);
+            newSortMethod = BooksSorter.SORT_OPENED_COUNT;
         }
         else if(menuItem.getItemId() == R.id.sort_random) {
-            if(sorter.getSortMethod() == BooksSorter.SORT_RANDOM) sorter.flipSortDirection();
-            sorter.setSortMethod(BooksSorter.SORT_RANDOM);
+            newSortMethod = BooksSorter.SORT_RANDOM;
         }
 
-        resolve();
+        boolean sortDirectionAsc = model.getSortDirectionAsc();
+        if(sortMethod == newSortMethod) sortDirectionAsc = !sortDirectionAsc;
+        model.setSort(newSortMethod, sortDirectionAsc);
 
         return true;
     }
 
-    private void loadLibrary() {
+    private void loadLibrary(long libraryId) {
         LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
-            IndexActivity.this.library = library;
             librariesFragment.setCurrentLibraryId(library.id());
             auditor.selected(library);
-            resolve();
+            model.setLibrary(library);
         });
     }
 
-    private void resolve() {
-        String text = searchField.getText().toString();
-        searcher.setSearchText(text);
+    private void onSearch(String text) {
+        model.setSearchText(text);
         queryService.onSearch(text);
-        searchResultsToolbar.setText(sorter.description());
-        ResolverTask resolver = new ResolverTask();
-        resolver.execute();
     }
 
     public void useList(BookList list) {
-        if(list == null) searcher.setFilterIds(null);
-        else searcher.setFilterIds(list.bookIds(this));
-        resolve();
+        model.useList(list);
     }
 
     public void onLibrarySelected(long libraryId) {
-        this.libraryId = libraryId;
-        loadLibrary();
+        loadLibrary(libraryId);
     }
 
     public void useTag(String tag) {
-        searchField.setText("\"" + tag + "\"");
-        resolve();
-    }
-
-    class ResolverTask extends AsyncTask<Void, Void, ArrayList<Long>> {
-        @Override
-        protected ArrayList<Long> doInBackground(Void... voids) {
-            ArrayList<Book> books = searcher.search(library);
-            sorter.sort(IndexActivity.this, books);
-
-            ArrayList<Long> bookIds = new ArrayList<>();
-            for(Book b : books) bookIds.add(b.id());
-            return bookIds;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Long> bookIds) {
-            adapter.update(library, bookIds);
-            booksView.scrollToPosition(pendingFirstItemPosition);
-            pendingFirstItemPosition = 0;
-        }
+        String text = "\"" + tag + "\"";
+        searchField.setText(text);
+        onSearch(text);
     }
 }
