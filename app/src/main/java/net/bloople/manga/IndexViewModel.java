@@ -1,7 +1,6 @@
 package net.bloople.manga;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -9,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class IndexViewModel extends AndroidViewModel {
     private Application application;
@@ -70,31 +71,14 @@ public class IndexViewModel extends AndroidViewModel {
     }
 
     private void resolve() {
-        ResolverTask resolver = new ResolverTask(library);
-        resolver.execute();
-    }
-
-    class ResolverTask extends AsyncTask<Void, Void, ArrayList<Long>> {
-        private final Library library;
-
-        ResolverTask(Library library) {
-            super();
-            this.library = library;
-        }
-
-        @Override
-        protected ArrayList<Long> doInBackground(Void... voids) {
+        ExecutorService service =  Executors.newSingleThreadExecutor();
+        service.submit(() -> {
             ArrayList<Book> books = searcher.search(library);
             sorter.sort(application, books);
 
             ArrayList<Long> bookIds = new ArrayList<>();
             for(Book b : books) bookIds.add(b.id());
-            return bookIds;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Long> bookIds) {
-            searchResults.setValue(new SearchResults(library, bookIds));
-        }
+            searchResults.postValue(new SearchResults(library, bookIds));
+        });
     }
 }
