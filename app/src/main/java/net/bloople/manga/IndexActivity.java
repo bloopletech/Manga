@@ -99,7 +99,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         queryService = new QueryService(this, searchField);
 
         model.getSearchResults().observe(this, searchResults -> {
-            adapter.update(searchResults.library(), searchResults.bookIds());
+            adapter.update(searchResults);
         });
 
         final Intent intent = getIntent();

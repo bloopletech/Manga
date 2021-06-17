@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 public class IndexViewModel extends AndroidViewModel {
     private Application application;
     private Library library;
-    private MutableLiveData<SearchResults> searchResults = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Book>> searchResults = new MutableLiveData<>();
     private BooksSearcher searcher = new BooksSearcher();
     private BooksSorter sorter = new BooksSorter();
     private MutableLiveData<String> sorterDescription;
@@ -33,7 +33,7 @@ public class IndexViewModel extends AndroidViewModel {
         return library;
     }
 
-    public LiveData<SearchResults> getSearchResults() {
+    public LiveData<ArrayList<Book>> getSearchResults() {
         return searchResults;
     }
 
@@ -75,10 +75,7 @@ public class IndexViewModel extends AndroidViewModel {
         service.submit(() -> {
             ArrayList<Book> books = searcher.search(library);
             sorter.sort(application, books);
-
-            ArrayList<Long> bookIds = new ArrayList<>();
-            for(Book b : books) bookIds.add(b.id());
-            searchResults.postValue(new SearchResults(library, bookIds));
+            searchResults.postValue(books);
         });
     }
 }

@@ -19,8 +19,7 @@ import net.bloople.manga.audit.AuditEventsActivity;
 import java.util.ArrayList;
 
 class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
-    private Library library;
-    private ArrayList<Long> bookIds = new ArrayList<>();
+    private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Long> selectedBookIds = new ArrayList<>();
     private boolean selectable = false;
 
@@ -29,7 +28,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     }
 
     public long getItemId(int position) {
-        return bookIds.get(position);
+        return books.get(position).id();
     }
 
     public boolean isSelectable() {
@@ -57,12 +56,11 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return bookIds.size();
+        return books.size();
     }
 
-    void update(Library library, ArrayList<Long> inBookIds) {
-        this.library = library;
-        bookIds = inBookIds;
+    void update(ArrayList<Book> inBooks) {
+        books = inBooks;
         notifyDataSetChanged();
     }
 
@@ -80,7 +78,8 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             selectableView = view.findViewById(R.id.selectable);
 
             view.setOnClickListener(v -> {
-                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
+                Book book = books.get(getAdapterPosition());
+                long bookId = book.id();
 
                 if(selectable) {
                     if(selectedBookIds.contains(bookId)) {
@@ -95,44 +94,42 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
                     notifyItemChanged(getAdapterPosition());
                 }
                 else {
-                    openBook(bookId, true);
+                    openBook(book, true);
                 }
             });
 
             view.setOnLongClickListener(v -> {
                 if(selectable) return false;
 
-                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
-                openBook(bookId, false);
+                Book book = books.get(getAdapterPosition());
+                openBook(book, false);
 
                 return true;
             });
 
             textView.setOnClickListener(v -> {
-                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
-                showFullBookTitle(bookId);
+                Book book = books.get(getAdapterPosition());
+                showFullBookTitle(book);
             });
 
             textView.setOnLongClickListener(v -> {
-                long bookId = BooksAdapter.this.getItemId(getAdapterPosition());
-                showBookTags(bookId);
+                Book book = books.get(getAdapterPosition());
+                showBookTags(book);
 
                 return true;
             });
         }
 
-        private void openBook(long bookId, boolean resume) {
+        private void openBook(Book book, boolean resume) {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
-            intent.putExtra("_id", bookId);
+            intent.putExtra("_id", book.id());
             intent.putExtra("resume", resume);
-            intent.putExtra("libraryId", library.id());
+            intent.putExtra("libraryId", book.library().id());
 
             itemView.getContext().startActivity(intent);
         }
 
-        private void showFullBookTitle(long bookId) {
-            Book book = library.books().get(bookId);
-
+        private void showFullBookTitle(Book book) {
             BookMetadata metadata = BookMetadata.findOrCreateByBookId(itemView.getContext(), book.id());
 
             View popupView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.index_book_title_popup, null, false);
@@ -160,10 +157,9 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
             popup.showAsDropDown(textView, -bookTitleView.getPaddingStart(), -textView.getHeight(), Gravity.TOP | Gravity.START);
         }
 
-        private void showBookTags(long bookId) {
+        private void showBookTags(Book book) {
             IndexActivity indexActivity = (IndexActivity)itemView.getContext();
 
-            Book book = library.books().get(bookId);
             TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags.toArray(new String[0]));
             tagChooser.show(indexActivity.getSupportFragmentManager(), "tag_chooser");
         }
@@ -184,11 +180,10 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        long bookId = getItemId(position);
-        Book book = library.books().get(bookId);
+        Book book = books.get(position);
 
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
-        if(selectable) holder.itemView.setActivated(selectedBookIds.contains(bookId));
+        if(selectable) holder.itemView.setActivated(selectedBookIds.contains(book.id()));
 
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.setText(book.title());

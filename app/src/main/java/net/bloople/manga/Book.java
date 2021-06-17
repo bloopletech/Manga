@@ -25,6 +25,10 @@ public class Book {
     private long _id;
     private ArrayList<String> pagePathsList;
 
+    public Library library() {
+        return library;
+    }
+
     public MangosUrl thumbnailUrl() {
         return library.mangos().withAppendedPath("/img/thumbnails/" + key + ".jpg");
     }
