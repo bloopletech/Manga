@@ -100,16 +100,15 @@ public class DatabaseManagementFragment extends Fragment {
     private void startExport() {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/vnd.sqlite3"); //not needed, but maybe usefull
-        intent.putExtra(Intent.EXTRA_TITLE, "Manga.db"); //not needed, but maybe usefull
+        intent.setType("application/vnd.sqlite3");
+        intent.putExtra(Intent.EXTRA_TITLE, "Manga.db");
         startActivityForResult(intent, REQUEST_CODE_EXPORT);
     }
 
     private void startImport() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/vnd.sqlite3"); //not needed, but maybe usefull
-        intent.putExtra(Intent.EXTRA_TITLE, "Manga.db"); //not needed, but maybe usefull
+        intent.setType("*/*");
         startActivityForResult(intent, REQUEST_CODE_IMPORT);
     }
 }
