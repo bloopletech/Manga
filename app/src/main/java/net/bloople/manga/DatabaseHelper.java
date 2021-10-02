@@ -5,6 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 class DatabaseHelper {
     private static final String DB_NAME = "books";
     private static SQLiteDatabase instance;
@@ -51,7 +58,7 @@ class DatabaseHelper {
         createQueriesSchema(db);
     }
 
-    static SQLiteDatabase instance(Context context) {
+    static synchronized SQLiteDatabase instance(Context context) {
         if(instance == null) {
             instance = obtainDatabase(context);
         }
@@ -59,9 +66,53 @@ class DatabaseHelper {
         return instance;
     }
 
-    static void deleteDatabase(Context context) {
+    static synchronized void deleteDatabase(Context context) {
         context.getApplicationContext().deleteDatabase(DB_NAME);
         instance = null;
+    }
+
+    static synchronized void exportDatabase(Context context, OutputStream outputStream) throws IOException {
+        SQLiteDatabase tempInstance = instance(context);
+        String path = tempInstance.getPath();
+        tempInstance.close();
+        instance = null;
+
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(path);
+            byte[] buffer = new byte[1024];
+            int length;
+            while((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+        finally
+        {
+            if(inputStream != null) inputStream.close();
+            outputStream.close();
+        }
+    }
+
+    static synchronized void importDatabase(Context context, InputStream inputStream) throws IOException {
+        SQLiteDatabase tempInstance = instance(context);
+        String path = tempInstance.getPath();
+        tempInstance.close();
+        instance = null;
+
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(path);
+            byte[] buffer = new byte[1024];
+            int length;
+            while((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+        finally
+        {
+            inputStream.close();
+            if(outputStream != null) outputStream.close();
+        }
     }
 
     private static void createBooksMetadataSchema(SQLiteDatabase db) {

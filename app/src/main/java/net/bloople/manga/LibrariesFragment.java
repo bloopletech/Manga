@@ -21,6 +21,7 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
     private Context context;
     private OnLibrarySelectedListener listener;
     private LibrariesAdapter librariesAdapter;
+    private DatabaseManagementFragment databaseManagementFragment;
 
     private ImageButton viewAuditEventsButton;
     private ImageButton startEditingButton;
@@ -54,6 +55,9 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        databaseManagementFragment = (DatabaseManagementFragment) getChildFragmentManager()
+            .findFragmentById(R.id.database_management_framework);
+
         RecyclerView librariesView = view.findViewById(R.id.libraries);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         librariesView.setLayoutManager(layoutManager);
@@ -72,12 +76,14 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
             startEditingButton.setVisibility(View.GONE);
             newLibraryButton.setVisibility(View.VISIBLE);
             finishEditingButton.setVisibility(View.VISIBLE);
+            databaseManagementFragment.getView().setVisibility(View.VISIBLE);
             editingMode = true;
         });
 
         finishEditingButton = view.findViewById(R.id.finish_editing);
         finishEditingButton.setOnClickListener(v -> {
             editingMode = false;
+            databaseManagementFragment.getView().setVisibility(View.GONE);
             finishEditingButton.setVisibility(View.GONE);
             newLibraryButton.setVisibility(View.GONE);
             startEditingButton.setVisibility(View.VISIBLE);
