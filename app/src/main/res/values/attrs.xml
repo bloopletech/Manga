@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="TouchRejectionFrameLayout">
+        <attr name="touchRejectionOffset" format="dimension" />
+    </declare-styleable>
+</resources>
