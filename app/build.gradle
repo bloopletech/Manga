@@ -4,13 +4,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "31.0.0"
+    compileSdk 29
 
     defaultConfig {
         applicationId "net.bloople.manga"
-        minSdkVersion 28
-        targetSdkVersion 29
+        minSdk 28
+        targetSdk 29
         final def version = 59
         versionCode version
         versionName version.toString()
