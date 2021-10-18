@@ -38,3 +38,5 @@
 -keepclasseswithmembers class net.bloople.manga.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+-keep public class * implements com.bumptech.glide.module.GlideModule
