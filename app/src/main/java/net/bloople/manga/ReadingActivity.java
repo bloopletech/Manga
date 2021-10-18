@@ -35,7 +35,7 @@ public class ReadingActivity extends AppCompatActivity {
             if(library == null) return;
             long bookId = intent.getLongExtra("_id", -1);
 
-            session = new ReadingSession(getApplicationContext(), library, library.books().get(bookId));
+            session = new ReadingSession(getApplicationContext(), library, library.getBooks().get(bookId));
             session.bind(this, pager);
 
             if(intent.getBooleanExtra("resume", false)) session.resume();

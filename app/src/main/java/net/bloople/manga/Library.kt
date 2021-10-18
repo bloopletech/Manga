@@ -8,8 +8,6 @@ import android.net.Uri
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
 import java.util.HashMap
 
@@ -21,7 +19,7 @@ class Library {
     private var root: String? = null
     private var username: String? = null
     private var password: String? = null
-    private val books = HashMap<Long, Book>()
+    val books = HashMap<Long, Book>()
 
     internal constructor() {}
     internal constructor(result: Cursor) {
@@ -85,10 +83,6 @@ class Library {
         return rootUrl().withAppendedPath("/.mangos")
     }
 
-    fun books(): HashMap<Long, Book> {
-        return books
-    }
-
     @ExperimentalSerializationApi
     @Throws(IOException::class)
     fun inflate() {
@@ -119,16 +113,6 @@ class Library {
     fun destroy(context: Context?) {
         val db = DatabaseHelper.instance(context)
         db.delete("library_roots", "_id=?", arrayOf(_id.toString()))
-    }
-
-    @Throws(JSONException::class)
-    fun toJSON(): JSONObject {
-        val result = JSONObject()
-        result.put("id", _id)
-        result.put("name", name)
-        result.put("position", position)
-        result.put("root", root)
-        return result
     }
 
     companion object {

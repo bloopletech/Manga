@@ -29,7 +29,7 @@ class BooksSearcher {
         ArrayList<String> searchTerms = parseSearchTerms();
 
         bookLoop:
-        for(Map.Entry<Long, Book> entry : library.books().entrySet()) {
+        for(Map.Entry<Long, Book> entry : library.getBooks().entrySet()) {
             if(filterIds != null && !filterIds.isEmpty() && !filterIds.contains(entry.getKey())) continue;
 
             Book b = entry.getValue();

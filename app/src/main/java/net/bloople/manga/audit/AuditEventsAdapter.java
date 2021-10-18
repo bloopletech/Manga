@@ -153,7 +153,7 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
                 holder.openResourceView.setVisibility(View.GONE);
                 holder.imageView.setVisibility(View.VISIBLE);
 
-                Book book = library.books().get(event.resourceId());
+                Book book = library.getBooks().get(event.resourceId());
 
                 final double viewWidthToBitmapWidthRatio = (double)holder.imageView.getLayoutParams().width / 197.0;
                 holder.imageView.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
