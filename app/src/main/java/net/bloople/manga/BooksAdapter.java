@@ -160,7 +160,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         private void showBookTags(Book book) {
             IndexActivity indexActivity = (IndexActivity)itemView.getContext();
 
-            TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.tags.toArray(new String[0]));
+            TagChooserFragment tagChooser = TagChooserFragment.newInstance(book.getTags().toArray(new String[0]));
             tagChooser.show(indexActivity.getSupportFragmentManager(), "tag_chooser");
         }
     }
@@ -188,7 +188,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.setText(book.title());
 
-        holder.pageCountView.setText(String.format("%,d", book.pages));
+        holder.pageCountView.setText(String.format("%,d", book.getPages()));
 
         Glide.clear(holder.imageView);
         holder.imageView.setImageDrawable(null);

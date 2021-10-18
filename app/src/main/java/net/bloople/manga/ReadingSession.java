@@ -72,7 +72,7 @@ class ReadingSession {
     }
 
     void finish() {
-        if(page() == book.pages - 1) bookmark(0);
+        if(page() == book.getPages() - 1) bookmark(0);
         auditor.closed(library, book, page());
     }
 
@@ -89,7 +89,7 @@ class ReadingSession {
 
         @Override
         public int getItemCount() {
-            return book.pages;
+            return book.getPages();
         }
     }
 }
