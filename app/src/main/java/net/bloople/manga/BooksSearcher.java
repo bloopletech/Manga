@@ -34,7 +34,7 @@ class BooksSearcher {
 
             Book b = entry.getValue();
 
-            String compareTitle = b.title().toLowerCase();
+            String compareTitle = b.getTitle().toLowerCase();
 
             for(String searchTerm : searchTerms) {
                 if(searchTerm.startsWith("-")) {

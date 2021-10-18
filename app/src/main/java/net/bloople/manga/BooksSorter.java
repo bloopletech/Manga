@@ -79,7 +79,7 @@ class BooksSorter {
             Collections.sort(books, (a, b) -> {
                 switch(sortMethod) {
                     case SORT_ALPHABETIC:
-                        return a.normalisedTitle().compareTo(b.normalisedTitle());
+                        return a.getNormalisedTitle().compareTo(b.getNormalisedTitle());
                     case SORT_AGE:
                         return Integer.compare(a.getPublishedOn(), b.getPublishedOn());
                     case SORT_LENGTH:
@@ -97,8 +97,8 @@ class BooksSorter {
         final HashMap<Long, BookMetadata> booksMetadata = metadataForBooks(context, books);
 
         Collections.sort(books, (a, b) -> {
-            BookMetadata abm = booksMetadata.get(a.id());
-            BookMetadata bbm = booksMetadata.get(b.id());
+            BookMetadata abm = booksMetadata.get(a.getId());
+            BookMetadata bbm = booksMetadata.get(b.getId());
 
             if(abm == null && bbm == null) return 0;
             if(abm == null) return 1;
@@ -113,8 +113,8 @@ class BooksSorter {
         final HashMap<Long, BookMetadata> booksMetadata = metadataForBooks(context, books);
 
         Collections.sort(books, (a, b) -> {
-            BookMetadata abm = booksMetadata.get(a.id());
-            BookMetadata bbm = booksMetadata.get(b.id());
+            BookMetadata abm = booksMetadata.get(a.getId());
+            BookMetadata bbm = booksMetadata.get(b.getId());
 
             if(abm == null && bbm == null) return 0;
             if(abm == null) return 1;
@@ -137,7 +137,7 @@ class BooksSorter {
         StringBuilder sb = new StringBuilder();
         for(Book b : books) {
             if(sb.length() != 0) sb.append(",");
-            sb.append(b.id());
+            sb.append(b.getId());
         }
 
         Cursor result = db.rawQuery("SELECT * FROM books_metadata WHERE book_id IN (" + sb.toString() + ")", new String[] {});

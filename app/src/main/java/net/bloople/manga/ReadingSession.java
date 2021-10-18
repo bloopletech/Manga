@@ -23,7 +23,7 @@ class ReadingSession {
         this.context = context;
         this.library = library;
         this.book = book;
-        metadata = BookMetadata.findOrCreateByBookId(context, book.id());
+        metadata = BookMetadata.findOrCreateByBookId(context, book.getId());
         auditor = new BooksAuditor(context);
     }
 

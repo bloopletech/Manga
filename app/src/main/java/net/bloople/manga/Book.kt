@@ -15,13 +15,11 @@ class Book(
     val tags: List<String>
 ) {
     @Transient
-    private var library: Library? = null
-    @Transient
-    private var title: String? = null
-    @Transient
-    private var normalisedTitle: String? = null
-    @Transient
-    private var _id: Long = 0
+    var library: Library? = null
+        private set
+    val title: String by lazy { path.replace("\\s+".toRegex(), " ") }
+    val normalisedTitle: String by lazy { path.replace("[^A-Za-z0-9]+".toRegex(), "").toLowerCase() }
+    val id: Long by lazy { key.substring(0, 15).toLong(16) } //Using substring of key would be dangerous for large N
     @Transient
     private var pagePathsList: ArrayList<String>? = null
 
@@ -31,18 +29,6 @@ class Book(
 
     fun thumbnailUrl(): MangosUrl {
         return library!!.mangos().withAppendedPath("/img/thumbnails/$key.jpg")
-    }
-
-    fun title(): String? {
-        return title
-    }
-
-    fun normalisedTitle(): String? {
-        return normalisedTitle
-    }
-
-    fun id(): Long {
-        return _id
     }
 
     private fun pagePaths(): ArrayList<String>? {
@@ -56,9 +42,6 @@ class Book(
 
     fun inflate(library: Library) {
         this.library = library
-        _id = key.substring(0, 15).toLong(16) //Using substring of key would be dangerous for large N
-        normalisedTitle = path.replace("[^A-Za-z0-9]+".toRegex(), "").toLowerCase()
-        title = path.replace("\\s+".toRegex(), " ")
-        this.library!!.books()[_id] = this
+        library.books()[id] = this
     }
 }

@@ -28,7 +28,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
     }
 
     public long getItemId(int position) {
-        return books.get(position).id();
+        return books.get(position).getId();
     }
 
     public boolean isSelectable() {
@@ -79,7 +79,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
 
             view.setOnClickListener(v -> {
                 Book book = books.get(getAdapterPosition());
-                long bookId = book.id();
+                long bookId = book.getId();
 
                 if(selectable) {
                     if(selectedBookIds.contains(bookId)) {
@@ -122,7 +122,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
 
         private void openBook(Book book, boolean resume) {
             Intent intent = new Intent(itemView.getContext(), ReadingActivity.class);
-            intent.putExtra("_id", book.id());
+            intent.putExtra("_id", book.getId());
             intent.putExtra("resume", resume);
             intent.putExtra("libraryId", book.library().id());
 
@@ -130,16 +130,16 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         }
 
         private void showFullBookTitle(Book book) {
-            BookMetadata metadata = BookMetadata.findOrCreateByBookId(itemView.getContext(), book.id());
+            BookMetadata metadata = BookMetadata.findOrCreateByBookId(itemView.getContext(), book.getId());
 
             View popupView = LayoutInflater.from(itemView.getContext()).inflate(R.layout.index_book_title_popup, null, false);
             TextView bookTitleView = popupView.findViewById(R.id.book_title);
-            bookTitleView.setText(book.title() + "\nOpened Count: " + metadata.openedCount());
+            bookTitleView.setText(book.getTitle() + "\nOpened Count: " + metadata.openedCount());
 
             ImageButton viewAuditEventsButton = popupView.findViewById(R.id.view_audit_events);
             viewAuditEventsButton.setOnClickListener(v -> {
                 Intent intent = new Intent(viewAuditEventsButton.getContext(), AuditEventsActivity.class);
-                intent.putExtra("resourceId", book.id());
+                intent.putExtra("resourceId", book.getId());
 
                 viewAuditEventsButton.getContext().startActivity(intent);
             });
@@ -183,10 +183,10 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         Book book = books.get(position);
 
         holder.selectableView.setVisibility(selectable ? View.VISIBLE : View.INVISIBLE);
-        if(selectable) holder.itemView.setActivated(selectedBookIds.contains(book.id()));
+        if(selectable) holder.itemView.setActivated(selectedBookIds.contains(book.getId()));
 
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
-        holder.textView.setText(book.title());
+        holder.textView.setText(book.getTitle());
 
         holder.pageCountView.setText(String.format("%,d", book.getPages()));
 

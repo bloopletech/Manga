@@ -19,8 +19,8 @@ public class BooksAuditor {
             ResourceType.LIBRARY,
             library.id(),
             ResourceType.BOOK,
-            book.id(),
-            book.title(),
+            book.getId(),
+            book.getTitle(),
             "Page " + page
         );
         event.save(context);
@@ -33,8 +33,8 @@ public class BooksAuditor {
             ResourceType.LIBRARY,
             library.id(),
             ResourceType.BOOK,
-            book.id(),
-            book.title(),
+            book.getId(),
+            book.getTitle(),
             "Page " + page
         );
         event.save(context);
