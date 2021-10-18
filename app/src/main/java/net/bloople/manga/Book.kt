@@ -17,23 +17,19 @@ class Book(
     val tags: List<String>
 ) {
     @Transient
-    var library: Library? = null
+    lateinit var library: Library
         private set
     val title: String by lazy { path.replace("\\s+".toRegex(), " ") }
     val normalisedTitle: String by lazy { path.replace("[^A-Za-z0-9]+".toRegex(), "").toLowerCase() }
     val id: Long by lazy { key.substring(0, 15).toLong(16) } //Using substring of key would be dangerous for large N
     val pagePaths: ArrayList<String> by lazy { PagesInflater(pagePathsDeflated).inflate() }
 
-    fun library(): Library? {
-        return library
-    }
-
     fun thumbnailUrl(): MangosUrl {
-        return library!!.mangos().withAppendedPath("/img/thumbnails/$key.jpg")
+        return library.mangos().withAppendedPath("/img/thumbnails/$key.jpg")
     }
 
     fun pageUrl(index: Int): MangosUrl {
-        return library!!.rootUrl().withAppendedPath("/" + path + "/" + pagePaths[index])
+        return library.rootUrl().withAppendedPath("/" + path + "/" + pagePaths[index])
     }
 
     fun inflate(library: Library) {
