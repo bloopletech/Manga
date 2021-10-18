@@ -22,7 +22,7 @@ class Book(
     val title: String by lazy { path.replace("\\s+".toRegex(), " ") }
     val normalisedTitle: String by lazy { path.replace("[^A-Za-z0-9]+".toRegex(), "").toLowerCase() }
     val id: Long by lazy { key.substring(0, 15).toLong(16) } //Using substring of key would be dangerous for large N
-    private val pagePaths: ArrayList<String> by lazy { PagesInflater(pagePathsDeflated).inflate() }
+    private val pagePaths: ArrayList<String> by lazy { inflatePagePaths(pagePathsDeflated) }
     val thumbnailUrl: MangosUrl by lazy { library.thumbnailsUrl / "$key.jpg" }
 
     fun pageUrl(index: Int): MangosUrl {
