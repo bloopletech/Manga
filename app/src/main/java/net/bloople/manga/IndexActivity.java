@@ -121,7 +121,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         Library library = model.getLibrary();
-        if(library !=  null) savedInstanceState.putLong("libraryId", library.id());
+        if(library !=  null) savedInstanceState.putLong("libraryId", library.getId());
         savedInstanceState.putInt("sortMethod", model.getSortMethod());
         savedInstanceState.putBoolean("sortDirectionAsc", model.getSortDirectionAsc());
         super.onSaveInstanceState(savedInstanceState);
@@ -181,7 +181,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     private void loadLibrary(long libraryId) {
         LibraryService.ensureLibrary(this, libraryId, library -> {
             if(library == null) return;
-            librariesFragment.setCurrentLibraryId(library.id());
+            librariesFragment.setCurrentLibraryId(library.getId());
             auditor.selected(library);
             model.setLibrary(library);
         });

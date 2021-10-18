@@ -18,8 +18,8 @@ public class LibrariesAuditor {
             ResourceType.UNKNOWN,
             AuditEvent.UNKNOWN_ID,
             ResourceType.LIBRARY,
-            library.id(),
-            library.name(),
+            library.getId(),
+            library.getName(),
             ""
         );
         event.save(context);

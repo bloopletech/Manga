@@ -46,10 +46,10 @@ public class LibraryEditFragment extends DialogFragment {
         passwordView = view.findViewById(R.id.password);
 
         Library library = Library.findById(context, libraryId);
-        nameView.setText(library.name());
-        rootView.setText(library.root());
-        usernameView.setText(library.username());
-        passwordView.setText(library.password());
+        nameView.setText(library.getName());
+        rootView.setText(library.getRoot());
+        usernameView.setText(library.getUsername());
+        passwordView.setText(library.getPassword());
 
         builder.setPositiveButton("Save", (dialog, which) -> update());
         builder.setNegativeButton("Cancel", (dialog, which) -> cancel());
@@ -83,10 +83,10 @@ public class LibraryEditFragment extends DialogFragment {
 
     private void update() {
         Library library = Library.findById(context, libraryId);
-        library.name(nameView.getText().toString());
-        library.root(rootView.getText().toString());
-        library.username(usernameView.getText().toString());
-        library.password(passwordView.getText().toString());
+        library.setName(nameView.getText().toString());
+        library.setRoot(rootView.getText().toString());
+        library.setUsername(usernameView.getText().toString());
+        library.setPassword(passwordView.getText().toString());
         library.save(context);
         listener.onLibraryEditFinished(library);
     }

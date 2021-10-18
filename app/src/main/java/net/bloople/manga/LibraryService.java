@@ -25,15 +25,15 @@ public class LibraryService {
             return;
         }
 
-        Library current = currentLibraries.get(library.id());
+        Library current = currentLibraries.get(library.getId());
 
-        if(current != null && current.root().equals(library.root())) {
+        if(current != null && current.getRoot().equals(library.getRoot())) {
             listener.onLibraryLoaded(current);
             return;
         }
 
         LibraryService service = new LibraryService(context, library, libraryResult -> {
-            if(libraryResult != null) currentLibraries.put(libraryResult.id(), libraryResult);
+            if(libraryResult != null) currentLibraries.put(libraryResult.getId(), libraryResult);
             listener.onLibraryLoaded(libraryResult);
         });
         service.ensureLibrary();
@@ -53,7 +53,7 @@ public class LibraryService {
         if(loadingLibraryDialog != null) loadingLibraryDialog.dismiss();
         loadingLibraryDialog = ProgressDialog.show(
                 context,
-                "Loading " + library.name(),
+                "Loading " + library.getName(),
                 "Please wait while the library is loaded...",
                 true);
     }

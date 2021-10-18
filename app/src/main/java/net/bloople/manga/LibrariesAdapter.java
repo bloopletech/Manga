@@ -62,15 +62,15 @@ class LibrariesAdapter extends CursorRecyclerAdapter<LibrariesAdapter.ViewHolder
     public void onBindViewHolder(@NonNull LibrariesAdapter.ViewHolder holder, Cursor cursor) {
         Library library = new Library(cursor);
 
-        holder.libraryId = library.id();
+        holder.libraryId = library.getId();
 
-        if(library.id() == selectedLibraryId) {
-            holder.currentNameView.setText(library.name());
+        if(library.getId() == selectedLibraryId) {
+            holder.currentNameView.setText(library.getName());
             holder.nameView.setVisibility(View.GONE);
             holder.currentNameView.setVisibility(View.VISIBLE);
         }
         else {
-            holder.nameView.setText(library.name());
+            holder.nameView.setText(library.getName());
             holder.currentNameView.setVisibility(View.GONE);
             holder.nameView.setVisibility(View.VISIBLE);
         }

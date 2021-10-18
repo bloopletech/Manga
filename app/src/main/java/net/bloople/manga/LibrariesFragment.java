@@ -163,9 +163,9 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
 
     private void create() {
         Library library = new Library();
-        library.name("New Library");
-        library.position(Library.findHighestPosition(context) + 1);
-        library.root("http://example.com/");
+        library.setName("New Library");
+        library.setPosition(Library.findHighestPosition(context) + 1);
+        library.setRoot("http://example.com/");
         library.save(context);
 
         updateCursor();
@@ -174,9 +174,9 @@ public class LibrariesFragment extends Fragment implements LibraryEditFragment.O
     void swap(long libraryAId, long libraryBId) {
         Library libraryA = Library.findById(context, libraryAId);
         Library libraryB = Library.findById(context, libraryBId);
-        int aPosition = libraryA.position();
-        libraryA.position(libraryB.position());
-        libraryB.position(aPosition);
+        int aPosition = libraryA.getPosition();
+        libraryA.setPosition(libraryB.getPosition());
+        libraryB.setPosition(aPosition);
         libraryA.save(context);
         libraryB.save(context);
 
