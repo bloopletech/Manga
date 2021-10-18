@@ -21,6 +21,10 @@ class Library {
     private var password: String? = null
     val books = HashMap<Long, Book>()
 
+    val rootUrl: MangosUrl by lazy { MangosUrl(root!!, username, password) }
+    val mangos: MangosUrl by lazy { rootUrl / ".mangos" }
+    val thumbnailsUrl: MangosUrl by lazy { mangos / "img" / "thumbnails" }
+
     internal constructor() {}
     internal constructor(result: Cursor) {
         _id = result.getLong(result.getColumnIndex("_id"))
@@ -75,18 +79,10 @@ class Library {
         this.password = password
     }
 
-    fun rootUrl(): MangosUrl {
-        return MangosUrl(root, username, password)
-    }
-
-    fun mangos(): MangosUrl {
-        return rootUrl().withAppendedPath("/.mangos")
-    }
-
     @ExperimentalSerializationApi
     @Throws(IOException::class)
     fun inflate() {
-        val connection = mangos().withAppendedPath(DATA_JSON_PATH).toUrlConnection()
+        val connection = (mangos / DATA_JSON_PATH).toUrlConnection()
 
         val books: List<Book>;
         connection.getInputStream().use { books = Json.decodeFromStream(it) }
@@ -116,7 +112,7 @@ class Library {
     }
 
     companion object {
-        private const val DATA_JSON_PATH = "/data.json"
+        private const val DATA_JSON_PATH = "data.json"
         @JvmStatic
         fun findById(context: Context?, id: Long): Library? {
             val db = DatabaseHelper.instance(context)

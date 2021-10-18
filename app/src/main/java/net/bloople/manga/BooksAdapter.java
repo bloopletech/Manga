@@ -193,7 +193,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         Glide.clear(holder.imageView);
         holder.imageView.setImageDrawable(null);
 
-        Glide.with(holder.imageView.getContext()).load(book.thumbnailUrl().toGlideUrl()).dontAnimate().into(holder.imageView);
+        Glide.with(holder.imageView.getContext()).load(book.getThumbnailUrl().toGlideUrl()).dontAnimate().into(holder.imageView);
     }
 
 }
