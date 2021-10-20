@@ -1,13 +1,13 @@
 package net.bloople.manga
 
 import android.net.Uri
-import okhttp3.Credentials.basic
 import android.os.Parcelable
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import kotlin.Throws
 import android.os.Parcel
 import android.os.Parcelable.Creator
+import android.util.Base64
 import java.io.IOException
 import java.net.URL
 import java.net.URLConnection
@@ -15,7 +15,12 @@ import java.net.URLConnection
 open class MangosUrl(private val url: String, private val credential: String? = null) : Parcelable {
     constructor(url: String, username: String?, password: String?) : this(
         url,
-        if(username != null && password != null) basic(username, password) else null
+        if(username != null && password != null) {
+            Base64.encodeToString("$username:$password".toByteArray(), Base64.NO_WRAP)
+        }
+        else {
+            null
+        }
     )
 
     operator fun div(other: String): MangosUrl {
@@ -24,7 +29,7 @@ open class MangosUrl(private val url: String, private val credential: String? = 
 
     fun toGlideUrl(): GlideUrl {
         if(credential != null) {
-            return GlideUrl(url, LazyHeaders.Builder().addHeader("Authorization", credential).build())
+            return GlideUrl(url, LazyHeaders.Builder().addHeader("Authorization", "Basic $credential").build())
         }
         return GlideUrl(url)
     }
@@ -32,7 +37,7 @@ open class MangosUrl(private val url: String, private val credential: String? = 
     @Throws(IOException::class)
     fun toUrlConnection(): URLConnection {
         if(credential != null) {
-            return URL(url).openConnection().apply { addRequestProperty("Authorization", credential) }
+            return URL(url).openConnection().apply { addRequestProperty("Authorization", "Basic $credential") }
         }
         return URL(url).openConnection()
     }

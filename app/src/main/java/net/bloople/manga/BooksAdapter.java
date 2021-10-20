@@ -190,10 +190,7 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
 
         holder.pageCountView.setText(String.format("%,d", book.getPages()));
 
-        Glide.clear(holder.imageView);
-        holder.imageView.setImageDrawable(null);
-
-        Glide.with(holder.imageView.getContext()).load(book.getThumbnailUrl().toGlideUrl()).dontAnimate().into(holder.imageView);
+        Glide.with(holder.imageView.getContext()).load(book.getThumbnailUrl().toGlideUrl()).into(holder.imageView);
     }
 
 }

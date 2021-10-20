@@ -145,9 +145,6 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
         holder.resourceNameView.setText(event.resourceName());
         holder.detailView.setText(event.detail());
 
-        Glide.clear(holder.imageView);
-        holder.imageView.setImageDrawable(null);
-
         if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
             LibraryService.ensureLibrary(holder.imageView.getContext(), event.resourceContextId(), library -> {
                 holder.openResourceView.setVisibility(View.GONE);
@@ -158,12 +155,13 @@ class AuditEventsAdapter extends CursorRecyclerAdapter<AuditEventsAdapter.ViewHo
                 final double viewWidthToBitmapWidthRatio = (double)holder.imageView.getLayoutParams().width / 197.0;
                 holder.imageView.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
 
-                Glide.with(holder.imageView.getContext()).load(book.getThumbnailUrl().toGlideUrl()).dontAnimate().into(holder.imageView);
+                Glide.with(holder.imageView.getContext()).load(book.getThumbnailUrl().toGlideUrl()).into(holder.imageView);
             });
         }
         else {
             holder.openResourceView.setVisibility(View.VISIBLE);
             holder.imageView.setVisibility(View.GONE);
+            Glide.with(holder.imageView.getContext()).clear(holder.imageView);
         }
     }
 }
