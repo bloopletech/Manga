@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class PageFragment extends Fragment {
     private Context context;
@@ -47,12 +46,10 @@ public class PageFragment extends Fragment {
 
         ImageView imageView = view.findViewById(R.id.image);
 
-        Glide
-                .with(this)
-                .load(url.toGlideUrl())
-                .transform(new MatchWidthTransformation())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
+        Glide.with(this)
+            .load(url.toGlideUrl())
+            .transform(new MatchWidthTransformation())
+            .into(imageView);
     }
 
     @Override
