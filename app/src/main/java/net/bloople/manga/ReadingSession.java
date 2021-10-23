@@ -2,16 +2,12 @@ package net.bloople.manga;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import net.bloople.manga.audit.BooksAuditor;
 
 class ReadingSession {
-    private static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
     private ViewPager2 pager;
     private Library library;
@@ -38,7 +34,7 @@ class ReadingSession {
     void bind(FragmentActivity fa, ViewPager2 pager) {
         this.pager = pager;
 
-        pager.setAdapter(new BookPagerAdapter(fa));
+        pager.setAdapter(new BookPagerAdapter(fa, book));
 
         pager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -46,8 +42,6 @@ class ReadingSession {
                 bookmark(position);
             }
         });
-
-        pager.setOffscreenPageLimit(CACHE_PAGES_LIMIT);
     }
 
     int page() {
@@ -74,22 +68,5 @@ class ReadingSession {
     void finish() {
         if(page() == book.getPages() - 1) bookmark(0);
         auditor.closed(library, book, page());
-    }
-
-    class BookPagerAdapter extends FragmentStateAdapter {
-        BookPagerAdapter(FragmentActivity fa) {
-            super(fa);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int i) {
-            return PageFragment.newInstance(book.pageUrl(i));
-        }
-
-        @Override
-        public int getItemCount() {
-            return book.getPages();
-        }
     }
 }
