@@ -2,7 +2,10 @@ package net.bloople.manga;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,19 +15,29 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.ListPreloader;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import net.bloople.manga.audit.AuditEventsActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
+class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> implements ListPreloader.PreloadModelProvider<GlideUrl> {
+    private RequestManager requestManager;
+    private ViewPreloadSizeProvider<GlideUrl> preloadSizeProvider;
     private ArrayList<Book> books = new ArrayList<>();
     private ArrayList<Long> selectedBookIds = new ArrayList<>();
     private boolean selectable = false;
 
-    BooksAdapter() {
+    BooksAdapter(RequestManager requestManager, ViewPreloadSizeProvider<GlideUrl> preloadSizeProvider) {
         setHasStableIds(true);
+        this.requestManager = requestManager;
+        this.preloadSizeProvider = preloadSizeProvider;
     }
 
     public long getItemId(int position) {
@@ -174,6 +187,8 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
         final double viewWidthToBitmapWidthRatio = (double)parent.getWidth() / 4.0 / 197.0;
         view.getLayoutParams().height = (int)(310.0 * viewWidthToBitmapWidthRatio);
 
+        preloadSizeProvider.setView(view);
+
         return new ViewHolder(view);
     }
 
@@ -190,7 +205,21 @@ class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.ViewHolder> {
 
         holder.pageCountView.setText(String.format("%,d", book.getPages()));
 
-        Glide.with(holder.imageView.getContext()).load(book.getThumbnailUrl().toGlideUrl()).into(holder.imageView);
+        requestManager
+            .load(book.getThumbnailUrl().toGlideUrl())
+            .into(holder.imageView);
     }
 
+    @Override
+    @NonNull
+    public List<GlideUrl> getPreloadItems(int position) {
+        Book book = books.get(position);
+        return Collections.singletonList(book.getThumbnailUrl().toGlideUrl());
+    }
+
+    @Override
+    @Nullable
+    public RequestBuilder<Drawable> getPreloadRequestBuilder(@NonNull GlideUrl url) {
+        return requestManager.load(url);
+    }
 }
