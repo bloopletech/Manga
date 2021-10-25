@@ -1,5 +1,6 @@
 package net.bloople.manga;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.fragment.app.FragmentActivity;
@@ -8,6 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import net.bloople.manga.audit.BooksAuditor;
 
 class ReadingSession {
+    private static final int CACHE_PAGES_LIMIT = 5;
     private Context context;
     private ViewPager2 pager;
     private Library library;
@@ -31,6 +33,7 @@ class ReadingSession {
         auditor.opened(library, book, page());
     }
 
+    @SuppressLint("WrongConstant")
     void bind(FragmentActivity fa, ViewPager2 pager) {
         this.pager = pager;
 
@@ -42,6 +45,8 @@ class ReadingSession {
                 bookmark(position);
             }
         });
+
+        pager.setOffscreenPageLimit(CACHE_PAGES_LIMIT);
     }
 
     int page() {

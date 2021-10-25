@@ -50,7 +50,7 @@ class BookPagerAdapter extends FragmentStateAdapter implements ListPreloader.Pre
             requestManager,
             this,
             new ViewPreloadSizeProvider<>(recyclerView),
-            2
+            5
         );
 
         recyclerView.addOnScrollListener(preloader);
