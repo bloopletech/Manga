@@ -9,7 +9,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import net.bloople.manga.audit.BooksAuditor;
 
 class ReadingSession {
-    private static final int CACHE_PAGES_LIMIT = 5;
+    public static final int CACHE_PAGES_LIMIT = 2;
     private Context context;
     private ViewPager2 pager;
     private Library library;
