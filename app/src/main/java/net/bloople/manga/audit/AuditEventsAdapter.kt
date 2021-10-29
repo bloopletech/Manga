@@ -15,21 +15,21 @@ import android.view.ViewGroup
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import coil.clear
 import net.bloople.manga.LibraryService
 import net.bloople.manga.Library
-import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.*
 
 internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAdapter.ViewHolder>(cursor) {
     internal inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var event: AuditEvent? = null
-        var whenView: TextView = view.findViewById(R.id.`when`)
-        var actionView: TextView = view.findViewById(R.id.action)
-        var imageView: ImageView = view.findViewById(R.id.image_view)
-        var openResourceView: ImageButton = view.findViewById(R.id.open_resource)
-        var resourceNameView: TextView = view.findViewById(R.id.resource_name)
-        var detailView: TextView = view.findViewById(R.id.detail)
+        val whenView: TextView = view.findViewById(R.id.`when`)
+        val actionView: TextView = view.findViewById(R.id.action)
+        val imageView: ImageView = view.findViewById(R.id.image_view)
+        val openResourceView: ImageButton = view.findViewById(R.id.open_resource)
+        val resourceNameView: TextView = view.findViewById(R.id.resource_name)
+        val detailView: TextView = view.findViewById(R.id.detail)
 
         init {
             imageView.setOnClickListener { openResource(event) }
@@ -126,14 +126,14 @@ internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<Audit
                 val viewWidthToBitmapWidthRatio = holder.imageView.layoutParams.width.toDouble() / 197.0
                 holder.imageView.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
 
-                Glide.with(holder.imageView.context).load(book!!.thumbnailUrl.toGlideUrl()).into(holder.imageView)
+                book!!.thumbnailUrl.load(holder.imageView)
             }
         }
         else {
             holder.openResourceView.visibility = View.VISIBLE
             holder.imageView.visibility = View.GONE
 
-            Glide.with(holder.imageView.context).clear(holder.imageView)
+            holder.imageView.clear()
         }
     }
 }

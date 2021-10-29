@@ -20,12 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
 import net.bloople.manga.audit.LibrariesAuditor;
 
 public class IndexActivity extends AppCompatActivity implements LibrariesFragment.OnLibrarySelectedListener {
@@ -96,16 +90,8 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         GridLayoutManager booksLayoutManager = new GridLayoutManager(this, 4);
         booksView.setLayoutManager(booksLayoutManager);
 
-        RequestManager requestManager = Glide.with(this);
-        ViewPreloadSizeProvider<GlideUrl> sizeProvider = new ViewPreloadSizeProvider<>();
-
-        adapter = new BooksAdapter(requestManager, sizeProvider);
+        adapter = new BooksAdapter();
         booksView.setAdapter(adapter);
-
-        RecyclerViewPreloader<GlideUrl> preloader = new RecyclerViewPreloader<>(
-            requestManager, adapter, sizeProvider, 12);
-
-        booksView.addOnScrollListener(preloader);
 
         CollectionsManager collections = new CollectionsManager(this, adapter);
         collections.setup();

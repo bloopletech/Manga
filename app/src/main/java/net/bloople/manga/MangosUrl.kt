@@ -2,17 +2,17 @@ package net.bloople.manga
 
 import android.net.Uri
 import android.os.Parcelable
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import kotlin.Throws
 import android.os.Parcel
 import android.os.Parcelable.Creator
 import android.util.Base64
+import android.widget.ImageView
+import coil.load
 import java.io.IOException
 import java.net.URL
 import java.net.URLConnection
 
-open class MangosUrl(private val url: String, private val credential: String? = null) : Parcelable {
+open class MangosUrl(val url: String, private val credential: String? = null) : Parcelable {
     constructor(url: String, username: String?, password: String?) : this(
         url,
         if(username != null && password != null) {
@@ -27,11 +27,19 @@ open class MangosUrl(private val url: String, private val credential: String? = 
         return MangosUrl(url + "/" + Uri.encode(other), credential)
     }
 
-    fun toGlideUrl(): GlideUrl {
-        if(credential != null) {
-            return GlideUrl(url, LazyHeaders.Builder().addHeader("Authorization", "Basic $credential").build())
+//    fun with(builder: ImageRequest.Builder): ImageRequest.Builder {
+//        if(credential != null) {
+//            return builder.data(url).setHeader("Authorization", "Basic $credential")
+//        }
+//        return builder.data(url)
+//    }
+
+    fun load(imageView: ImageView) {
+        imageView.load(url) {
+            if(credential != null) {
+                setHeader("Authorization", "Basic $credential")
+            }
         }
-        return GlideUrl(url)
     }
 
     @Throws(IOException::class)

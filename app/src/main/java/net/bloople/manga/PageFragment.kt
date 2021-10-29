@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 
 class PageFragment : Fragment() {
     private lateinit var url: MangosUrl
@@ -22,12 +21,9 @@ class PageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val imageView: ImageView = view.findViewById(R.id.image)
+        val imageView = view.findViewById<ImageView>(R.id.image)
 
-        Glide.with(this)
-            .load(url.toGlideUrl())
-            .transform(MatchWidthTransformation())
-            .into(imageView)
+        url.load(imageView)
     }
 
     companion object {
