@@ -12,7 +12,7 @@ import java.io.IOException
 import java.net.URL
 import java.net.URLConnection
 
-open class MangosUrl(val url: String, private val credential: String? = null) : Parcelable {
+open class MangosUrl(private val url: String, private val credential: String? = null) : Parcelable {
     constructor(url: String, username: String?, password: String?) : this(
         url,
         if(username != null && password != null) {

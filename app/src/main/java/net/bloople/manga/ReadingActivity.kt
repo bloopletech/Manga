@@ -7,8 +7,9 @@ import android.os.Bundle
 import android.content.res.Configuration
 import android.view.View
 import android.widget.ImageView
+import androidx.fragment.app.FragmentActivity
 
-class ReadingActivity : AppCompatActivity() {
+class ReadingActivity : FragmentActivity() {
     private lateinit var session: ReadingSession
     private lateinit var pager: ViewPager2
 
