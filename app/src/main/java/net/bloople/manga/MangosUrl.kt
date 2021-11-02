@@ -8,6 +8,7 @@ import android.os.Parcelable.Creator
 import android.util.Base64
 import android.widget.ImageView
 import coil.load
+import coil.request.ImageRequest
 import java.io.IOException
 import java.net.URL
 import java.net.URLConnection
@@ -34,11 +35,12 @@ open class MangosUrl(private val url: String, private val credential: String? = 
 //        return builder.data(url)
 //    }
 
-    fun load(imageView: ImageView) {
+    fun load(imageView: ImageView, apply: (ImageRequest.Builder.() -> Unit)? = null) {
         imageView.load(url) {
             if(credential != null) {
                 setHeader("Authorization", "Basic $credential")
             }
+            apply?.invoke(this)
         }
     }
 

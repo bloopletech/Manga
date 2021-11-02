@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import coil.size.Scale
 
 class PageFragment : Fragment() {
     private lateinit var url: MangosUrl
@@ -23,7 +24,9 @@ class PageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val imageView = view.findViewById<ImageView>(R.id.image)
 
-        url.load(imageView)
+        url.load(imageView) {
+            scale(Scale.FILL)
+        }
     }
 
     companion object {
