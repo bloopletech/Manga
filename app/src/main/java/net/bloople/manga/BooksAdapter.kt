@@ -133,7 +133,7 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
 
             val popupView = LayoutInflater.from(itemView.context).inflate(R.layout.index_book_title_popup, null, false)
             val bookTitleView: TextView = popupView.findViewById(R.id.book_title)
-            bookTitleView.text = "${book.title}\nOpened Count: ${metadata.openedCount()}"
+            bookTitleView.text = "${book.title}\nOpened Count: ${metadata.openedCount}"
 
             val viewAuditEventsButton: ImageButton = popupView.findViewById(R.id.view_audit_events)
             viewAuditEventsButton.setOnClickListener {

@@ -67,8 +67,8 @@ internal class BooksSorter {
             if(abm == null && bbm == null) return@sortWith 0
             if(abm == null) return@sortWith 1
             if(bbm == null) return@sortWith -1
-            if(sortDirectionAsc) return@sortWith abm.lastOpenedAt().compareTo(bbm.lastOpenedAt())
-            else return@sortWith bbm.lastOpenedAt().compareTo(abm.lastOpenedAt())
+            if(sortDirectionAsc) return@sortWith abm.lastOpenedAt.compareTo(bbm.lastOpenedAt)
+            else return@sortWith bbm.lastOpenedAt.compareTo(abm.lastOpenedAt)
         }
     }
 
@@ -81,8 +81,8 @@ internal class BooksSorter {
             if(abm == null && bbm == null) return@sortWith 0
             if(abm == null) return@sortWith 1
             if(bbm == null) return@sortWith -1
-            if(sortDirectionAsc) return@sortWith abm.openedCount().compareTo(bbm.openedCount())
-            else return@sortWith bbm.openedCount().compareTo(abm.openedCount())
+            if(sortDirectionAsc) return@sortWith abm.openedCount.compareTo(bbm.openedCount)
+            else return@sortWith bbm.openedCount.compareTo(abm.openedCount)
         }
     }
 
@@ -104,7 +104,7 @@ internal class BooksSorter {
             val booksMetadata = HashMap<Long, BookMetadata>()
             while(it.moveToNext()) {
                 val bookMetadata = BookMetadata(it)
-                booksMetadata[bookMetadata.bookId()] = bookMetadata
+                booksMetadata[bookMetadata.bookId] = bookMetadata
             }
             return booksMetadata
         }
