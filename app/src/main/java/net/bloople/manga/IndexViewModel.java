@@ -65,7 +65,7 @@ public class IndexViewModel extends AndroidViewModel {
     }
 
     public void useList(BookList list) {
-        if(list == null) searcher.setFilterIds(null);
+        if(list == null) searcher.setFilterIds(new ArrayList<>());
         else searcher.setFilterIds(list.bookIds(application));
         resolve();
     }
