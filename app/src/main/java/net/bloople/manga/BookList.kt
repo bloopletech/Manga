@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import java.util.ArrayList
 
-internal class BookList {
+class BookList {
     var _id = -1L
     var name: String? = null
 
