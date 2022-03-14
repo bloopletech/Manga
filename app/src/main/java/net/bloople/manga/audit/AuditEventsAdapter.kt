@@ -121,12 +121,15 @@ internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<Audit
                 holder.openResourceView.visibility = View.GONE
                 holder.imageView.visibility = View.VISIBLE
 
-                val book = library.books[event.resourceId]
-
                 val viewWidthToBitmapWidthRatio = holder.imageView.layoutParams.width.toDouble() / 197.0
                 holder.imageView.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
 
-                Glide.with(holder.imageView.context).load(book!!.thumbnailUrl.toGlideUrl()).into(holder.imageView)
+                val glide = Glide.with(holder.imageView.context)
+
+                val book = library.books[event.resourceId]
+
+                if(book != null) glide.load(book.thumbnailUrl.toGlideUrl()).into(holder.imageView)
+                else glide.clear(holder.imageView)
             }
         }
         else {

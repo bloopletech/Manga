@@ -32,8 +32,9 @@ class ReadingActivity : AppCompatActivity() {
             if(library == null) return@ensureLibrary
 
             val bookId = intent.getLongExtra("_id", -1)
+            val book = library.books[bookId] ?: return@ensureLibrary
 
-            session = ReadingSession(applicationContext, library, library.books[bookId]!!)
+            session = ReadingSession(applicationContext, library, book)
             session.bind(this, pager)
 
             if(intent.getBooleanExtra("resume", false)) session.resume()
@@ -57,7 +58,7 @@ class ReadingActivity : AppCompatActivity() {
     }
 
     public override fun onStop() {
-        session.finish()
+        if(::session.isInitialized) session.finish()
         super.onStop()
     }
 
