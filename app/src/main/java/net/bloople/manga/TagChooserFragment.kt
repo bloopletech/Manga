@@ -21,7 +21,6 @@ class TagChooserFragment : DialogFragment() {
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(tags: Array<String>): TagChooserFragment {
             val fragment = TagChooserFragment()
             val args = Bundle()
