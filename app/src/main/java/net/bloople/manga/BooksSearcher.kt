@@ -12,7 +12,7 @@ internal class BooksSearcher {
         val searchTerms = parseSearchTerms()
 
         bookLoop@ for((key, b) in library.books) {
-            if(filterIds.isNotEmpty() && filterIds.contains(key)) continue@bookLoop
+            if(filterIds.isNotEmpty() && !filterIds.contains(key)) continue@bookLoop
 
             val compareTitle = b.title.toLowerCase()
             for(searchTerm in searchTerms) {
