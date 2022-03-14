@@ -8,12 +8,20 @@ class QueryService(private val context: Context, searchField: AutoCompleteTextVi
     private val adapter: QueryAdapter = QueryAdapter(context, null)
 
     init {
-        adapter.filterQueryProvider = FilterQueryProvider { constraint: CharSequence ->
+        adapter.filterQueryProvider = FilterQueryProvider { constraint: CharSequence? ->
             val db = DatabaseHelper.instance(context)
-            db.rawQuery(
-                "SELECT _id, text FROM queries WHERE text LIKE ? OR text LIKE ? ORDER BY last_used_at DESC LIMIT $FILTER_QUERIES_LIMIT",
-                arrayOf("$constraint%", "\"$constraint%")
-            )
+            if(constraint != null) {
+                db.rawQuery(
+                    "SELECT _id, text FROM queries WHERE text LIKE ? OR text LIKE ? ORDER BY last_used_at DESC LIMIT $FILTER_QUERIES_LIMIT",
+                    arrayOf("$constraint%", "\"$constraint%")
+                )
+            }
+            else {
+                db.rawQuery(
+                    "SELECT _id, text FROM queries ORDER BY last_used_at DESC LIMIT $FILTER_QUERIES_LIMIT",
+                    emptyArray()
+                )
+            }
         }
 
         searchField.setAdapter(adapter)
