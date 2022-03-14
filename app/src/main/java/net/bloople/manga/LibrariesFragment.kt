@@ -123,7 +123,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         listener = null
     }
 
-    override fun onLibraryEditFinished(library: Library) {
+    override fun onLibraryEditFinished(library: Library?) {
         updateCursor()
     }
 
