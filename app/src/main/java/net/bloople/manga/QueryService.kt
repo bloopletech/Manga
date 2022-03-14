@@ -20,16 +20,16 @@ class QueryService(private val context: Context, searchField: AutoCompleteTextVi
         searchField.setOnDismissListener { adapter.cursor.close() }
     }
 
-    fun onSearch(text: String?) {
+    fun onSearch(text: String) {
         val now = System.currentTimeMillis()
         var existing = Query.findByText(context, text)
         if(existing == null) {
             existing = Query()
-            existing.text(text)
-            existing.createdAt(now)
+            existing.text = text
+            existing.createdAt = now
         }
-        existing.lastUsedAt(now)
-        existing.usedCount(existing.usedCount() + 1)
+        existing.lastUsedAt = now
+        existing.usedCount++
         existing.save(context)
     }
 
