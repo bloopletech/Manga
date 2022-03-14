@@ -36,17 +36,17 @@ internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<Audit
             openResourceView.setOnClickListener { openResource(event) }
             resourceNameView.setOnClickListener {
                 showFullResourceName(
-                    event!!.resourceName()
+                    event!!.resourceName
                 )
             }
         }
 
         private fun openResource(event: AuditEvent?) {
-            if(event!!.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
-                openBook(event.resourceContextId(), event.resourceId())
+            if(event!!.resourceType == ResourceType.BOOK && event.resourceContextType == ResourceType.LIBRARY) {
+                openBook(event.resourceContextId, event.resourceId)
             }
-            else if(event.resourceType() == ResourceType.LIBRARY) {
-                openLibrary(event.resourceId())
+            else if(event.resourceType == ResourceType.LIBRARY) {
+                openLibrary(event.resourceId)
             }
         }
 
@@ -110,18 +110,18 @@ internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<Audit
         val event = AuditEvent(cursor)
         holder.event = event
 
-        val age = DATE_FORMAT.format(Date(event.`when`()))
+        val age = DATE_FORMAT.format(Date(event.`when`))
         holder.whenView.text = age
-        holder.actionView.text = event.action().toString()
-        holder.resourceNameView.text = event.resourceName()
-        holder.detailView.text = event.detail()
+        holder.actionView.text = event.action.toString()
+        holder.resourceNameView.text = event.resourceName
+        holder.detailView.text = event.detail
 
-        if(event.resourceType() == ResourceType.BOOK && event.resourceContextType() == ResourceType.LIBRARY) {
-            LibraryService.ensureLibrary(holder.imageView.context, event.resourceContextId()) { library: Library ->
+        if(event.resourceType == ResourceType.BOOK && event.resourceContextType == ResourceType.LIBRARY) {
+            LibraryService.ensureLibrary(holder.imageView.context, event.resourceContextId) { library: Library ->
                 holder.openResourceView.visibility = View.GONE
                 holder.imageView.visibility = View.VISIBLE
 
-                val book = library.books[event.resourceId()]
+                val book = library.books[event.resourceId]
 
                 val viewWidthToBitmapWidthRatio = holder.imageView.layoutParams.width.toDouble() / 197.0
                 holder.imageView.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()

@@ -12,7 +12,7 @@ class LibrariesAuditor(private val context: Context) {
             AuditEvent.UNKNOWN_ID,
             ResourceType.LIBRARY,
             library.id,
-            library.name,
+            library.name!!,
             ""
         )
         event.save(context)
