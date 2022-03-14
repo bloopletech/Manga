@@ -89,7 +89,7 @@ internal class CollectionsManager(private val activity: IndexActivity, private v
 
     private fun newCollection() {
         list = BookList()
-        list!!.name("New Collection")
+        list!!.name = "New Collection"
         list!!.save(activity)
 
         updateCursor()

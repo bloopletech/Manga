@@ -42,7 +42,7 @@ internal class BookListAdapter(context: Context?, cursor: Cursor?) : CursorAdapt
             editNameView.clearFocus()
 
             val list = BookList.findById(context, listId)
-            list.name(editNameView.text.toString())
+            list!!.name = editNameView.text.toString()
             list.save(context)
 
             nameView.text = editNameView.text.toString()
