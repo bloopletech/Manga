@@ -1,6 +1,6 @@
-package net.bloople.manga.audit;
+package net.bloople.manga.audit
 
-enum Action {
+internal enum class Action {
     UNKNOWN,
     LIBRARY_CREATED,
     LIBRARY_UPDATED,
