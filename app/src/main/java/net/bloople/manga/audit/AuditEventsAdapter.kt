@@ -1,5 +1,6 @@
 package net.bloople.manga.audit
 
+import android.app.AppComponentFactory
 import net.bloople.manga.CursorRecyclerAdapter
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
@@ -15,9 +16,14 @@ import android.view.ViewGroup
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import net.bloople.manga.LibraryService
 import net.bloople.manga.Library
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -117,26 +123,33 @@ internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<Audit
         holder.detailView.text = event.detail
 
         if(event.resourceType == ResourceType.BOOK && event.resourceContextType == ResourceType.LIBRARY) {
-            LibraryService.ensureLibrary(holder.imageView.context, event.resourceContextId) { library: Library ->
-                holder.openResourceView.visibility = View.GONE
-                holder.imageView.visibility = View.VISIBLE
-
-                val viewWidthToBitmapWidthRatio = holder.imageView.layoutParams.width.toDouble() / 197.0
-                holder.imageView.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
-
-                val glide = Glide.with(holder.imageView.context)
-
-                val book = library.books[event.resourceId]
-
-                if(book != null) glide.load(book.thumbnailUrl.toGlideUrl()).into(holder.imageView)
-                else glide.clear(holder.imageView)
-            }
+            renderBook(holder, event);
+            return
         }
-        else {
-            holder.openResourceView.visibility = View.VISIBLE
-            holder.imageView.visibility = View.GONE
 
-            Glide.with(holder.imageView.context).clear(holder.imageView)
+        holder.openResourceView.visibility = View.VISIBLE
+        holder.imageView.visibility = View.GONE
+
+        Glide.with(holder.imageView.context).clear(holder.imageView)
+    }
+
+    private fun renderBook(holder: ViewHolder, event: AuditEvent) {
+        val context = holder.imageView.context as AppCompatActivity
+        context.lifecycleScope.launch {
+            val library = LibraryService.ensureLibrary(context, event.resourceContextId)!!
+
+            holder.openResourceView.visibility = View.GONE
+            holder.imageView.visibility = View.VISIBLE
+
+            val viewWidthToBitmapWidthRatio = holder.imageView.layoutParams.width.toDouble() / 197.0
+            holder.imageView.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
+
+            val glide = Glide.with(holder.imageView.context)
+
+            val book = library.books[event.resourceId]
+
+            if(book != null) glide.load(book.thumbnailUrl.toGlideUrl()).into(holder.imageView)
+            else glide.clear(holder.imageView)
         }
     }
 }

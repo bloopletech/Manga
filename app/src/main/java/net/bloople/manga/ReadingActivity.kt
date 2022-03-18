@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.content.res.Configuration
 import android.view.View
 import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class ReadingActivity : AppCompatActivity() {
     private lateinit var session: ReadingSession
@@ -28,14 +30,14 @@ class ReadingActivity : AppCompatActivity() {
 
         val libraryId = intent.getLongExtra("libraryId", -1)
 
-        LibraryService.ensureLibrary(this, libraryId) { library: Library? ->
-            if(library == null) return@ensureLibrary
+        lifecycleScope.launch {
+            val library = LibraryService.ensureLibrary(this@ReadingActivity, libraryId) ?: return@launch
 
             val bookId = intent.getLongExtra("_id", -1)
-            val book = library.books[bookId] ?: return@ensureLibrary
+            val book = library.books[bookId] ?: return@launch
 
             session = ReadingSession(applicationContext, library, book)
-            session.bind(this, pager)
+            session.bind(this@ReadingActivity, pager)
 
             if(intent.getBooleanExtra("resume", false)) session.resume()
             if(savedInstanceState != null) {
@@ -49,7 +51,7 @@ class ReadingActivity : AppCompatActivity() {
 
     public override fun onRestart() {
         super.onRestart()
-        session.start()
+        if(::session.isInitialized) session.start()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
