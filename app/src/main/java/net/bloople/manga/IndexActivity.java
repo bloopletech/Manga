@@ -33,6 +33,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
     private LibrariesFragment librariesFragment;
     private LibrariesAuditor auditor;
     private BooksAdapter adapter;
+    private GridLayoutManager booksLayoutManager;
     private AutoCompleteTextView searchField;
     private TextView searchResultsToolbar;
 
@@ -93,7 +94,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         });
 
         RecyclerView booksView = findViewById(R.id.books_view);
-        GridLayoutManager booksLayoutManager = new GridLayoutManager(this, 4);
+        booksLayoutManager = new GridLayoutManager(this, 4);
         booksView.setLayoutManager(booksLayoutManager);
 
         RequestManager requestManager = Glide.with(this);
@@ -119,9 +120,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         final Intent intent = getIntent();
         long intentLibraryId = intent.getLongExtra("libraryId", -1);
 
-        if(intentLibraryId != -1) {
-            loadLibrary(intentLibraryId);
-        }
+        if(intentLibraryId != -1) loadLibrary(intentLibraryId);
         else if(savedInstanceState == null) loadLibrary(-1L);
     }
 
@@ -188,6 +187,7 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         boolean sortDirectionAsc = model.getSortDirectionAsc();
         if(sortMethod == newSortMethod) sortDirectionAsc = !sortDirectionAsc;
         model.setSort(newSortMethod, sortDirectionAsc);
+        scrollToTop();
 
         return true;
     }
@@ -201,17 +201,24 @@ public class IndexActivity extends AppCompatActivity implements LibrariesFragmen
         });
     }
 
+    private void scrollToTop() {
+        booksLayoutManager.scrollToPositionWithOffset(0, 0);
+    }
+
     private void onSearch(String text) {
         model.setSearchText(text);
+        scrollToTop();
         queryService.onSearch(text);
     }
 
     public void useList(BookList list) {
         model.useList(list);
+        scrollToTop();
     }
 
     public void onLibrarySelected(long libraryId) {
         loadLibrary(libraryId);
+        scrollToTop();
     }
 
     public void useTag(String tag) {
