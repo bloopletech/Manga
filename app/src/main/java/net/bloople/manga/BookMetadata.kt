@@ -3,8 +3,11 @@ package net.bloople.manga
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import java.lang.StringBuilder
+import java.util.ArrayList
+import java.util.HashMap
 
-internal class BookMetadata {
+class BookMetadata {
     var _id = -1L
     var bookId: Long = 0
     var lastOpenedAt: Long = 0
@@ -41,6 +44,25 @@ internal class BookMetadata {
             db.rawQuery("SELECT * FROM books_metadata WHERE _id=?", arrayOf(id.toString())).use {
                 it.moveToFirst()
                 return if (it.count > 0) BookMetadata(it) else null
+            }
+        }
+
+        fun findAllByBookIds(context: Context, books: ArrayList<Book>): HashMap<Long, BookMetadata> {
+            val db = DatabaseHelper.instance(context)
+            val sb = StringBuilder()
+            for(b in books) {
+                if(sb.isNotEmpty()) sb.append(",")
+                sb.append(b.id)
+            }
+
+            db.rawQuery("SELECT * FROM books_metadata WHERE book_id IN ($sb)", arrayOf()).use {
+                it.moveToFirst()
+                val booksMetadata = HashMap<Long, BookMetadata>()
+                while(it.moveToNext()) {
+                    val bookMetadata = BookMetadata(it)
+                    booksMetadata[bookMetadata.bookId] = bookMetadata
+                }
+                return booksMetadata
             }
         }
 

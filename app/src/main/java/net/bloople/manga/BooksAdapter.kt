@@ -24,6 +24,7 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
     private val requestManager: RequestManager
     private val preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>
     private var books = ArrayList<Book>()
+    private var booksMetadata = HashMap<Long, BookMetadata>();
     private var selectedBookIds = ArrayList<Long>()
     private var selectable = false
 
@@ -64,13 +65,15 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
         return books.size
     }
 
-    fun update(inBooks: ArrayList<Book>) {
-        books = inBooks
+    fun update(searchResults: SearchResults) {
+        books = searchResults.books
+        booksMetadata = searchResults.booksMetadata
         notifyDataSetChanged()
     }
 
     internal inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var pageCountView: TextView = view.findViewById(R.id.page_count_view)
+        var openedCountView: TextView = view.findViewById(R.id.opened_count_view)
         var textView: TextView = view.findViewById(R.id.text_view)
         var imageView: ImageView = view.findViewById(R.id.image_view)
         var selectableView: ImageView = view.findViewById(R.id.selectable)
@@ -129,11 +132,9 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
         }
 
         private fun showFullBookTitle(book: Book) {
-            val metadata = BookMetadata.findOrCreateByBookId(itemView.context, book.id)
-
             val popupView = LayoutInflater.from(itemView.context).inflate(R.layout.index_book_title_popup, null, false)
             val bookTitleView: TextView = popupView.findViewById(R.id.book_title)
-            bookTitleView.text = "${book.title}\nOpened Count: ${metadata.openedCount}"
+            bookTitleView.text = book.title
 
             val viewAuditEventsButton: ImageButton = popupView.findViewById(R.id.view_audit_events)
             viewAuditEventsButton.setOnClickListener {
@@ -177,14 +178,24 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val book = books[position]
+        val metadata = booksMetadata[book.id]
 
-        holder.selectableView.visibility = if(selectable) View.VISIBLE else View.INVISIBLE
+        holder.selectableView.visibility = if(selectable) View.VISIBLE else View.GONE
         if(selectable) holder.itemView.isActivated = selectedBookIds.contains(book.id)
 
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.text = book.title
 
         holder.pageCountView.text = String.format("%,d", book.pages)
+
+        val openedCount = metadata?.openedCount ?: 0
+        if(openedCount > 0) {
+            holder.openedCountView.visibility = View.VISIBLE
+            holder.openedCountView.text = String.format("%,d", openedCount)
+        }
+        else {
+            holder.openedCountView.visibility = View.GONE
+        }
 
         requestManager
             .load(book.thumbnailUrl.toGlideUrl())

@@ -4,6 +4,7 @@ import android.content.Context
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
 import java.util.*
+import kotlin.collections.HashMap
 
 internal class BooksSorter {
     var sortMethod = SORT_AGE
@@ -33,14 +34,14 @@ internal class BooksSorter {
         return if(sortDirectionAsc) "Ascending" else "Descending"
     }
 
-    fun sort(context: Context, books: ArrayList<Book>) {
+    fun sort(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
         if(books.isEmpty()) return
 
         if(sortMethod == SORT_LAST_OPENED) {
-            sortLastOpened(context, books)
+            sortLastOpened(books, booksMetadata)
         }
         else if(sortMethod == SORT_OPENED_COUNT) {
-            sortOpenedCount(context, books)
+            sortOpenedCount(books, booksMetadata)
         }
         else if(sortMethod == SORT_RANDOM) {
             sortRandom(books)
@@ -58,8 +59,7 @@ internal class BooksSorter {
         }
     }
 
-    private fun sortLastOpened(context: Context, books: ArrayList<Book>) {
-        val booksMetadata = metadataForBooks(context, books)
+    private fun sortLastOpened(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
         books.sortWith { a: Book, b: Book ->
             val abm = booksMetadata[a.id]
             val bbm = booksMetadata[b.id]
@@ -72,8 +72,7 @@ internal class BooksSorter {
         }
     }
 
-    private fun sortOpenedCount(context: Context, books: ArrayList<Book>) {
-        val booksMetadata = metadataForBooks(context, books)
+    private fun sortOpenedCount(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
         books.sortWith { a: Book, b: Book ->
             val abm = booksMetadata[a.id]
             val bbm = booksMetadata[b.id]
@@ -90,24 +89,6 @@ internal class BooksSorter {
         val seed = System.currentTimeMillis() / (1000L * 60L * 30L)
         books.shuffle(Random(seed))
         if(!sortDirectionAsc) books.reverse()
-    }
-
-    private fun metadataForBooks(context: Context, books: ArrayList<Book>): HashMap<Long, BookMetadata> {
-        val db = DatabaseHelper.instance(context)
-        val sb = StringBuilder()
-        for(b in books) {
-            if(sb.isNotEmpty()) sb.append(",")
-            sb.append(b.id)
-        }
-
-        db.rawQuery("SELECT * FROM books_metadata WHERE book_id IN ($sb)", arrayOf()).use {
-            val booksMetadata = HashMap<Long, BookMetadata>()
-            while(it.moveToNext()) {
-                val bookMetadata = BookMetadata(it)
-                booksMetadata[bookMetadata.bookId] = bookMetadata
-            }
-            return booksMetadata
-        }
     }
 
     companion object {

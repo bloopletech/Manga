@@ -10,14 +10,26 @@
         android:scaleType="fitStart">
     </ImageView>
 
-    <ImageView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/selectable"
-        android:layout_gravity="top|start"
-        android:padding="2dp"
-        android:src="@drawable/book_selector"
-        />
+        android:layout_gravity="top|start">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/selectable"
+            android:padding="2dp"
+            android:src="@drawable/book_selector"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/opened_count_view"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="2dp"
+            android:background="?android:attr/colorBackground"
+            />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,6 +37,8 @@
         android:id="@+id/page_count_view"
         android:layout_gravity="top|end"
         android:padding="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="2dp"
         android:background="?android:attr/colorBackground"
         />
 

@@ -11,8 +11,8 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
     private val searcher = BooksSearcher()
     private val sorter = BooksSorter()
 
-    val searchResults: MutableLiveData<ArrayList<Book>> by lazy {
-        MutableLiveData<ArrayList<Book>>()
+    val searchResults: MutableLiveData<SearchResults> by lazy {
+        MutableLiveData<SearchResults>()
     }
 
     val sorterDescription: MutableLiveData<String> by lazy {
@@ -54,8 +54,9 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         val service = Executors.newSingleThreadExecutor()
         service.submit {
             val books = searcher.search(library!!)
-            sorter.sort(getApplication(), books)
-            searchResults.postValue(books)
+            val booksMetadata = BookMetadata.findAllByBookIds(getApplication(), books)
+            sorter.sort(books, booksMetadata)
+            searchResults.postValue(SearchResults(books, booksMetadata))
         }
     }
 }
