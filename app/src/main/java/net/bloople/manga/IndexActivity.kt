@@ -59,9 +59,9 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
         searchField = findViewById(R.id.search_field)
 
-        searchField.setOnEditorActionListener { _: TextView?, actionId: Int, event: KeyEvent ->
+        searchField.setOnEditorActionListener { _: TextView?, actionId: Int, event: KeyEvent? ->
             var handled = false
-            if(actionId == EditorInfo.IME_ACTION_SEARCH || event.keyCode == KeyEvent.KEYCODE_ENTER) {
+            if(actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(searchField.windowToken, 0)
                 searchField.clearFocus()
