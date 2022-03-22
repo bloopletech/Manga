@@ -49,11 +49,9 @@ class DatabaseManagementFragment : Fragment() {
     }
 
     private fun completeExport(data: Intent?) {
-        val uri = data!!.data
-
         try {
-            val outputStream = requireContext().contentResolver.openOutputStream(uri!!)
-            DatabaseHelper.exportDatabase(context, outputStream)
+            val outputStream = requireContext().contentResolver.openOutputStream(data!!.data!!)
+            DatabaseHelper.exportDatabase(requireContext(), outputStream!!)
             Toast.makeText(context, "Database exported successfully", Toast.LENGTH_LONG).show()
             startExportAudit()
         }
@@ -71,10 +69,8 @@ class DatabaseManagementFragment : Fragment() {
     }
 
     private fun completeExportAudit(data: Intent?) {
-        val uri = data!!.data
-
         try {
-            val outputStream = requireContext().contentResolver.openOutputStream(uri!!)
+            val outputStream = requireContext().contentResolver.openOutputStream(data!!.data!!)
             net.bloople.manga.audit.DatabaseHelper.exportDatabase(context, outputStream)
             Toast.makeText(context, "Audit Database exported successfully", Toast.LENGTH_LONG).show()
         }
@@ -91,11 +87,9 @@ class DatabaseManagementFragment : Fragment() {
     }
 
     private fun completeImport(data: Intent?) {
-        val uri = data!!.data
-
         try {
-            val inputStream = requireContext().contentResolver.openInputStream(uri!!)
-            DatabaseHelper.importDatabase(context, inputStream)
+            val inputStream = requireContext().contentResolver.openInputStream(data!!.data!!)
+            DatabaseHelper.importDatabase(requireContext(), inputStream!!)
             Toast.makeText(context, "Database imported successfully", Toast.LENGTH_LONG).show()
             startImportAudit()
         }
@@ -112,10 +106,8 @@ class DatabaseManagementFragment : Fragment() {
     }
 
     private fun completeImportAudit(data: Intent?) {
-        val uri = data!!.data
-
         try {
-            val inputStream = requireContext().contentResolver.openInputStream(uri!!)
+            val inputStream = requireContext().contentResolver.openInputStream(data!!.data!!)
             net.bloople.manga.audit.DatabaseHelper.importDatabase(context, inputStream)
             Toast.makeText(context, "Audit Database imported successfully", Toast.LENGTH_LONG).show()
 
