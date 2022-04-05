@@ -6,12 +6,11 @@ import android.os.Bundle
 import net.bloople.manga.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.database.Cursor
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.ViewModelProvider
 
 class AuditEventsActivity : AppCompatActivity() {
+    private lateinit var model: AuditEventsViewModel
+
     private lateinit var auditEventsView: RecyclerView
     private lateinit var adapter: AuditEventsAdapter
 
@@ -20,47 +19,19 @@ class AuditEventsActivity : AppCompatActivity() {
 
         setContentView(R.layout.audit_activity_audit_events)
 
+        model = ViewModelProvider(this)[AuditEventsViewModel::class.java]
+
         auditEventsView = findViewById(R.id.audit_events)
         auditEventsView.layoutManager = LinearLayoutManager(this)
 
         adapter = AuditEventsAdapter(null)
         auditEventsView.adapter = adapter
 
-        val intent = intent
+        model.searchResults.observe(this) { searchResults: Cursor -> adapter.swapCursor(searchResults) }
+
         val resourceId = intent.getLongExtra("resourceId", -1)
 
-        lifecycleScope.launch {
-            val cursor: Cursor
-
-            withContext(Dispatchers.IO) {
-                val db = DatabaseHelper.instance(this@AuditEventsActivity)
-
-                cursor = if(resourceId != -1L) {
-                    db.query(
-                        "audit_events",
-                        null,
-                        "resource_id = ?", arrayOf(resourceId.toString()),
-                        null,
-                        null,
-                        "\"when\" DESC"
-                    )
-                }
-                else {
-                    db.query(
-                        "audit_events",
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        "\"when\" DESC"
-                    )
-                }
-                cursor.moveToFirst()
-            }
-
-            adapter.swapCursor(cursor)
-        }
+        model.setResourceId(if(resourceId != -1L) resourceId else null)
     }
 
     override fun onBackPressed() {
