@@ -1,37 +1,43 @@
 package net.bloople.manga
 
-import java.util.ArrayList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.*
 import java.util.regex.Pattern
 
 internal class BooksSearcher {
     var searchText = ""
     var filterIds: ArrayList<Long> = ArrayList()
 
-    fun search(library: Library): ArrayList<Book> {
+    suspend fun search(library: Library): ArrayList<Book> {
         val books = ArrayList<Book>()
-        val searchTerms = parseSearchTerms()
 
-        bookLoop@ for((key, b) in library.books) {
-            if(filterIds.isNotEmpty() && !filterIds.contains(key)) continue@bookLoop
+        withContext(Dispatchers.Default) {
+            val searchTerms = parseSearchTerms()
 
-            val compareTitle = b.title.toLowerCase()
-            for(searchTerm in searchTerms) {
-                if(searchTerm.startsWith("-")) {
-                    val realSearchTerm = searchTerm.substring(1)
-                    if(realSearchTerm == SPECIAL_LONG_BOOK) {
-                        if(b.pages >= LONG_BOOK_PAGES) continue@bookLoop
+            bookLoop@ for((key, b) in library.books) {
+                if(filterIds.isNotEmpty() && !filterIds.contains(key)) continue@bookLoop
+
+                val compareTitle = b.title.lowercase(Locale.getDefault())
+                for(searchTerm in searchTerms) {
+                    if(searchTerm.startsWith("-")) {
+                        val realSearchTerm = searchTerm.substring(1)
+                        if(realSearchTerm == SPECIAL_LONG_BOOK) {
+                            if(b.pages >= LONG_BOOK_PAGES) continue@bookLoop
+                        }
+                        else if(compareTitle.contains(realSearchTerm)) continue@bookLoop
                     }
-                    else if(compareTitle.contains(realSearchTerm)) continue@bookLoop
-                }
-                else {
-                    if(searchTerm == SPECIAL_LONG_BOOK) {
-                        if(b.pages < LONG_BOOK_PAGES) continue@bookLoop
+                    else {
+                        if(searchTerm == SPECIAL_LONG_BOOK) {
+                            if(b.pages < LONG_BOOK_PAGES) continue@bookLoop
+                        }
+                        else if(!compareTitle.contains(searchTerm)) continue@bookLoop
                     }
-                    else if(!compareTitle.contains(searchTerm)) continue@bookLoop
                 }
+                books.add(b)
             }
-            books.add(b)
         }
+
         return books
     }
 

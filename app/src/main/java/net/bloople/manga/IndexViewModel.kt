@@ -3,7 +3,8 @@ package net.bloople.manga
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.Executors
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 class IndexViewModel(application: Application) : AndroidViewModel(application) {
     private var library: Library? = null
@@ -50,9 +51,8 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun resolve() {
-        val service = Executors.newSingleThreadExecutor()
-        service.submit {
-            val books = searcher.search(library ?: return@submit)
+        viewModelScope.launch {
+            val books = searcher.search(library ?: return@launch)
             val booksMetadata = BookMetadata.findAllByBookIds(getApplication(), books)
             sorter.sort(books, booksMetadata)
             searchResults.postValue(SearchResults(books, booksMetadata))
