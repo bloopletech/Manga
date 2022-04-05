@@ -18,25 +18,14 @@ class AuditEventsActivity : AppCompatActivity() {
         setContentView(R.layout.audit_activity_audit_events)
 
         auditEventsView = findViewById(R.id.audit_events)
-        auditEventsView.setLayoutManager(LinearLayoutManager(this))
+        auditEventsView.layoutManager = LinearLayoutManager(this)
 
         adapter = AuditEventsAdapter(null)
-        auditEventsView.setAdapter(adapter)
+        auditEventsView.adapter = adapter
 
         val intent = intent
         val resourceId = intent.getLongExtra("resourceId", -1)
         loadAuditEvents(resourceId)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        //libraryId = savedInstanceState.getLong("libraryId");
-        //loadLibrary();
-    }
-
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        //savedInstanceState.putLong("libraryId", libraryId);
-        super.onSaveInstanceState(savedInstanceState)
     }
 
     override fun onBackPressed() {
@@ -80,7 +69,7 @@ class AuditEventsActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(cursor: Cursor) {
-            adapter!!.swapCursor(cursor)
+            adapter.swapCursor(cursor)
         }
     }
 }
