@@ -71,7 +71,7 @@ class DatabaseManagementFragment : Fragment() {
     private fun completeExportAudit(data: Intent?) {
         try {
             val outputStream = requireContext().contentResolver.openOutputStream(data!!.data!!)
-            net.bloople.manga.audit.DatabaseHelper.exportDatabase(context, outputStream)
+            net.bloople.manga.audit.DatabaseHelper.exportDatabase(requireContext(), outputStream!!)
             Toast.makeText(context, "Audit Database exported successfully", Toast.LENGTH_LONG).show()
         }
         catch(e: IOException) {
@@ -108,7 +108,7 @@ class DatabaseManagementFragment : Fragment() {
     private fun completeImportAudit(data: Intent?) {
         try {
             val inputStream = requireContext().contentResolver.openInputStream(data!!.data!!)
-            net.bloople.manga.audit.DatabaseHelper.importDatabase(context, inputStream)
+            net.bloople.manga.audit.DatabaseHelper.importDatabase(requireContext(), inputStream!!)
             Toast.makeText(context, "Audit Database imported successfully", Toast.LENGTH_LONG).show()
 
             val activity: Activity? = activity
