@@ -5,8 +5,6 @@ import net.bloople.manga.Library.Companion.findDefault
 import android.app.ProgressDialog
 import android.content.Context
 import android.util.LruCache
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.io.IOException
 
@@ -46,7 +44,7 @@ class LibraryService {
         @OptIn(ExperimentalSerializationApi::class)
         private suspend fun inflate(library: Library): Boolean {
             return try {
-                withContext(Dispatchers.IO) { library.inflate() }
+                library.inflate()
                 true
             }
             catch(e: IOException) {

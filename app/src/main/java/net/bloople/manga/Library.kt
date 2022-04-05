@@ -1,14 +1,14 @@
 package net.bloople.manga
 
-import kotlin.Throws
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import java.io.IOException
 import java.util.HashMap
 
 
@@ -37,14 +37,16 @@ class Library {
     }
 
     @ExperimentalSerializationApi
-    @Throws(IOException::class)
-    fun inflate() {
-        val connection = (mangos / DATA_JSON_PATH).toUrlConnection()
+    suspend fun inflate() {
+        withContext(Dispatchers.IO) {
+            val connection = (mangos / DATA_JSON_PATH).toUrlConnection()
 
-        val books: List<Book>;
-        connection.getInputStream().use { books = Json.decodeFromStream(it) }
+            val deflatedBooks: List<Book>
+            connection.getInputStream().use { deflatedBooks = Json.decodeFromStream(it) }
 
-        for(book in books) book.inflate(this)
+            books.clear()
+            for(deflatedBook in deflatedBooks) deflatedBook.inflate(this@Library)
+        }
     }
 
     fun save(context: Context) {
