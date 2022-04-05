@@ -4,7 +4,8 @@ import android.app.Application
 import android.database.Cursor
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.Executors
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 class AuditEventsViewModel(application: Application) : AndroidViewModel(application) {
     val searchResults: MutableLiveData<Cursor> by lazy {
@@ -19,7 +20,8 @@ class AuditEventsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun resolve() {
-        val service = Executors.newSingleThreadExecutor()
-        service.submit { searchResults.postValue(searcher.search(getApplication())) }
+        viewModelScope.launch {
+            searchResults.postValue(searcher.search(getApplication()))
+        }
     }
 }
