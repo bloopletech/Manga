@@ -6,7 +6,10 @@ import android.os.Bundle
 import net.bloople.manga.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.database.Cursor
-import android.os.AsyncTask
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AuditEventsActivity : AppCompatActivity() {
     private lateinit var auditEventsView: RecyclerView
@@ -25,51 +28,42 @@ class AuditEventsActivity : AppCompatActivity() {
 
         val intent = intent
         val resourceId = intent.getLongExtra("resourceId", -1)
-        loadAuditEvents(resourceId)
+
+        lifecycleScope.launch {
+            val cursor: Cursor
+
+            withContext(Dispatchers.IO) {
+                val db = DatabaseHelper.instance(this@AuditEventsActivity)
+
+                cursor = if(resourceId != -1L) {
+                    db.query(
+                        "audit_events",
+                        null,
+                        "resource_id = ?", arrayOf(resourceId.toString()),
+                        null,
+                        null,
+                        "\"when\" DESC"
+                    )
+                }
+                else {
+                    db.query(
+                        "audit_events",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        "\"when\" DESC"
+                    )
+                }
+                cursor.moveToFirst()
+            }
+
+            adapter.swapCursor(cursor)
+        }
     }
 
     override fun onBackPressed() {
         finish()
-    }
-
-    private fun loadAuditEvents(resourceId: Long) {
-        val resolver = ResolverTask()
-        resolver.execute(resourceId)
-    }
-
-    internal inner class ResolverTask : AsyncTask<Long?, Void?, Cursor>() {
-        override fun doInBackground(vararg resourceIds: Long?): Cursor {
-            val resourceId = resourceIds[0]
-
-            val db = DatabaseHelper.instance(this@AuditEventsActivity)
-
-            val cursor: Cursor = if(resourceId != -1L) {
-                db.query(
-                    "audit_events",
-                    null,
-                    "resource_id = ?", arrayOf(resourceId.toString()),
-                    null,
-                    null,
-                    "\"when\" DESC"
-                )
-            }
-            else {
-                db.query(
-                    "audit_events",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    "\"when\" DESC"
-                )
-            }
-            cursor.moveToFirst()
-            return cursor
-        }
-
-        override fun onPostExecute(cursor: Cursor) {
-            adapter.swapCursor(cursor)
-        }
     }
 }
