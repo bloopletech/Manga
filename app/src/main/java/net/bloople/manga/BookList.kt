@@ -11,8 +11,8 @@ class BookList {
 
     constructor()
     constructor(result: Cursor) {
-        _id = result.getLong(result.getColumnIndex("_id"))
-        name = result.getString(result.getColumnIndex("name"))
+        _id = result["_id"]
+        name = result["name"]
     }
 
     fun bookIds(context: Context): ArrayList<Long> {
@@ -20,7 +20,7 @@ class BookList {
         db.rawQuery("SELECT book_id FROM lists_books WHERE list_id=?", arrayOf(_id.toString())).use {
             it.moveToFirst()
             val bookIds = ArrayList<Long>()
-            while(it.moveToNext()) bookIds.add(it.getLong(it.getColumnIndex("book_id")))
+            while(it.moveToNext()) bookIds.add(it["book_id"])
             return bookIds
         }
     }

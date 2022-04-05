@@ -16,11 +16,11 @@ class BookMetadata {
 
     constructor()
     constructor(result: Cursor) {
-        _id = result.getLong(result.getColumnIndex("_id"))
-        bookId = result.getLong(result.getColumnIndex("book_id"))
-        lastOpenedAt = result.getLong(result.getColumnIndex("last_opened_at"))
-        lastReadPosition = result.getInt(result.getColumnIndex("last_read_position"))
-        openedCount = result.getInt(result.getColumnIndex("opened_count"))
+        _id = result["_id"]
+        bookId = result["book_id"]
+        lastOpenedAt = result["last_opened_at"]
+        lastReadPosition = result["last_read_position"]
+        openedCount = result["opened_count"]
     }
 
     fun save(context: Context) {

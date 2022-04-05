@@ -20,11 +20,11 @@ class QueryAdapter internal constructor(context: Context, cursor: Cursor?) : Cur
     override fun bindView(view: View, context: Context, cursor: Cursor) {
         // Find fields to populate in inflated template
         val textView = view as TextView
-        textView.text = cursor.getString(cursor.getColumnIndex("text"))
+        textView.text = cursor["text"]
     }
 
     override fun convertToString(cursor: Cursor): String {
         //returns string inserted into textview after item from drop-down list is selected.
-        return cursor.getString(cursor.getColumnIndex("text"))
+        return cursor["text"]
     }
 }

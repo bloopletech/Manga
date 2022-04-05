@@ -3,6 +3,7 @@ package net.bloople.manga.audit
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import net.bloople.manga.get
 import java.lang.IllegalArgumentException
 
 internal class AuditEvent {
@@ -37,21 +38,21 @@ internal class AuditEvent {
     }
 
     constructor(result: Cursor) {
-        _id = result.getLong(result.getColumnIndex("_id"))
-        `when` = result.getLong(result.getColumnIndex("when"))
-        val actionText = result.getString(result.getColumnIndex("action"))
+        _id = result["_id"]
+        `when` = result["when"]
+        val actionText: String = result["action"]
         action = try {
             Action.valueOf(actionText)
         }
         catch(e: IllegalArgumentException) {
             Action.UNKNOWN
         }
-        resourceContextType = ResourceType.valueOf(result.getString(result.getColumnIndex("resource_context_type")))
-        resourceContextId = result.getLong(result.getColumnIndex("resource_context_id"))
-        resourceType = ResourceType.valueOf(result.getString(result.getColumnIndex("resource_type")))
-        resourceId = result.getLong(result.getColumnIndex("resource_id"))
-        resourceName = result.getString(result.getColumnIndex("resource_name"))
-        detail = result.getString(result.getColumnIndex("detail"))
+        resourceContextType = ResourceType.valueOf(result["resource_context_type"])
+        resourceContextId = result["resource_context_id"]
+        resourceType = ResourceType.valueOf(result["resource_type"])
+        resourceId = result["resource_id"]
+        resourceName = result["resource_name"]
+        detail = result["detail"]
     }
 
     fun save(context: Context) {

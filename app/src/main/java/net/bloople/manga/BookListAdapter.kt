@@ -27,8 +27,8 @@ internal class BookListAdapter(context: Context?, cursor: Cursor?) : CursorAdapt
         val nameView = view.findViewById<TextView>(R.id.name)
         val editNameView = view.findViewById<EditText>(R.id.edit_name)
 
-        val listId = cursor.getLong(cursor.getColumnIndex("_id"))
-        val name = cursor.getString(cursor.getColumnIndex("name"))
+        val listId: Long = cursor["_id"]
+        val name: String = cursor["name"]
         nameView.text = name
 
         nameView.visibility = View.VISIBLE

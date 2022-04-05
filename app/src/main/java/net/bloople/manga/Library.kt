@@ -28,12 +28,12 @@ class Library {
 
     internal constructor()
     internal constructor(result: Cursor) {
-        id = result.getLong(result.getColumnIndex("_id"))
-        name = result.getString(result.getColumnIndex("name"))
-        position = result.getInt(result.getColumnIndex("position"))
-        root = result.getString(result.getColumnIndex("root"))
-        username = result.getString(result.getColumnIndex("username"))
-        password = result.getString(result.getColumnIndex("password"))
+        id = result["_id"]
+        name = result["name"]
+        position = result["position"]
+        root = result["root"]
+        username = result["username"]
+        password = result["password"]
     }
 
     @ExperimentalSerializationApi
@@ -95,7 +95,7 @@ class Library {
             val db = DatabaseHelper.instance(context)
             db.rawQuery("SELECT position FROM library_roots ORDER BY position DESC LIMIT 1", arrayOf()).use {
                 it.moveToFirst()
-                return if (it.count > 0) it.getInt(it.getColumnIndex("position")) else 0
+                return if (it.count > 0) it["position"] else 0
             }
         }
     }

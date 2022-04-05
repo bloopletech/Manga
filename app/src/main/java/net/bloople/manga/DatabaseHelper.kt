@@ -178,7 +178,7 @@ internal object DatabaseHelper {
     private fun hasColumn(db: SQLiteDatabase, tableName: String, columnName: String): Boolean {
         db.rawQuery("PRAGMA table_info($tableName)", null).use {
             while (it.moveToNext()) {
-                if (it.getString(it.getColumnIndex("name")).equals(columnName)) {
+                if (it.get<String>("name") == columnName) {
                     return true
                 }
             }

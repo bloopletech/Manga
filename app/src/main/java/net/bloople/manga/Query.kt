@@ -25,11 +25,11 @@ class Query {
     }
 
     internal constructor(result: Cursor) {
-        _id = result.getLong(result.getColumnIndex("_id"))
-        text = result.getString(result.getColumnIndex("text"))
-        createdAt = result.getLong(result.getColumnIndex("created_at"))
-        lastUsedAt = result.getLong(result.getColumnIndex("last_used_at"))
-        usedCount = result.getLong(result.getColumnIndex("used_count"))
+        _id = result["_id"]
+        text = result["text"]
+        createdAt = result["created_at"]
+        lastUsedAt = result["last_used_at"]
+        usedCount = result["used_count"]
     }
 
     fun save(context: Context) {
