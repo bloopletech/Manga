@@ -1,8 +1,8 @@
 package net.bloople.manga
 
-import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
-import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -15,7 +15,7 @@ internal class BooksSorter {
     }
 
     fun description(): String {
-        return "Sorted by " + sortMethodDescription().toLowerCase() + " " + sortDirectionDescription().toLowerCase()
+        return "Sorted by ${sortMethodDescription().lowercase(Locale.getDefault())} ${sortDirectionDescription().lowercase(Locale.getDefault())}"
     }
 
     private fun sortMethodDescription(): String {
@@ -34,28 +34,30 @@ internal class BooksSorter {
         return if(sortDirectionAsc) "Ascending" else "Descending"
     }
 
-    fun sort(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
-        if(books.isEmpty()) return
+    suspend fun sort(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
+        return withContext(Dispatchers.Default) {
+            if(books.isEmpty()) return@withContext
 
-        if(sortMethod == SORT_LAST_OPENED) {
-            sortLastOpened(books, booksMetadata)
-        }
-        else if(sortMethod == SORT_OPENED_COUNT) {
-            sortOpenedCount(books, booksMetadata)
-        }
-        else if(sortMethod == SORT_RANDOM) {
-            sortRandom(books)
-        }
-        else {
-            books.sortWith { a: Book, b: Book ->
-                return@sortWith when(sortMethod) {
-                    SORT_ALPHABETIC -> a.normalisedTitle.compareTo(b.normalisedTitle)
-                    SORT_AGE -> a.publishedOn.compareTo(b.publishedOn)
-                    SORT_LENGTH -> a.pages.compareTo(b.pages)
-                    else -> 0
-                }
+            if(sortMethod == SORT_LAST_OPENED) {
+                sortLastOpened(books, booksMetadata)
             }
-            if(!sortDirectionAsc) books.reverse()
+            else if(sortMethod == SORT_OPENED_COUNT) {
+                sortOpenedCount(books, booksMetadata)
+            }
+            else if(sortMethod == SORT_RANDOM) {
+                sortRandom(books)
+            }
+            else {
+                books.sortWith { a: Book, b: Book ->
+                    return@sortWith when(sortMethod) {
+                        SORT_ALPHABETIC -> a.normalisedTitle.compareTo(b.normalisedTitle)
+                        SORT_AGE -> a.publishedOn.compareTo(b.publishedOn)
+                        SORT_LENGTH -> a.pages.compareTo(b.pages)
+                        else -> 0
+                    }
+                }
+                if(!sortDirectionAsc) books.reverse()
+            }
         }
     }
 
