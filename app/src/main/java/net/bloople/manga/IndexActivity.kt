@@ -124,14 +124,16 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        model.setSort(savedInstanceState.getInt("sortMethod"), savedInstanceState.getBoolean("sortDirectionAsc"))
+        val sortMethod = savedInstanceState.getString("sortMethod")
+        val sortDirectionAsc = savedInstanceState.getBoolean("sortDirectionAsc")
+        if(sortMethod != null) model.setSort(BooksSortMethod.valueOf(sortMethod), sortDirectionAsc)
         loadLibrary(savedInstanceState.getLong("libraryId"))
     }
 
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         val library = model.getLibrary()
         if(library != null) savedInstanceState.putLong("libraryId", library.id)
-        savedInstanceState.putInt("sortMethod", model.sortMethod)
+        savedInstanceState.putString("sortMethod", model.sortMethod.toString())
         savedInstanceState.putBoolean("sortDirectionAsc", model.sortDirectionAsc)
         super.onSaveInstanceState(savedInstanceState)
     }
@@ -160,22 +162,22 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
         when(menuItem.itemId) {
             R.id.sort_alphabetic -> {
-                newSortMethod = BooksSorter.SORT_ALPHABETIC
+                newSortMethod = BooksSortMethod.SORT_ALPHABETIC
             }
             R.id.sort_age -> {
-                newSortMethod = BooksSorter.SORT_AGE
+                newSortMethod = BooksSortMethod.SORT_AGE
             }
             R.id.sort_size -> {
-                newSortMethod = BooksSorter.SORT_LENGTH
+                newSortMethod = BooksSortMethod.SORT_LENGTH
             }
             R.id.sort_last_opened -> {
-                newSortMethod = BooksSorter.SORT_LAST_OPENED
+                newSortMethod = BooksSortMethod.SORT_LAST_OPENED
             }
             R.id.sort_opened_count -> {
-                newSortMethod = BooksSorter.SORT_OPENED_COUNT
+                newSortMethod = BooksSortMethod.SORT_OPENED_COUNT
             }
             R.id.sort_random -> {
-                newSortMethod = BooksSorter.SORT_RANDOM
+                newSortMethod = BooksSortMethod.SORT_RANDOM
             }
         }
 

@@ -28,7 +28,7 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         return library
     }
 
-    val sortMethod: Int
+    val sortMethod: BooksSortMethod
         get() = sorter.sortMethod
     val sortDirectionAsc: Boolean
         get() = sorter.sortDirectionAsc
@@ -38,7 +38,7 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         resolve()
     }
 
-    fun setSort(sortMethod: Int, sortDirectionAsc: Boolean) {
+    fun setSort(sortMethod: BooksSortMethod, sortDirectionAsc: Boolean) {
         sorter.sortMethod = sortMethod
         sorter.sortDirectionAsc = sortDirectionAsc
         sorterDescription.value = sorter.description()

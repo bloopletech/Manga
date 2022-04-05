@@ -2,12 +2,11 @@ package net.bloople.manga
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.HashMap
 
 internal class BooksSorter {
-    var sortMethod = SORT_AGE
+    var sortMethod = BooksSortMethod.SORT_AGE
     var sortDirectionAsc = false
 
     fun flipSortDirection() {
@@ -20,13 +19,12 @@ internal class BooksSorter {
 
     private fun sortMethodDescription(): String {
         return when(sortMethod) {
-            SORT_ALPHABETIC -> "Title"
-            SORT_AGE -> "Published Date"
-            SORT_LENGTH -> "Page Count"
-            SORT_LAST_OPENED -> "Last Opened At"
-            SORT_OPENED_COUNT -> "Opened Count"
-            SORT_RANDOM -> "Random"
-            else -> throw IllegalStateException("sort_method not in valid range")
+            BooksSortMethod.SORT_ALPHABETIC -> "Title"
+            BooksSortMethod.SORT_AGE -> "Published Date"
+            BooksSortMethod.SORT_LENGTH -> "Page Count"
+            BooksSortMethod.SORT_LAST_OPENED -> "Last Opened At"
+            BooksSortMethod.SORT_OPENED_COUNT -> "Opened Count"
+            BooksSortMethod.SORT_RANDOM -> "Random"
         }
     }
 
@@ -38,21 +36,21 @@ internal class BooksSorter {
         return withContext(Dispatchers.Default) {
             if(books.isEmpty()) return@withContext
 
-            if(sortMethod == SORT_LAST_OPENED) {
+            if(sortMethod == BooksSortMethod.SORT_LAST_OPENED) {
                 sortLastOpened(books, booksMetadata)
             }
-            else if(sortMethod == SORT_OPENED_COUNT) {
+            else if(sortMethod == BooksSortMethod.SORT_OPENED_COUNT) {
                 sortOpenedCount(books, booksMetadata)
             }
-            else if(sortMethod == SORT_RANDOM) {
+            else if(sortMethod == BooksSortMethod.SORT_RANDOM) {
                 sortRandom(books)
             }
             else {
                 books.sortWith { a: Book, b: Book ->
                     return@sortWith when(sortMethod) {
-                        SORT_ALPHABETIC -> a.normalisedTitle.compareTo(b.normalisedTitle)
-                        SORT_AGE -> a.publishedOn.compareTo(b.publishedOn)
-                        SORT_LENGTH -> a.pages.compareTo(b.pages)
+                        BooksSortMethod.SORT_ALPHABETIC -> a.normalisedTitle.compareTo(b.normalisedTitle)
+                        BooksSortMethod.SORT_AGE -> a.publishedOn.compareTo(b.publishedOn)
+                        BooksSortMethod.SORT_LENGTH -> a.pages.compareTo(b.pages)
                         else -> 0
                     }
                 }
@@ -92,13 +90,8 @@ internal class BooksSorter {
         books.shuffle(Random(seed))
         if(!sortDirectionAsc) books.reverse()
     }
+}
 
-    companion object {
-        const val SORT_ALPHABETIC = 0
-        const val SORT_AGE = 1
-        const val SORT_LENGTH = 2
-        const val SORT_LAST_OPENED = 3
-        const val SORT_OPENED_COUNT = 4
-        const val SORT_RANDOM = 5
-    }
+enum class BooksSortMethod {
+    SORT_ALPHABETIC, SORT_AGE, SORT_LENGTH, SORT_LAST_OPENED, SORT_OPENED_COUNT, SORT_RANDOM
 }
