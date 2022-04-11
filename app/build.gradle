@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.31'
 }
 
@@ -49,11 +50,17 @@ dependencies {
 
     implementation 'androidx.fragment:fragment-ktx:1.4.1'
     implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
-    implementation ('com.github.bumptech.glide:glide:4.13.1') {
+
+    def glideVersion = '4.13.1'
+    implementation ("com.github.bumptech.glide:glide:${glideVersion}") {
         exclude group: 'com.android.support'
     }
-    implementation ('com.github.bumptech.glide:recyclerview-integration:4.13.1') {
+    implementation ("com.github.bumptech.glide:recyclerview-integration:${glideVersion}") {
         transitive = false
     }
+    implementation "com.github.bumptech.glide:okhttp3-integration:${glideVersion}"
+    implementation "com.github.bumptech.glide:annotations:${glideVersion}"
+    kapt "com.github.bumptech.glide:compiler:${glideVersion}"
+
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 }
