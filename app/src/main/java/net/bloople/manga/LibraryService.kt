@@ -5,52 +5,71 @@ import net.bloople.manga.Library.Companion.findDefault
 import android.app.ProgressDialog
 import android.content.Context
 import android.util.LruCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import okhttp3.OkHttpClient
 import java.io.IOException
 
-class LibraryService {
-    companion object {
-        private const val LIBRARY_CACHE_MAX_COUNT = 5
-        private val currentLibraries = LruCache<Long, Library>(LIBRARY_CACHE_MAX_COUNT)
+object LibraryService {
+    private const val LIBRARY_CACHE_MAX_COUNT = 5
+    private val currentLibraries = LruCache<Long, Library>(LIBRARY_CACHE_MAX_COUNT)
+    private val okHttpClient = OkHttpClient()
 
-        suspend fun ensureLibrary(context: Context, libraryId: Long): Library? {
-            var library = findById(context, libraryId)
-            if(library == null) library = findDefault(context)
+    suspend fun ensureLibrary(context: Context, libraryId: Long): Library? {
+        var library = findById(context, libraryId)
+        if(library == null) library = findDefault(context)
 
-            if(library == null) return null
+        if(library == null) return null
 
-            val current = currentLibraries[library.id]
-            if(current != null && current.root == library.root) return current
+        val current = currentLibraries[library.id]
+        if(current != null && current.root == library.root) return current
 
-            if(load(context, library)) {
-                currentLibraries.put(library.id, library)
-                return library
-            }
-
-            return null
+        if(load(context, library)) {
+            currentLibraries.put(library.id, library)
+            return library
         }
 
-        private suspend fun load(context: Context, library: Library): Boolean {
-            val loadingLibraryDialog = ProgressDialog.show(
-                context,
-                "Loading " + library.name,
-                "Please wait while the library is loaded...",
-                true
-            )
+        return null
+    }
 
-            return inflate(library).also { loadingLibraryDialog.dismiss() }
+    private suspend fun load(context: Context, library: Library): Boolean {
+        val loadingLibraryDialog = ProgressDialog.show(
+            context,
+            "Loading " + library.name,
+            "Please wait while the library is loaded...",
+            true
+        )
+
+        return inflate(library).also { loadingLibraryDialog.dismiss() }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private suspend fun inflate(library: Library): Boolean {
+        return try {
+            inflateUnchecked(library)
+            true
         }
+        catch(e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 
-        @OptIn(ExperimentalSerializationApi::class)
-        private suspend fun inflate(library: Library): Boolean {
-            return try {
-                library.inflate()
-                true
+    @ExperimentalSerializationApi
+    private suspend fun inflateUnchecked(library: Library) {
+        withContext(Dispatchers.IO) {
+            val books: List<Book>
+            val request = library.dataUrl.toOkHttpRequest()
+
+            okHttpClient.newCall(request).execute().use {
+                if(!it.isSuccessful) throw IOException("Request failed. Request: $request, Response: $it")
+                books = Json.decodeFromStream(it.body!!.byteStream())
             }
-            catch(e: IOException) {
-                e.printStackTrace()
-                false
-            }
+
+            library.inflate(books)
         }
     }
 }

@@ -18,7 +18,6 @@ class Book(
 ) {
     @Transient
     lateinit var library: Library
-        private set
     val title: String by lazy { path.replace("\\s+".toRegex(), " ") }
     val normalisedTitle: String by lazy { path.replace("[^A-Za-z0-9]+".toRegex(), "").toLowerCase() }
     val id: Long by lazy { key.substring(0, 15).toLong(16) } //Using substring of key would be dangerous for large N
@@ -27,10 +26,5 @@ class Book(
 
     fun pageUrl(index: Int): MangosUrl {
         return library.rootUrl / path / pagePaths[index]
-    }
-
-    fun inflate(library: Library) {
-        this.library = library
-        library.books[id] = this
     }
 }

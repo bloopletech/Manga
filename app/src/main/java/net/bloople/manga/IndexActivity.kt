@@ -25,6 +25,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.launch
 
 class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
@@ -94,7 +96,8 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         booksLayoutManager = GridLayoutManager(this, 4)
         booksView.layoutManager = booksLayoutManager
 
-        val requestManager = Glide.with(this)
+        val requestManager = Glide.with(this).applyDefaultRequestOptions(
+            RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
         val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
 
         adapter = BooksAdapter(requestManager, sizeProvider)

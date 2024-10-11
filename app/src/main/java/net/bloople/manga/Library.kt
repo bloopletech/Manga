@@ -4,13 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import java.util.HashMap
-
 
 class Library {
     var id = -1L
@@ -24,6 +18,7 @@ class Library {
 
     val rootUrl: MangosUrl by lazy { MangosUrl(root!!, username, password) }
     val mangos: MangosUrl by lazy { rootUrl / ".mangos" }
+    val dataUrl: MangosUrl by lazy { mangos / DATA_JSON_PATH }
     val thumbnailsUrl: MangosUrl by lazy { mangos / "img" / "thumbnails" }
 
     internal constructor()
@@ -36,22 +31,10 @@ class Library {
         password = result["password"]
     }
 
-    @ExperimentalSerializationApi
-    suspend fun inflate() {
-        withContext(Dispatchers.IO) {
-            try {
-                val connection = (mangos / DATA_JSON_PATH).toUrlConnection()
-
-                val deflatedBooks: List<Book>
-                connection.getInputStream().use { deflatedBooks = Json.decodeFromStream(it) }
-
-                books.clear()
-                for(deflatedBook in deflatedBooks) deflatedBook.inflate(this@Library)
-            }
-            catch(e: Exception) {
-                e.printStackTrace()
-            }
-        }
+    fun inflate(deflatedBooks: List<Book>) {
+        books.clear()
+        books.putAll(deflatedBooks.associateBy { it.id })
+        for(book in deflatedBooks) book.library = this
     }
 
     fun save(context: Context) {

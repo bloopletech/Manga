@@ -4,13 +4,10 @@ import android.net.Uri
 import android.os.Parcelable
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import kotlin.Throws
 import android.os.Parcel
 import android.os.Parcelable.Creator
 import android.util.Base64
-import java.io.IOException
-import java.net.URL
-import java.net.URLConnection
+import okhttp3.Request
 
 open class MangosUrl(private val url: String, private val credential: String? = null) : Parcelable {
     constructor(url: String, username: String?, password: String?) : this(
@@ -27,19 +24,17 @@ open class MangosUrl(private val url: String, private val credential: String? = 
         return MangosUrl(url + "/" + Uri.encode(other), credential)
     }
 
+    fun toOkHttpRequest(): Request {
+        val builder = Request.Builder().url(url)
+        if(credential != null) builder.header("Authorization", "Basic $credential")
+        return builder.build()
+    }
+
     fun toGlideUrl(): GlideUrl {
         if(credential != null) {
             return GlideUrl(url, LazyHeaders.Builder().addHeader("Authorization", "Basic $credential").build())
         }
         return GlideUrl(url)
-    }
-
-    @Throws(IOException::class)
-    fun toUrlConnection(): URLConnection {
-        if(credential != null) {
-            return URL(url).openConnection().apply { addRequestProperty("Authorization", "Basic $credential") }
-        }
-        return URL(url).openConnection()
     }
 
     override fun describeContents(): Int {
