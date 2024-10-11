@@ -39,13 +39,18 @@ class Library {
     @ExperimentalSerializationApi
     suspend fun inflate() {
         withContext(Dispatchers.IO) {
-            val connection = (mangos / DATA_JSON_PATH).toUrlConnection()
+            try {
+                val connection = (mangos / DATA_JSON_PATH).toUrlConnection()
 
-            val deflatedBooks: List<Book>
-            connection.getInputStream().use { deflatedBooks = Json.decodeFromStream(it) }
+                val deflatedBooks: List<Book>
+                connection.getInputStream().use { deflatedBooks = Json.decodeFromStream(it) }
 
-            books.clear()
-            for(deflatedBook in deflatedBooks) deflatedBook.inflate(this@Library)
+                books.clear()
+                for(deflatedBook in deflatedBooks) deflatedBook.inflate(this@Library)
+            }
+            catch(e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
