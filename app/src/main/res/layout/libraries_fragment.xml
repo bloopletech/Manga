@@ -34,6 +34,14 @@
             tools:layout="@layout/database_management_framework" />
 
         <ImageButton
+            android:id="@+id/clear_cache"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/actionBarItemBackground"
+            android:src="@drawable/baseline_delete_sweep_24"
+            android:visibility="gone" />
+
+        <ImageButton
             android:id="@+id/start_editing"
             android:layout_width="48dp"
             android:layout_height="48dp"

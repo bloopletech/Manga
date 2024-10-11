@@ -56,6 +56,7 @@ class DatabaseManagementFragment : Fragment() {
             startExportAudit()
         }
         catch(e: IOException) {
+            e.printStackTrace()
             Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
         }
     }
@@ -75,6 +76,7 @@ class DatabaseManagementFragment : Fragment() {
             Toast.makeText(context, "Audit Database exported successfully", Toast.LENGTH_LONG).show()
         }
         catch(e: IOException) {
+            e.printStackTrace()
             Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
         }
     }
@@ -94,6 +96,7 @@ class DatabaseManagementFragment : Fragment() {
             startImportAudit()
         }
         catch(e: IOException) {
+            e.printStackTrace()
             Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
         }
     }
@@ -115,6 +118,7 @@ class DatabaseManagementFragment : Fragment() {
             activity?.recreate()
         }
         catch(e: IOException) {
+            e.printStackTrace()
             Toast.makeText(context, "Error", Toast.LENGTH_LONG).show()
         }
     }

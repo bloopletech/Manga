@@ -141,7 +141,9 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         super.onSaveInstanceState(savedInstanceState)
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
+        super.onBackPressed()
         AlertDialog.Builder(this)
             .setMessage("Are you sure you want to exit?")
             .setCancelable(false)

@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.content.Intent
 import net.bloople.manga.audit.AuditEventsActivity
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null
@@ -25,6 +29,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private lateinit var startEditingButton: ImageButton
     private lateinit var finishEditingButton: ImageButton
     private lateinit var newLibraryButton: ImageButton
+    private lateinit var clearCacheButton: ImageButton
     private lateinit var touchHelper: ItemTouchHelper
     var isEditingMode = false
         private set
@@ -67,12 +72,14 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
             newLibraryButton.visibility = View.VISIBLE
             finishEditingButton.visibility = View.VISIBLE
             databaseManagementFragment.requireView().visibility = View.VISIBLE
+            clearCacheButton.visibility = View.VISIBLE
             isEditingMode = true
         }
 
         finishEditingButton = view.findViewById(R.id.finish_editing)
         finishEditingButton.setOnClickListener {
             isEditingMode = false
+            clearCacheButton.visibility = View.GONE
             databaseManagementFragment.requireView().visibility = View.GONE
             finishEditingButton.visibility = View.GONE
             newLibraryButton.visibility = View.GONE
@@ -81,6 +88,9 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
 
         newLibraryButton = view.findViewById(R.id.new_library)
         newLibraryButton.setOnClickListener { create() }
+
+        clearCacheButton = view.findViewById(R.id.clear_cache)
+        clearCacheButton.setOnClickListener { clearCache() }
 
         touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun onMove(
@@ -170,5 +180,20 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         val result = db.rawQuery("SELECT * FROM library_roots ORDER BY position ASC", arrayOf())
         result.moveToFirst()
         librariesAdapter.swapCursor(result)
+    }
+
+    private fun clearCache() {
+        try {
+            lifecycleScope.launch(Dispatchers.IO) {
+                requireContext().cacheDir.deleteRecursively()
+                requireContext().externalCacheDirs.filterNotNull().forEach { it.deleteRecursively() }
+            }
+
+            Toast.makeText(requireContext(), "Cache Cleared", Toast.LENGTH_LONG).show()
+        }
+        catch(e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
+        }
     }
 }
