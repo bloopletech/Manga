@@ -7,6 +7,9 @@ import com.bumptech.glide.load.model.LazyHeaders
 import android.os.Parcel
 import android.os.Parcelable.Creator
 import android.util.Base64
+import coil3.network.NetworkHeaders
+import coil3.network.httpHeaders
+import coil3.request.ImageRequest
 import okhttp3.Request
 
 open class MangosUrl(private val url: String, private val credential: String? = null) : Parcelable {
@@ -35,6 +38,15 @@ open class MangosUrl(private val url: String, private val credential: String? = 
             return GlideUrl(url, LazyHeaders.Builder().addHeader("Authorization", "Basic $credential").build())
         }
         return GlideUrl(url)
+    }
+
+    fun loadInto(builder: ImageRequest.Builder): ImageRequest.Builder {
+        return builder.apply {
+            data(url)
+            if(credential != null) {
+                httpHeaders(NetworkHeaders.Builder().add("Authorization", "Basic $credential").build())
+            }
+        }
     }
 
     override fun describeContents(): Int {

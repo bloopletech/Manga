@@ -68,5 +68,9 @@ dependencies {
     implementation "com.github.bumptech.glide:annotations:${glideVersion}"
     ksp "com.github.bumptech.glide:ksp:${glideVersion}"
 
+    def coilVersion = '3.0.0-rc01'
+    implementation "io.coil-kt.coil3:coil:${coilVersion}"
+    implementation "io.coil-kt.coil3:coil-network-okhttp:${coilVersion}"
+
     implementation "androidx.viewpager2:viewpager2:1.1.0"
 }

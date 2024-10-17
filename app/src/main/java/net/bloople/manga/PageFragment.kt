@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
+import coil3.load
 
 class PageFragment : Fragment() {
     private lateinit var url: MangosUrl
@@ -24,10 +24,9 @@ class PageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val imageView: ImageView = view.findViewById(R.id.image)
 
-        Glide.with(this)
-            .load(url.toGlideUrl())
-            .transform(MatchWidthTransformation())
-            .into(imageView)
+        imageView.load(null) {
+            url.loadInto(this)
+        }
     }
 
     companion object {
