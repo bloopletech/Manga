@@ -6,6 +6,7 @@ import android.os.Bundle
 import net.bloople.manga.R
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.database.Cursor
+import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
 
 class AuditEventsActivity : AppCompatActivity() {
@@ -15,6 +16,7 @@ class AuditEventsActivity : AppCompatActivity() {
     private lateinit var adapter: AuditEventsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.audit_activity_audit_events)

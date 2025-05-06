@@ -19,7 +19,7 @@ class Book(
     @Transient
     lateinit var library: Library
     val title: String by lazy { path.replace("\\s+".toRegex(), " ") }
-    val normalisedTitle: String by lazy { path.replace("[^A-Za-z0-9]+".toRegex(), "").toLowerCase() }
+    val normalisedTitle: String by lazy { path.replace("[^A-Za-z0-9]+".toRegex(), "").lowercase() }
     val id: Long by lazy { key.substring(0, 15).toLong(16) } //Using substring of key would be dangerous for large N
     private val pagePaths: ArrayList<String> by lazy { inflatePagePaths(pagePathsDeflated) }
     val thumbnailUrl: MangosUrl by lazy { library.thumbnailsUrl / "$key.jpg" }

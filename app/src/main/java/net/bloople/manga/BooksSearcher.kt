@@ -44,7 +44,7 @@ internal class BooksSearcher {
     private fun parseSearchTerms(): ArrayList<String> {
         val terms = ArrayList<String>()
         val searchPattern = Pattern.compile("\"[^\"]*\"|[^ ]+")
-        val matcher = searchPattern.matcher(searchText.toLowerCase())
+        val matcher = searchPattern.matcher(searchText.lowercase())
         while(matcher.find()) terms.add(matcher.group().replace("\"", ""))
         return terms
     }

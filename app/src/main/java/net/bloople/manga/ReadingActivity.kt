@@ -1,22 +1,32 @@
 package net.bloople.manga
 
-import net.bloople.manga.ThrottledOnClickListener.Companion.wrap
-import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager2.widget.ViewPager2
-import android.os.Bundle
 import android.content.res.Configuration
-import android.view.View
+import android.os.Bundle
 import android.widget.ImageView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.coroutines.launch
+import net.bloople.manga.ThrottledOnClickListener.Companion.wrap
+
 
 class ReadingActivity : AppCompatActivity() {
     private lateinit var session: ReadingSession
     private lateinit var pager: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_reading)
+
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
 
         pager = findViewById(R.id.pager)
 
@@ -69,25 +79,5 @@ class ReadingActivity : AppCompatActivity() {
         val currentItem = pager.currentItem
         pager.adapter = pager.adapter
         pager.setCurrentItem(currentItem, false)
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if(hasFocus) {
-            hideSystemUI()
-        }
-    }
-
-    private fun hideSystemUI() {
-        // Enables "sticky immersive" mode
-        val decorView = window.decorView
-        decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 }

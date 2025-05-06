@@ -12,6 +12,7 @@
         <item name="colorPrimary">#3F51B5</item>
         <!-- colorPrimaryDark is used for the status bar -->
         <item name="colorPrimaryVariant">#303F9F</item>
+        <item name="colorPrimaryDark">?colorPrimary</item>
 
         <item name="android:textAppearance">@style/AppTheme.TextAppearance</item>
         <item name="android:textAppearanceSmall">@style/AppTheme.TextAppearance</item>
@@ -23,6 +24,7 @@
     </style>
 
     <style name="AppTheme.ActionBar" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="android:colorBackground">?colorPrimary</item>
     </style>
 
     <style name="LibraryTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
