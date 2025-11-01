@@ -5,9 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class IndexViewModel(application: Application) : AndroidViewModel(application) {
-    private var library: Library? = null
+    private lateinit var library: Library
     private val searcher = BooksSearcher()
     private val sorter = BooksSorter()
 
@@ -15,8 +16,8 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         MutableLiveData<SearchResults>()
     }
 
-    val sorterDescription: MutableLiveData<String> by lazy {
-        MutableLiveData<String>(sorter.description())
+    val searchResultsDescription: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
     }
 
     fun setLibrary(library: Library) {
@@ -41,7 +42,6 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
     fun setSort(sortMethod: BooksSortMethod, sortDirectionAsc: Boolean) {
         sorter.sortMethod = sortMethod
         sorter.sortDirectionAsc = sortDirectionAsc
-        sorterDescription.value = sorter.description()
         resolve()
     }
 
@@ -52,10 +52,18 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun resolve() {
         viewModelScope.launch {
-            val books = searcher.search(library ?: return@launch)
+            val books = searcher.search(library)
             val booksMetadata = BookMetadata.findAllByBookIds(getApplication(), books)
             sorter.sort(books, booksMetadata)
+            searchResultsDescription.postValue(buildSearchResultsDescription(books.size))
             searchResults.postValue(SearchResults(books, booksMetadata))
         }
+    }
+
+    private fun buildSearchResultsDescription(resultsCount: Int): String {
+        if(searcher.isPresent()) {
+            return "${resultsCount.f} of ${library.books.size.f("books")} sorted by ${sorter.sortMethodDescription.l} ${sorter.sortDirectionDescription.l}"
+        }
+        return "${library.books.size.f("books")} sorted by ${sorter.sortMethodDescription.l} ${sorter.sortDirectionDescription.l}"
     }
 }

@@ -59,7 +59,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
         searchResultsToolbar = findViewById(R.id.search_results_toolbar)
 
-        model.sorterDescription.observe(this) { description: String? -> searchResultsToolbar.text = description }
+        model.searchResultsDescription.observe(this) { description: String? -> searchResultsToolbar.text = description }
 
         searchField = findViewById(R.id.search_field)
 

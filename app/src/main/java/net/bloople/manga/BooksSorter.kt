@@ -13,12 +13,8 @@ internal class BooksSorter {
         sortDirectionAsc = !sortDirectionAsc
     }
 
-    fun description(): String {
-        return "Sorted by ${sortMethodDescription().lowercase(Locale.getDefault())} ${sortDirectionDescription().lowercase(Locale.getDefault())}"
-    }
-
-    private fun sortMethodDescription(): String {
-        return when(sortMethod) {
+    val sortMethodDescription: String
+        get() = when(sortMethod) {
             BooksSortMethod.SORT_ALPHABETIC -> "Title"
             BooksSortMethod.SORT_AGE -> "Published Date"
             BooksSortMethod.SORT_LENGTH -> "Page Count"
@@ -26,11 +22,9 @@ internal class BooksSorter {
             BooksSortMethod.SORT_OPENED_COUNT -> "Opened Count"
             BooksSortMethod.SORT_RANDOM -> "Random"
         }
-    }
 
-    private fun sortDirectionDescription(): String {
-        return if(sortDirectionAsc) "Ascending" else "Descending"
-    }
+    val sortDirectionDescription: String
+        get() = if(sortDirectionAsc) "Ascending" else "Descending"
 
     suspend fun sort(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
         return withContext(Dispatchers.Default) {

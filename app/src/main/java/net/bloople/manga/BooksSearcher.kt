@@ -9,6 +9,8 @@ internal class BooksSearcher {
     var searchText = ""
     var filterIds: ArrayList<Long> = ArrayList()
 
+    fun isPresent(): Boolean = !searchText.isEmpty()
+
     suspend fun search(library: Library): ArrayList<Book> {
         val books = ArrayList<Book>()
 
