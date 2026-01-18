@@ -49,6 +49,14 @@ internal class LibrariesManagementAdapter(private val fragment: LibrariesFragmen
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when (item.itemId) {
+                R.id.import_database -> {
+                    databaseManagementFragment.startImport()
+                    true
+                }
+                R.id.export_database -> {
+                    databaseManagementFragment.startExport()
+                    true
+                }
                 R.id.clear_cache -> {
                     fragment.clearCache()
                     true
