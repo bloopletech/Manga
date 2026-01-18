@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.content.Intent
 import android.app.Activity
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -14,6 +16,11 @@ import java.io.IOException
 class DatabaseManagementFragment : Fragment() {
     private lateinit var importDatabaseButton: ImageButton
     private lateinit var exportDatabaseButton: ImageButton
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.database_management_fragment, parent, false)
@@ -27,6 +34,11 @@ class DatabaseManagementFragment : Fragment() {
 
         importDatabaseButton = view.findViewById(R.id.import_database)
         importDatabaseButton.setOnClickListener { startImport() }
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.database_management_fragment_menu, menu)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

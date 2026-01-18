@@ -11,8 +11,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.content.Intent
-import net.bloople.manga.audit.AuditEventsActivity
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -25,11 +23,9 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null
     private lateinit var librariesAdapter: LibrariesAdapter
     private lateinit var managementAdapter: LibrariesManagementAdapter
-    private lateinit var databaseManagementFragment: DatabaseManagementFragment
 
     private lateinit var finishEditingButton: ImageButton
     private lateinit var newLibraryButton: ImageButton
-    private lateinit var clearCacheButton: ImageButton
     private lateinit var touchHelper: ItemTouchHelper
     var isEditingMode = false
         private set
@@ -50,9 +46,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        databaseManagementFragment = childFragmentManager
-            .findFragmentById(R.id.database_management_framework) as DatabaseManagementFragment
-
         val librariesView: RecyclerView = view.findViewById(R.id.libraries)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         librariesView.layoutManager = layoutManager
@@ -65,8 +58,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         finishEditingButton = view.findViewById(R.id.finish_editing)
         finishEditingButton.setOnClickListener {
             isEditingMode = false
-            clearCacheButton.visibility = View.GONE
-            databaseManagementFragment.requireView().visibility = View.GONE
             finishEditingButton.visibility = View.GONE
             newLibraryButton.visibility = View.GONE
             managementAdapter.onEditModeChanged()
@@ -75,8 +66,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         newLibraryButton = view.findViewById(R.id.new_library)
         newLibraryButton.setOnClickListener { create() }
 
-        clearCacheButton = view.findViewById(R.id.clear_cache)
-        clearCacheButton.setOnClickListener { clearCache() }
+
 
         touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun onMove(
@@ -139,8 +129,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     fun startEditing() {
         newLibraryButton.visibility = View.VISIBLE
         finishEditingButton.visibility = View.VISIBLE
-        databaseManagementFragment.requireView().visibility = View.VISIBLE
-        clearCacheButton.visibility = View.VISIBLE
         isEditingMode = true
         managementAdapter.onEditModeChanged()
     }
@@ -171,14 +159,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         updateCursor()
     }
 
-    private fun updateCursor() {
-        val db = DatabaseHelper.instance(requireContext())
-        val result = db.rawQuery("SELECT * FROM library_roots ORDER BY position ASC", arrayOf())
-        result.moveToFirst()
-        librariesAdapter.swapCursor(result)
-    }
-
-    private fun clearCache() {
+    fun clearCache() {
         try {
             lifecycleScope.launch(Dispatchers.IO) {
                 requireContext().cacheDir.deleteRecursively()
@@ -191,5 +172,12 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
             e.printStackTrace()
             Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun updateCursor() {
+        val db = DatabaseHelper.instance(requireContext())
+        val result = db.rawQuery("SELECT * FROM library_roots ORDER BY position ASC", arrayOf())
+        result.moveToFirst()
+        librariesAdapter.swapCursor(result)
     }
 }

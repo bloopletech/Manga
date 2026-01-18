@@ -14,6 +14,7 @@
         <item name="colorPrimaryVariant">#303F9F</item>
         <item name="colorPrimaryDark">?colorPrimary</item>
 
+        <item name="android:textColorPrimary">?android:colorForeground</item>
         <item name="android:textAppearance">@style/AppTheme.TextAppearance</item>
         <item name="android:textAppearanceSmall">@style/AppTheme.TextAppearance</item>
     </style>
@@ -23,15 +24,18 @@
         <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 
-    <style name="AppTheme.ActionBar" parent="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:colorBackground">?colorPrimary</item>
+    <style name="AppTheme.ActionBar" parent="@style/ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="android:background">?colorPrimary</item>
+        <item name="android:textColorPrimary">?colorOnPrimary</item>
+
     </style>
 
     <style name="LibraryTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
+        <item name="android:textColor">?colorOnPrimary</item>
     </style>
 
     <style name="LibraryTitle.Inverse" parent="LibraryTitle">
-        <item name="android:textColor">#000</item>
-        <item name="android:background">#fff</item>
+        <item name="android:background">?android:colorBackground</item>
+        <item name="android:textColor">?android:colorForeground</item>
     </style>
 </resources>
