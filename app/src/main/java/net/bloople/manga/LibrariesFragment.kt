@@ -26,7 +26,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private lateinit var databaseManagementFragment: DatabaseManagementFragment
 
     private lateinit var viewAuditEventsButton: ImageButton
-    private lateinit var startEditingButton: ImageButton
     private lateinit var finishEditingButton: ImageButton
     private lateinit var newLibraryButton: ImageButton
     private lateinit var clearCacheButton: ImageButton
@@ -66,24 +65,14 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
             startActivity(intent)
         }
 
-        startEditingButton = view.findViewById(R.id.start_editing)
-        startEditingButton.setOnClickListener {
-            startEditingButton.visibility = View.GONE
-            newLibraryButton.visibility = View.VISIBLE
-            finishEditingButton.visibility = View.VISIBLE
-            databaseManagementFragment.requireView().visibility = View.VISIBLE
-            clearCacheButton.visibility = View.VISIBLE
-            isEditingMode = true
-        }
-
         finishEditingButton = view.findViewById(R.id.finish_editing)
         finishEditingButton.setOnClickListener {
             isEditingMode = false
+            librariesAdapter.onEditModeChanged()
             clearCacheButton.visibility = View.GONE
             databaseManagementFragment.requireView().visibility = View.GONE
             finishEditingButton.visibility = View.GONE
             newLibraryButton.visibility = View.GONE
-            startEditingButton.setVisibility(View.VISIBLE)
         }
 
         newLibraryButton = view.findViewById(R.id.new_library)
@@ -98,8 +87,9 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                val holderA = viewHolder as LibrariesAdapter.ViewHolder
-                val holderB = target as LibrariesAdapter.ViewHolder
+                if(viewHolder is LibrariesAdapter.ManagementViewHolder || target is LibrariesAdapter.ManagementViewHolder) return false
+                val holderA = viewHolder as LibrariesAdapter.ItemViewHolder
+                val holderB = target as LibrariesAdapter.ItemViewHolder
 
                 swap(holderA.libraryId, holderB.libraryId)
                 librariesAdapter.notifyItemMoved(holderA.bindingAdapterPosition, holderB.bindingAdapterPosition)
@@ -137,7 +127,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         updateCursor()
     }
 
-    internal fun startDrag(holder: LibrariesAdapter.ViewHolder?) {
+    internal fun startDrag(holder: LibrariesAdapter.ItemViewHolder?) {
         touchHelper.startDrag(holder!!)
     }
 
@@ -147,6 +137,15 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
 
     fun show(libraryId: Long) {
         listener!!.onLibrarySelected(libraryId)
+    }
+
+    fun startEditing() {
+        newLibraryButton.visibility = View.VISIBLE
+        finishEditingButton.visibility = View.VISIBLE
+        databaseManagementFragment.requireView().visibility = View.VISIBLE
+        clearCacheButton.visibility = View.VISIBLE
+        isEditingMode = true
+        librariesAdapter.onEditModeChanged()
     }
 
     fun edit(libraryId: Long) {
