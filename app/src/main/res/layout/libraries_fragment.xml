@@ -48,12 +48,5 @@
             android:background="?attr/actionBarItemBackground"
             android:src="@drawable/baseline_done_24"
             android:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/view_audit_events"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/actionBarItemBackground"
-            android:src="@drawable/baseline_change_history_24" />
     </LinearLayout>
 </LinearLayout>

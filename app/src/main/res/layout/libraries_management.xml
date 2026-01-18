@@ -5,6 +5,13 @@
     android:layout_gravity="center_vertical"
     android:orientation="horizontal">
     <ImageButton
+        android:id="@+id/view_audit_events"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/actionBarItemBackground"
+        android:src="@drawable/baseline_change_history_24" />
+
+    <ImageButton
         android:id="@+id/start_editing"
         android:layout_width="48dp"
         android:layout_height="48dp"

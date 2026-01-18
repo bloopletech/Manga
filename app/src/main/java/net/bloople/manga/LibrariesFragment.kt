@@ -17,15 +17,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ConcatAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null
     private lateinit var librariesAdapter: LibrariesAdapter
+    private lateinit var managementAdapter: LibrariesManagementAdapter
     private lateinit var databaseManagementFragment: DatabaseManagementFragment
 
-    private lateinit var viewAuditEventsButton: ImageButton
     private lateinit var finishEditingButton: ImageButton
     private lateinit var newLibraryButton: ImageButton
     private lateinit var clearCacheButton: ImageButton
@@ -57,22 +58,18 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         librariesView.layoutManager = layoutManager
 
         librariesAdapter = LibrariesAdapter(this, null)
-        librariesView.adapter = librariesAdapter
+        managementAdapter = LibrariesManagementAdapter(this)
 
-        viewAuditEventsButton = view.findViewById(R.id.view_audit_events)
-        viewAuditEventsButton.setOnClickListener {
-            val intent = Intent(context, AuditEventsActivity::class.java)
-            startActivity(intent)
-        }
+        librariesView.adapter = ConcatAdapter(librariesAdapter, managementAdapter)
 
         finishEditingButton = view.findViewById(R.id.finish_editing)
         finishEditingButton.setOnClickListener {
             isEditingMode = false
-            librariesAdapter.onEditModeChanged()
             clearCacheButton.visibility = View.GONE
             databaseManagementFragment.requireView().visibility = View.GONE
             finishEditingButton.visibility = View.GONE
             newLibraryButton.visibility = View.GONE
+            managementAdapter.onEditModeChanged()
         }
 
         newLibraryButton = view.findViewById(R.id.new_library)
@@ -87,7 +84,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                if(viewHolder is LibrariesAdapter.ManagementViewHolder || target is LibrariesAdapter.ManagementViewHolder) return false
                 val holderA = viewHolder as LibrariesAdapter.ItemViewHolder
                 val holderB = target as LibrariesAdapter.ItemViewHolder
 
@@ -102,6 +98,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
             }
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                if(viewHolder is LibrariesManagementAdapter.ViewHolder) return makeMovementFlags(0, 0)
                 return makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
             }
 
@@ -145,7 +142,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         databaseManagementFragment.requireView().visibility = View.VISIBLE
         clearCacheButton.visibility = View.VISIBLE
         isEditingMode = true
-        librariesAdapter.onEditModeChanged()
+        managementAdapter.onEditModeChanged()
     }
 
     fun edit(libraryId: Long) {
