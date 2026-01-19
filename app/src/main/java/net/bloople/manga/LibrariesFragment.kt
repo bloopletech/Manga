@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -21,8 +22,10 @@ import kotlinx.coroutines.launch
 
 class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null
+    private lateinit var librariesView: RecyclerView
     private lateinit var librariesAdapter: LibrariesAdapter
     private lateinit var managementAdapter: LibrariesManagementAdapter
+    private lateinit var editLibrariesLayout: LinearLayout
 
     private lateinit var finishEditingButton: ImageButton
     private lateinit var newLibraryButton: ImageButton
@@ -46,7 +49,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val librariesView: RecyclerView = view.findViewById(R.id.libraries)
+        librariesView = view.findViewById(R.id.libraries)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         librariesView.layoutManager = layoutManager
 
@@ -55,18 +58,17 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
 
         librariesView.adapter = ConcatAdapter(librariesAdapter, managementAdapter)
 
+        editLibrariesLayout = view.findViewById(R.id.edit_libraries)
+
         finishEditingButton = view.findViewById(R.id.finish_editing)
         finishEditingButton.setOnClickListener {
             isEditingMode = false
-            finishEditingButton.visibility = View.GONE
-            newLibraryButton.visibility = View.GONE
+            editLibrariesLayout.visibility = View.GONE
             managementAdapter.onEditModeChanged()
         }
 
         newLibraryButton = view.findViewById(R.id.new_library)
         newLibraryButton.setOnClickListener { create() }
-
-
 
         touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
             override fun onMove(
@@ -127,10 +129,10 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     }
 
     fun startEditing() {
-        newLibraryButton.visibility = View.VISIBLE
-        finishEditingButton.visibility = View.VISIBLE
+        editLibrariesLayout.visibility = View.VISIBLE
         isEditingMode = true
         managementAdapter.onEditModeChanged()
+        librariesView.scrollToPosition(librariesAdapter.itemCount)
     }
 
     fun edit(libraryId: Long) {

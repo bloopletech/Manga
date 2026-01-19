@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     private lateinit var model: IndexViewModel
     private lateinit var librariesFragment: LibrariesFragment
+    private lateinit var databaseManagementFragment: DatabaseManagementFragment
     private lateinit var auditor: LibrariesAuditor
     private lateinit var adapter: BooksAdapter
     private lateinit var booksLayoutManager: GridLayoutManager
@@ -51,6 +52,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         model = ViewModelProvider(this)[IndexViewModel::class.java]
 
         librariesFragment = supportFragmentManager.findFragmentById(R.id.libraries_fragment) as LibrariesFragment
+        databaseManagementFragment = supportFragmentManager.findFragmentById(R.id.database_management_framework) as DatabaseManagementFragment
 
         auditor = LibrariesAuditor(applicationContext)
 
@@ -185,6 +187,18 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
             }
             R.id.sort_random -> {
                 newSortMethod = BooksSortMethod.SORT_RANDOM
+            }
+            R.id.import_database -> {
+                databaseManagementFragment.startImport()
+                true
+            }
+            R.id.export_database -> {
+                databaseManagementFragment.startExport()
+                true
+            }
+            R.id.clear_cache -> {
+                librariesFragment.clearCache()
+                true
             }
         }
 
