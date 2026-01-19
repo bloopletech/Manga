@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.content.Intent
 import android.app.Activity
 import android.view.View
+import android.widget.Space
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import java.io.IOException
 
 class DatabaseManagementFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.database_management_fragment, parent, false)
+    override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View {
+        return Space(context)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
