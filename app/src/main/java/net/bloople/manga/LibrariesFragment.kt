@@ -13,12 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null
@@ -26,9 +22,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private lateinit var librariesAdapter: LibrariesAdapter
     private lateinit var managementAdapter: LibrariesManagementAdapter
     private lateinit var editLibrariesLayout: LinearLayout
-
-    private lateinit var finishEditingButton: ImageButton
-    private lateinit var newLibraryButton: ImageButton
     private lateinit var touchHelper: ItemTouchHelper
     var isEditingMode = false
         private set
@@ -60,14 +53,14 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
 
         editLibrariesLayout = view.findViewById(R.id.edit_libraries)
 
-        finishEditingButton = view.findViewById(R.id.finish_editing)
+        val finishEditingButton: ImageButton = view.findViewById(R.id.finish_editing)
         finishEditingButton.setOnClickListener {
             isEditingMode = false
             editLibrariesLayout.visibility = View.GONE
             managementAdapter.onEditModeChanged()
         }
 
-        newLibraryButton = view.findViewById(R.id.new_library)
+        val newLibraryButton: ImageButton = view.findViewById(R.id.new_library)
         newLibraryButton.setOnClickListener { create() }
 
         touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
@@ -159,21 +152,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         libraryB.save(requireContext())
 
         updateCursor()
-    }
-
-    fun clearCache() {
-        try {
-            lifecycleScope.launch(Dispatchers.IO) {
-                requireContext().cacheDir.deleteRecursively()
-                requireContext().externalCacheDirs.filterNotNull().forEach { it.deleteRecursively() }
-            }
-
-            Toast.makeText(requireContext(), "Cache Cleared", Toast.LENGTH_LONG).show()
-        }
-        catch(e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Error", Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun updateCursor() {

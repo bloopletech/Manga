@@ -23,11 +23,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
@@ -197,7 +199,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
                 true
             }
             R.id.clear_cache -> {
-                librariesFragment.clearCache()
+                clearCache()
                 true
             }
         }
@@ -244,5 +246,20 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         val text = "\"" + tag + "\""
         searchField.setText(text)
         onSearch(text)
+    }
+
+    fun clearCache() {
+        try {
+            lifecycleScope.launch(Dispatchers.IO) {
+                cacheDir.deleteRecursively()
+                externalCacheDirs.filterNotNull().forEach { it.deleteRecursively() }
+            }
+
+            Toast.makeText(this, "Cache Cleared", Toast.LENGTH_LONG).show()
+        }
+        catch(e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show()
+        }
     }
 }
