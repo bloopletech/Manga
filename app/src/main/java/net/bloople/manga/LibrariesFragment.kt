@@ -5,7 +5,6 @@ import net.bloople.manga.Library.Companion.findHighestPosition
 import net.bloople.manga.Library.Companion.findById
 import net.bloople.manga.LibraryEditFragment.OnLibraryEditFinishedListener
 import android.widget.ImageButton
-import androidx.recyclerview.widget.ItemTouchHelper
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private lateinit var librariesAdapter: LibrariesAdapter
     private lateinit var managementAdapter: LibrariesManagementAdapter
     private lateinit var editLibrariesLayout: LinearLayout
-    private lateinit var touchHelper: ItemTouchHelper
     var isEditingMode = false
         private set
 
@@ -57,45 +55,11 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         finishEditingButton.setOnClickListener {
             isEditingMode = false
             editLibrariesLayout.visibility = View.GONE
-            managementAdapter.onEditModeChanged()
+            managementAdapter.notifyDataSetChanged()
         }
 
         val newLibraryButton: ImageButton = view.findViewById(R.id.new_library)
         newLibraryButton.setOnClickListener { create() }
-
-        touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                val holderA = viewHolder as LibrariesAdapter.ItemViewHolder
-                val holderB = target as LibrariesAdapter.ItemViewHolder
-
-                swap(holderA.libraryId, holderB.libraryId)
-                librariesAdapter.notifyItemMoved(holderA.bindingAdapterPosition, holderB.bindingAdapterPosition)
-
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // no-op
-            }
-
-            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-                if(viewHolder is LibrariesManagementAdapter.ViewHolder) return makeMovementFlags(0, 0)
-                return makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
-            }
-
-            override fun isLongPressDragEnabled(): Boolean {
-                return false
-            }
-
-            override fun isItemViewSwipeEnabled(): Boolean {
-                return false
-            }
-        })
-        touchHelper.attachToRecyclerView(librariesView)
 
         updateCursor()
     }
@@ -109,10 +73,6 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
         updateCursor()
     }
 
-    internal fun startDrag(holder: LibrariesAdapter.ItemViewHolder?) {
-        touchHelper.startDrag(holder!!)
-    }
-
     fun setCurrentLibraryId(libraryId: Long) {
         librariesAdapter.setCurrentLibraryId(libraryId)
     }
@@ -124,7 +84,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     fun startEditing() {
         editLibrariesLayout.visibility = View.VISIBLE
         isEditingMode = true
-        managementAdapter.onEditModeChanged()
+        managementAdapter.notifyDataSetChanged()
         librariesView.scrollToPosition(librariesAdapter.itemCount)
     }
 

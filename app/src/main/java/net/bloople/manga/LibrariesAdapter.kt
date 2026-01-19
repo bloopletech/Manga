@@ -6,14 +6,53 @@ import android.widget.TextView
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import androidx.recyclerview.widget.ItemTouchHelper
 
 internal class LibrariesAdapter(private val fragment: LibrariesFragment, cursor: Cursor?) :
     CursorRecyclerAdapter<LibrariesAdapter.ItemViewHolder>(cursor) {
+    private lateinit var touchHelper: ItemTouchHelper
     private var selectedLibraryId: Long = 0
 
     fun setCurrentLibraryId(libraryId: Long) {
         selectedLibraryId = libraryId
         notifyDataSetChanged()
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+
+        touchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val holderA = viewHolder as ItemViewHolder
+                val holderB = target as ItemViewHolder
+
+                fragment.swap(holderA.libraryId, holderB.libraryId)
+                notifyItemMoved(holderA.bindingAdapterPosition, holderB.bindingAdapterPosition)
+
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) = Unit
+
+            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                if(viewHolder is LibrariesManagementAdapter.ViewHolder) return makeMovementFlags(0, 0)
+                return makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
+            }
+
+            override fun isLongPressDragEnabled(): Boolean = false
+
+            override fun isItemViewSwipeEnabled(): Boolean = false
+        })
+        touchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        touchHelper.attachToRecyclerView(null)
     }
 
     internal inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,7 +71,7 @@ internal class LibrariesAdapter(private val fragment: LibrariesFragment, cursor:
 
             view.setOnLongClickListener {
                 if(fragment.isEditingMode) {
-                    fragment.startDrag(this@ItemViewHolder)
+                    touchHelper.startDrag(this@ItemViewHolder)
                     return@setOnLongClickListener true
                 }
                 else {
