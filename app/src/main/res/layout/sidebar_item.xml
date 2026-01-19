@@ -19,7 +19,7 @@
         android:textColor="#000"
         android:gravity="start"
         android:padding="5dp"
-        android:drawableEnd="@drawable/ic_clear_black_24dp"
+        android:drawableEnd="@drawable/baseline_clear_24"
         android:visibility="gone"
         android:inputType="text"
         android:maxLines="1"

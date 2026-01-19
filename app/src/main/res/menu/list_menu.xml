@@ -11,12 +11,12 @@
     <item
         android:id="@+id/sort_age"
         android:title="Age"
-        android:icon="@drawable/ic_history_white_24dp"
+        android:icon="@drawable/baseline_history_24"
         app:showAsAction="always"/>
     <item
         android:id="@+id/sort_last_opened"
         android:title="Last Opened"
-        android:icon="@drawable/ic_visibility_white_24dp"
+        android:icon="@drawable/baseline_visibility_24"
         app:showAsAction="always"/>
     <item
         android:id="@+id/sort_opened_count"
