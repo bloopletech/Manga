@@ -115,9 +115,6 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
         booksView.addOnScrollListener(preloader)
 
-        val collections = CollectionsManager(this, adapter)
-        collections.setup()
-
         queryService = QueryService(this, searchField)
 
         model.searchResults.observe(this) { searchResults: SearchResults ->
@@ -230,11 +227,6 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         model.setSearchText(text)
         scrollToTop()
         queryService.onSearch(text)
-    }
-
-    fun useList(list: BookList?) {
-        model.useList(list)
-        scrollToTop()
     }
 
     override fun onLibrarySelected(libraryId: Long) {

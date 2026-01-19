@@ -45,11 +45,6 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         resolve()
     }
 
-    fun useList(list: BookList?) {
-        searcher.filterIds = list?.bookIds(getApplication()) ?: ArrayList()
-        resolve()
-    }
-
     private fun resolve() {
         viewModelScope.launch {
             val books = searcher.search(library)

@@ -25,8 +25,6 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
     private val preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>
     private var books = ArrayList<Book>()
     private var booksMetadata = HashMap<Long, BookMetadata>();
-    private var selectedBookIds = ArrayList<Long>()
-    private var selectable = false
 
     init {
         setHasStableIds(true)
@@ -36,28 +34,6 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
 
     override fun getItemId(position: Int): Long {
         return books[position].id
-    }
-
-    fun isSelectable(): Boolean {
-        return selectable
-    }
-
-    fun setSelectable(isSelectable: Boolean) {
-        selectable = isSelectable
-        notifyDataSetChanged()
-    }
-
-    fun getSelectedBookIds(): ArrayList<Long> {
-        return selectedBookIds
-    }
-
-    fun setSelectedBookIds(selectedBookIds: ArrayList<Long>) {
-        this.selectedBookIds = selectedBookIds
-        notifyDataSetChanged()
-    }
-
-    fun clearSelectedBookIds() {
-        setSelectedBookIds(ArrayList())
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -76,33 +52,14 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
         var openedCountView: TextView = view.findViewById(R.id.opened_count_view)
         var textView: TextView = view.findViewById(R.id.text_view)
         var imageView: ImageView = view.findViewById(R.id.image_view)
-        var selectableView: ImageView = view.findViewById(R.id.selectable)
 
         init {
             view.setOnClickListener { v: View ->
                 val book = books[bindingAdapterPosition]
-                val bookId = book.id
-
-                if(selectable) {
-                    if(selectedBookIds.contains(bookId)) {
-                        selectedBookIds.remove(bookId)
-                        v.isActivated = false
-                    }
-                    else {
-                        selectedBookIds.add(bookId)
-                        v.isActivated = true
-                    }
-
-                    notifyItemChanged(bindingAdapterPosition)
-                }
-                else {
-                    openBook(book, true)
-                }
+                openBook(book, true)
             }
 
             view.setOnLongClickListener {
-                if(selectable) return@setOnLongClickListener false
-
                 val book = books[bindingAdapterPosition]
                 openBook(book, false)
 
@@ -179,9 +136,6 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val book = books[position]
         val metadata = booksMetadata[book.id]
-
-        holder.selectableView.visibility = if(selectable) View.VISIBLE else View.GONE
-        if(selectable) holder.itemView.isActivated = selectedBookIds.contains(book.id)
 
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.text = book.title

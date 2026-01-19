@@ -29,30 +29,6 @@ internal object DatabaseHelper {
             ")"
         )
 
-        db.execSQL(
-        "CREATE TABLE IF NOT EXISTS lists ( " +
-            "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "name TEXT" +
-            ")"
-        )
-
-        db.execSQL(
-        "CREATE TABLE IF NOT EXISTS lists_books ( " +
-            "list_id INTEGER, " +
-            "book_id INTEGER" +
-            ")"
-        )
-
-        val result = db.rawQuery("SELECT COUNT(*) FROM lists", arrayOf())
-        result.moveToFirst()
-
-        if(result.getInt(0) == 0) {
-            val values = ContentValues()
-            values.put("name", "All Books")
-            db.insert("lists", null, values)
-        }
-        result.close()
-
         createBooksMetadataSchema(db)
 
         createLibraryRootsSchema(db)
