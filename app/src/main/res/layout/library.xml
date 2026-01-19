@@ -6,19 +6,10 @@
         android:id="@+id/name"
         style="@style/LibraryTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="12dp"/>
-
+        android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/current_name"
         style="@style/LibraryTitle.Inverse"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="12dp" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -33,6 +33,8 @@
 
     <style name="LibraryTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
         <item name="android:textColor">?colorOnPrimary</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">12dp</item>
     </style>
 
     <style name="LibraryTitle.Inverse" parent="LibraryTitle">
