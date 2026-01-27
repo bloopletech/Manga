@@ -12,7 +12,7 @@ android {
         applicationId "net.bloople.manga"
         minSdk 30
         targetSdk 35
-        final def version = 76
+        final def version = 77
         versionCode version
         versionName version.toString()
     }
