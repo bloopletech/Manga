@@ -3,7 +3,6 @@ package net.bloople.manga
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.collections.HashMap
 
 internal class BooksSorter {
     var sortMethod = BooksSortMethod.SORT_AGE
@@ -26,7 +25,7 @@ internal class BooksSorter {
     val sortDirectionDescription: String
         get() = if(sortDirectionAsc) "Ascending" else "Descending"
 
-    suspend fun sort(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
+    suspend fun sort(books: ArrayList<Book>, booksMetadata: Map<Long, BookMetadata>) {
         return withContext(Dispatchers.Default) {
             if(books.isEmpty()) return@withContext
 
@@ -53,27 +52,21 @@ internal class BooksSorter {
         }
     }
 
-    private fun sortLastOpened(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
+    private fun sortLastOpened(books: ArrayList<Book>, booksMetadata: Map<Long, BookMetadata>) {
         books.sortWith { a: Book, b: Book ->
-            val abm = booksMetadata[a.id]
-            val bbm = booksMetadata[b.id]
+            val abm = booksMetadata[a.id] ?: BookMetadata.EMPTY
+            val bbm = booksMetadata[b.id] ?: BookMetadata.EMPTY
 
-            if(abm == null && bbm == null) return@sortWith 0
-            if(abm == null) return@sortWith 1
-            if(bbm == null) return@sortWith -1
             if(sortDirectionAsc) return@sortWith abm.lastOpenedAt.compareTo(bbm.lastOpenedAt)
             else return@sortWith bbm.lastOpenedAt.compareTo(abm.lastOpenedAt)
         }
     }
 
-    private fun sortOpenedCount(books: ArrayList<Book>, booksMetadata: HashMap<Long, BookMetadata>) {
+    private fun sortOpenedCount(books: ArrayList<Book>, booksMetadata: Map<Long, BookMetadata>) {
         books.sortWith { a: Book, b: Book ->
-            val abm = booksMetadata[a.id]
-            val bbm = booksMetadata[b.id]
+            val abm = booksMetadata[a.id] ?: BookMetadata.EMPTY
+            val bbm = booksMetadata[b.id] ?: BookMetadata.EMPTY
 
-            if(abm == null && bbm == null) return@sortWith 0
-            if(abm == null) return@sortWith 1
-            if(bbm == null) return@sortWith -1
             if(sortDirectionAsc) return@sortWith abm.openedCount.compareTo(bbm.openedCount)
             else return@sortWith bbm.openedCount.compareTo(abm.openedCount)
         }

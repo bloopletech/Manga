@@ -24,7 +24,7 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
     private val requestManager: RequestManager
     private val preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>
     private var books = ArrayList<Book>()
-    private var booksMetadata = HashMap<Long, BookMetadata>();
+    private var booksMetadata: Map<Long, BookMetadata> = emptyMap()
 
     init {
         setHasStableIds(true)
@@ -135,14 +135,14 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val book = books[position]
-        val metadata = booksMetadata[book.id]
+        val metadata = booksMetadata[book.id] ?: BookMetadata.EMPTY
 
         //holder.textView.setText(title.substring(0, Math.min(50, title.length())));
         holder.textView.text = book.title
 
         holder.pageCountView.text = String.format("%,d", book.pages)
 
-        val openedCount = metadata?.openedCount ?: 0
+        val openedCount = metadata.openedCount
         if(openedCount > 0) {
             holder.openedCountView.visibility = View.VISIBLE
             holder.openedCountView.text = String.format("%,d", openedCount)

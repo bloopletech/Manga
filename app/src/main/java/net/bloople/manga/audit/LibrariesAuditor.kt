@@ -3,7 +3,7 @@ package net.bloople.manga.audit
 import android.content.Context
 import net.bloople.manga.Library
 
-class LibrariesAuditor(private val context: Context) {
+class LibrariesAuditor() {
     fun selected(library: Library) {
         val event = AuditEvent(
             System.currentTimeMillis(),
@@ -15,6 +15,6 @@ class LibrariesAuditor(private val context: Context) {
             library.name!!,
             ""
         )
-        event.save(context)
+        event.save()
     }
 }

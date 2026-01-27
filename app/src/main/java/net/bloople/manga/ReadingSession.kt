@@ -9,13 +9,13 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 
 internal class ReadingSession(private val context: Context, private val library: Library, private val book: Book) {
     private var pager: ViewPager2? = null
-    private val metadata: BookMetadata = BookMetadata.findOrCreateByBookId(context, book.id)
-    private val auditor: BooksAuditor = BooksAuditor(context)
+    private val metadata: BookMetadata = BookMetadata.findOrCreateByBookId(book.id)
+    private val auditor = BooksAuditor()
 
     fun start() {
         metadata.lastOpenedAt = System.currentTimeMillis()
         metadata.openedCount++
-        metadata.save(context)
+        metadata.save()
         auditor.opened(library, book, page())
     }
 
@@ -48,7 +48,7 @@ internal class ReadingSession(private val context: Context, private val library:
 
     private fun bookmark(page: Int) {
         metadata.lastReadPosition = page
-        metadata.save(context)
+        metadata.save()
     }
 
     fun resume() {

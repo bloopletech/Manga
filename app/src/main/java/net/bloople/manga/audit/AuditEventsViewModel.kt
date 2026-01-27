@@ -21,7 +21,7 @@ class AuditEventsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun resolve() {
         viewModelScope.launch {
-            searchResults.postValue(searcher.search(getApplication()))
+            searchResults.postValue(searcher.search())
         }
     }
 }

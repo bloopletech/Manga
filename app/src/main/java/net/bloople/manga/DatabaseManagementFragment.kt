@@ -38,7 +38,7 @@ class DatabaseManagementFragment : Fragment() {
     private fun completeExport(data: Intent?) {
         try {
             val outputStream = requireContext().contentResolver.openOutputStream(data!!.data!!)
-            DatabaseHelper.exportDatabase(requireContext(), outputStream!!)
+            DatabaseHelper.exportDatabase(outputStream!!)
             Toast.makeText(context, "Database exported successfully", Toast.LENGTH_LONG).show()
             startExportAudit()
         }
@@ -59,7 +59,7 @@ class DatabaseManagementFragment : Fragment() {
     private fun completeExportAudit(data: Intent?) {
         try {
             val outputStream = requireContext().contentResolver.openOutputStream(data!!.data!!)
-            net.bloople.manga.audit.DatabaseHelper.exportDatabase(requireContext(), outputStream!!)
+            net.bloople.manga.audit.DatabaseHelper.exportDatabase(outputStream!!)
             Toast.makeText(context, "Audit Database exported successfully", Toast.LENGTH_LONG).show()
         }
         catch(e: IOException) {
@@ -78,7 +78,7 @@ class DatabaseManagementFragment : Fragment() {
     private fun completeImport(data: Intent?) {
         try {
             val inputStream = requireContext().contentResolver.openInputStream(data!!.data!!)
-            DatabaseHelper.importDatabase(requireContext(), inputStream!!)
+            DatabaseHelper.importDatabase(inputStream!!)
             Toast.makeText(context, "Database imported successfully", Toast.LENGTH_LONG).show()
             startImportAudit()
         }
@@ -98,7 +98,7 @@ class DatabaseManagementFragment : Fragment() {
     private fun completeImportAudit(data: Intent?) {
         try {
             val inputStream = requireContext().contentResolver.openInputStream(data!!.data!!)
-            net.bloople.manga.audit.DatabaseHelper.importDatabase(requireContext(), inputStream!!)
+            net.bloople.manga.audit.DatabaseHelper.importDatabase(inputStream!!)
             Toast.makeText(context, "Audit Database imported successfully", Toast.LENGTH_LONG).show()
 
             val activity: Activity? = activity

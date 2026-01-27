@@ -96,26 +96,26 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private fun create() {
         val library = Library()
         library.name = "New Library"
-        library.position = findHighestPosition(requireContext()) + 1
+        library.position = findHighestPosition() + 1
         library.root = "http://example.com/"
-        library.save(requireContext())
+        library.save()
         updateCursor()
     }
 
     fun swap(libraryAId: Long, libraryBId: Long) {
-        val libraryA = findById(requireContext(), libraryAId)
-        val libraryB = findById(requireContext(), libraryBId)
+        val libraryA = findById(libraryAId)
+        val libraryB = findById(libraryBId)
         val aPosition = libraryA!!.position
         libraryA.position = libraryB!!.position
         libraryB.position = aPosition
-        libraryA.save(requireContext())
-        libraryB.save(requireContext())
+        libraryA.save()
+        libraryB.save()
 
         updateCursor()
     }
 
     private fun updateCursor() {
-        val db = DatabaseHelper.instance(requireContext())
+        val db = DatabaseHelper.instance()
         val result = db.rawQuery("SELECT * FROM library_roots ORDER BY position ASC", arrayOf())
         result.moveToFirst()
         librariesAdapter.swapCursor(result)

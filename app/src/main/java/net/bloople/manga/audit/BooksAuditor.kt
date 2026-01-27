@@ -4,7 +4,7 @@ import android.content.Context
 import net.bloople.manga.Book
 import net.bloople.manga.Library
 
-class BooksAuditor(private val context: Context) {
+class BooksAuditor() {
     fun opened(library: Library, book: Book, page: Int) {
         val event = AuditEvent(
             System.currentTimeMillis(),
@@ -16,7 +16,7 @@ class BooksAuditor(private val context: Context) {
             book.title,
             "Page $page"
         )
-        event.save(context)
+        event.save()
     }
 
     fun closed(library: Library, book: Book, page: Int) {
@@ -30,6 +30,6 @@ class BooksAuditor(private val context: Context) {
             book.title,
             "Page $page"
         )
-        event.save(context)
+        event.save()
     }
 }

@@ -1,13 +1,12 @@
 package net.bloople.manga.audit
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 import net.bloople.manga.get
 import java.lang.IllegalArgumentException
 
 internal class AuditEvent {
-    var _id = -1L
+    var id = -1L
     var `when`: Long
     var action: Action? = null
     var resourceContextType: ResourceType
@@ -38,7 +37,7 @@ internal class AuditEvent {
     }
 
     constructor(result: Cursor) {
-        _id = result["_id"]
+        id = result["_id"]
         `when` = result["when"]
         val actionText: String = result["action"]
         action = try {
@@ -55,7 +54,7 @@ internal class AuditEvent {
         detail = result["detail"]
     }
 
-    fun save(context: Context) {
+    fun save() {
         val values = ContentValues()
         values.put("\"when\"", `when`)
         values.put("\"action\"", action.toString())
@@ -65,19 +64,19 @@ internal class AuditEvent {
         values.put("resource_id", resourceId)
         values.put("resource_name", resourceName)
         values.put("detail", detail)
-        val db = DatabaseHelper.instance(context)
-        if(_id == -1L) {
-            _id = db.insertOrThrow("audit_events", null, values)
+        val db = DatabaseHelper.instance()
+        if(id == -1L) {
+            id = db.insertOrThrow("audit_events", null, values)
         }
         else {
-            db.update("audit_events", values, "_id=?", arrayOf(_id.toString()))
+            db.update("audit_events", values, "_id=?", arrayOf(id.toString()))
         }
     }
 
     companion object {
         var UNKNOWN_ID = -1L
-        fun findById(context: Context, id: Long): AuditEvent? {
-            val db = DatabaseHelper.instance(context)
+        fun findById(id: Long): AuditEvent? {
+            val db = DatabaseHelper.instance()
             db.rawQuery("SELECT * FROM audit_events WHERE _id=?", arrayOf(id.toString())).use {
                 it.moveToFirst()
                 return if (it.count > 0) AuditEvent(it) else null

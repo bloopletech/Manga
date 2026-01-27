@@ -8,11 +8,11 @@ import kotlinx.coroutines.withContext
 class AuditEventsSearcher internal constructor() {
     var resourceId: Long? = null
 
-    suspend fun search(context: Context): Cursor {
+    suspend fun search(): Cursor {
         val cursor: Cursor
 
         withContext(Dispatchers.IO) {
-            val db = DatabaseHelper.instance(context)
+            val db = DatabaseHelper.instance()
 
             cursor = resourceId?.let {
                 db.query(

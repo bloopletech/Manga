@@ -36,7 +36,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     private lateinit var model: IndexViewModel
     private lateinit var librariesFragment: LibrariesFragment
     private lateinit var databaseManagementFragment: DatabaseManagementFragment
-    private lateinit var auditor: LibrariesAuditor
+    private val auditor = LibrariesAuditor()
     private lateinit var adapter: BooksAdapter
     private lateinit var booksLayoutManager: GridLayoutManager
     private lateinit var searchField: AutoCompleteTextView
@@ -55,8 +55,6 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
         librariesFragment = supportFragmentManager.findFragmentById(R.id.libraries_fragment) as LibrariesFragment
         databaseManagementFragment = supportFragmentManager.findFragmentById(R.id.database_management_framework) as DatabaseManagementFragment
-
-        auditor = LibrariesAuditor(applicationContext)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)

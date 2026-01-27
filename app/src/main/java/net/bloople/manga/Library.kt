@@ -37,14 +37,14 @@ class Library {
         for(book in deflatedBooks) book.library = this
     }
 
-    fun save(context: Context) {
+    fun save() {
         val values = ContentValues()
         values.put("name", name)
         values.put("position", position)
         values.put("root", root)
         values.put("username", username)
         values.put("password", password)
-        val db = DatabaseHelper.instance(context)
+        val db = DatabaseHelper.instance()
         if(id == -1L) {
             id = db.insert("library_roots", null, values)
         }
@@ -53,16 +53,16 @@ class Library {
         }
     }
 
-    fun destroy(context: Context) {
-        val db = DatabaseHelper.instance(context)
+    fun destroy() {
+        val db = DatabaseHelper.instance()
         db.delete("library_roots", "_id=?", arrayOf(id.toString()))
     }
 
     companion object {
         private const val DATA_JSON_PATH = "data.json"
         @JvmStatic
-        fun findById(context: Context, id: Long): Library? {
-            val db = DatabaseHelper.instance(context)
+        fun findById(id: Long): Library? {
+            val db = DatabaseHelper.instance()
             db.rawQuery("SELECT * FROM library_roots WHERE _id=?", arrayOf(id.toString())).use {
                 it.moveToFirst()
                 return if (it.count > 0) Library(it) else null
@@ -70,8 +70,8 @@ class Library {
         }
 
         @JvmStatic
-        fun findDefault(context: Context): Library? {
-            val db = DatabaseHelper.instance(context)
+        fun findDefault(): Library? {
+            val db = DatabaseHelper.instance()
             db.rawQuery("SELECT * FROM library_roots ORDER BY position ASC LIMIT 1", arrayOf()).use {
                 it.moveToFirst()
                 return if (it.count > 0) Library(it) else null
@@ -79,8 +79,8 @@ class Library {
         }
 
         @JvmStatic
-        fun findHighestPosition(context: Context): Int {
-            val db = DatabaseHelper.instance(context)
+        fun findHighestPosition(): Int {
+            val db = DatabaseHelper.instance()
             db.rawQuery("SELECT position FROM library_roots ORDER BY position DESC LIMIT 1", arrayOf()).use {
                 it.moveToFirst()
                 return if (it.count > 0) it["position"] else 0

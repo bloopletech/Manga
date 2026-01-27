@@ -1,11 +1,10 @@
 package net.bloople.manga
 
 import android.content.ContentValues
-import android.content.Context
 import android.database.Cursor
 
 class Query {
-    var _id = -1L
+    var id = -1L
     var text: String? = null
     var createdAt: Long = 0
     var lastUsedAt: Long = 0
@@ -25,39 +24,39 @@ class Query {
     }
 
     internal constructor(result: Cursor) {
-        _id = result["_id"]
+        id = result["_id"]
         text = result["text"]
         createdAt = result["created_at"]
         lastUsedAt = result["last_used_at"]
         usedCount = result["used_count"]
     }
 
-    fun save(context: Context) {
+    fun save() {
         val values = ContentValues()
         values.put("\"text\"", text)
         values.put("created_at", createdAt)
         values.put("last_used_at", lastUsedAt)
         values.put("used_count", usedCount)
-        val db = DatabaseHelper.instance(context)
-        if(_id == -1L) {
-            _id = db.insertOrThrow("queries", null, values)
+        val db = DatabaseHelper.instance()
+        if(id == -1L) {
+            id = db.insertOrThrow("queries", null, values)
         }
         else {
-            db.update("queries", values, "_id=?", arrayOf(_id.toString()))
+            db.update("queries", values, "_id=?", arrayOf(id.toString()))
         }
     }
 
     companion object {
-        fun findById(context: Context, id: Long): Query? {
-            val db = DatabaseHelper.instance(context)
+        fun findById(id: Long): Query? {
+            val db = DatabaseHelper.instance()
             db.rawQuery("SELECT * FROM queries WHERE _id=?", arrayOf(id.toString())).use {
                 it.moveToFirst()
                 return if (it.count > 0) Query(it) else null
             }
         }
 
-        fun findByText(context: Context, text: String): Query? {
-            val db = DatabaseHelper.instance(context)
+        fun findByText(text: String): Query? {
+            val db = DatabaseHelper.instance()
             db.rawQuery("SELECT * FROM queries WHERE \"text\"=?", arrayOf(text)).use {
                 it.moveToFirst()
                 return if (it.count > 0) Query(it) else null

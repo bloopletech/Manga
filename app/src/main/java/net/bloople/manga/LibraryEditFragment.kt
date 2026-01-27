@@ -34,7 +34,7 @@ class LibraryEditFragment : DialogFragment() {
         usernameView = view.findViewById(R.id.username)
         passwordView = view.findViewById(R.id.password)
 
-        val library = findById(requireContext(), libraryId)
+        val library = findById(libraryId)
         nameView.setText(library!!.name)
         rootView.setText(library.root)
         usernameView.setText(library.username)
@@ -62,18 +62,18 @@ class LibraryEditFragment : DialogFragment() {
     }
 
     private fun update() {
-        val library = findById(requireContext(), libraryId)
+        val library = findById(libraryId)
         library!!.name = nameView.text.toString()
         library.root = rootView.text.toString()
         library.username = usernameView.text.toString()
         library.password = passwordView.text.toString()
-        library.save(requireContext())
+        library.save()
         listener!!.onLibraryEditFinished(library)
     }
 
     private fun destroy() {
-        val library = findById(requireContext(), libraryId)
-        library!!.destroy(requireContext())
+        val library = findById(libraryId)
+        library!!.destroy()
         listener!!.onLibraryEditFinished(library)
     }
 

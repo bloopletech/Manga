@@ -19,8 +19,8 @@ object LibraryService {
     private val okHttpClient = OkHttpClient()
 
     suspend fun ensureLibrary(context: Context, libraryId: Long): Library? {
-        var library = findById(context, libraryId)
-        if(library == null) library = findDefault(context)
+        var library = findById(libraryId)
+        if(library == null) library = findDefault()
 
         if(library == null) return null
 

@@ -48,7 +48,7 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
     private fun resolve() {
         viewModelScope.launch {
             val books = searcher.search(library)
-            val booksMetadata = BookMetadata.findAllByBookIds(getApplication(), books)
+            val booksMetadata = BookMetadata.findAllByBookIds(books)
             sorter.sort(books, booksMetadata)
             searchResultsDescription.postValue(buildSearchResultsDescription(books.size))
             searchResults.postValue(SearchResults(books, booksMetadata))
