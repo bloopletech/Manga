@@ -3,7 +3,7 @@ package net.bloople.manga
 import android.os.SystemClock
 import android.view.View
 
-internal abstract class ThrottledOnClickListener : View.OnClickListener {
+abstract class ThrottledOnClickListener : View.OnClickListener {
     private var lastClickMillis: Long = 0
 
     override fun onClick(v: View) {

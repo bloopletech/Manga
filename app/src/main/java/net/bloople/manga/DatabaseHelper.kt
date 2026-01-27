@@ -11,7 +11,7 @@ import java.io.OutputStream
 import kotlin.jvm.Synchronized
 import kotlin.Throws
 
-internal object DatabaseHelper {
+object DatabaseHelper {
     private const val DB_NAME = "books"
     private lateinit var database: SQLiteDatabase
 

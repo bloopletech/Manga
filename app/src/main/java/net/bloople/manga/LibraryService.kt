@@ -1,6 +1,5 @@
 package net.bloople.manga
 
-import net.bloople.manga.Library.Companion.findById
 import net.bloople.manga.Library.Companion.findDefault
 import android.app.ProgressDialog
 import android.content.Context
@@ -10,6 +9,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import net.bloople.manga.Library.Companion.find
 import okhttp3.OkHttpClient
 import java.io.IOException
 
@@ -19,9 +19,7 @@ object LibraryService {
     private val okHttpClient = OkHttpClient()
 
     suspend fun ensureLibrary(context: Context, libraryId: Long): Library? {
-        var library = findById(libraryId)
-        if(library == null) library = findDefault()
-
+        val library = if(libraryId != -1L) find(libraryId) else findDefault()
         if(library == null) return null
 
         val current = currentLibraries[library.id]

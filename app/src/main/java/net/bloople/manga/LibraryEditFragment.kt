@@ -3,11 +3,11 @@ package net.bloople.manga
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import net.bloople.manga.Library.Companion.findById
 import android.widget.EditText
 import android.os.Bundle
 import android.content.DialogInterface
 import androidx.fragment.app.DialogFragment
+import net.bloople.manga.Library.Companion.find
 
 class LibraryEditFragment : DialogFragment() {
     private var listener: OnLibraryEditFinishedListener? = null
@@ -17,7 +17,7 @@ class LibraryEditFragment : DialogFragment() {
     private lateinit var usernameView: EditText
     private lateinit var passwordView: EditText
 
-    internal interface OnLibraryEditFinishedListener {
+    interface OnLibraryEditFinishedListener {
         fun onLibraryEditFinished(library: Library?)
     }
 
@@ -34,8 +34,8 @@ class LibraryEditFragment : DialogFragment() {
         usernameView = view.findViewById(R.id.username)
         passwordView = view.findViewById(R.id.password)
 
-        val library = findById(libraryId)
-        nameView.setText(library!!.name)
+        val library = find(libraryId)
+        nameView.setText(library.name)
         rootView.setText(library.root)
         usernameView.setText(library.username)
         passwordView.setText(library.password)
@@ -62,8 +62,8 @@ class LibraryEditFragment : DialogFragment() {
     }
 
     private fun update() {
-        val library = findById(libraryId)
-        library!!.name = nameView.text.toString()
+        val library = find(libraryId)
+        library.name = nameView.text.toString()
         library.root = rootView.text.toString()
         library.username = usernameView.text.toString()
         library.password = passwordView.text.toString()
@@ -72,8 +72,8 @@ class LibraryEditFragment : DialogFragment() {
     }
 
     private fun destroy() {
-        val library = findById(libraryId)
-        library!!.destroy()
+        val library = find(libraryId)
+        library.destroy()
         listener!!.onLibraryEditFinished(library)
     }
 

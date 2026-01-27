@@ -1,6 +1,5 @@
 package net.bloople.manga.audit
 
-import android.app.AppComponentFactory
 import net.bloople.manga.CursorRecyclerAdapter
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
@@ -19,16 +18,13 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import net.bloople.manga.LibraryService
-import net.bloople.manga.Library
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
-internal class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAdapter.ViewHolder>(cursor) {
-    internal inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAdapter.ViewHolder>(cursor) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var event: AuditEvent? = null
         var whenView: TextView = view.findViewById(R.id.`when`)
         var actionView: TextView = view.findViewById(R.id.action)

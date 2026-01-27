@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.bloople.awdiobooks.DatabaseAdapter
 import java.lang.StringBuilder
 import java.util.ArrayList
 import java.util.HashMap
@@ -30,36 +31,35 @@ class BookMetadata {
         values.put("last_opened_at", lastOpenedAt)
         values.put("last_read_position", lastReadPosition)
         values.put("opened_count", openedCount)
-        val db = DatabaseHelper.instance()
         if(id == -1L) {
-            id = db.insertOrThrow("books_metadata", null, values)
+            id = dba.insert(values)
         }
         else {
-            db.update("books_metadata", values, "_id=?", arrayOf(id.toString()))
+            dba.update(values, id)
         }
     }
 
+    fun destroy() {
+        dba.delete(id)
+    }
+
     companion object {
-        fun findById(id: Long): BookMetadata? {
-            val db = DatabaseHelper.instance()
-            db.rawQuery("SELECT * FROM books_metadata WHERE _id=?", arrayOf(id.toString())).use {
-                it.moveToFirst()
-                return if (it.count > 0) BookMetadata(it) else null
-            }
-        }
+        private val dba: DatabaseAdapter
+            get() = DatabaseAdapter(DatabaseHelper.instance(), "books_metadata")
+
+        fun find(id: Long) = dba.find(id) { BookMetadata(it) }
 
         suspend fun findAllByBookIds(books: ArrayList<Book>): Map<Long, BookMetadata> {
             if(books.isEmpty()) return emptyMap()
 
             return withContext(Dispatchers.IO) {
-                val db = DatabaseHelper.instance()
                 val sb = StringBuilder()
                 for(b in books) {
                     if(sb.isNotEmpty()) sb.append(",")
                     sb.append(b.id)
                 }
 
-                db.rawQuery("SELECT * FROM books_metadata WHERE book_id IN ($sb)", arrayOf()).use {
+                dba.query("SELECT * FROM books_metadata WHERE book_id IN ($sb)") {
                     val booksMetadata = HashMap<Long, BookMetadata>()
                     while(it.moveToNext()) {
                         val bookMetadata = BookMetadata(it)
@@ -71,10 +71,9 @@ class BookMetadata {
         }
 
         fun findOrCreateByBookId(bookId: Long): BookMetadata {
-            val db = DatabaseHelper.instance()
-            db.rawQuery("SELECT * FROM books_metadata WHERE book_id=?", arrayOf(bookId.toString())).use {
+            return dba.query("SELECT * FROM books_metadata WHERE book_id=?", bookId.toString()) {
                 it.moveToFirst()
-                return if (it.count > 0) {
+                if (it.count > 0) {
                     BookMetadata(it)
                 }
                 else {

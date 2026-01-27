@@ -2,10 +2,11 @@ package net.bloople.manga.audit
 
 import android.content.ContentValues
 import android.database.Cursor
+import net.bloople.awdiobooks.DatabaseAdapter
 import net.bloople.manga.get
 import java.lang.IllegalArgumentException
 
-internal class AuditEvent {
+class AuditEvent {
     var id = -1L
     var `when`: Long
     var action: Action? = null
@@ -64,23 +65,18 @@ internal class AuditEvent {
         values.put("resource_id", resourceId)
         values.put("resource_name", resourceName)
         values.put("detail", detail)
-        val db = DatabaseHelper.instance()
         if(id == -1L) {
-            id = db.insertOrThrow("audit_events", null, values)
+            id = dba.insert(values)
         }
         else {
-            db.update("audit_events", values, "_id=?", arrayOf(id.toString()))
+            dba.update(values, id)
         }
     }
 
     companion object {
+        private val dba: DatabaseAdapter
+            get() = DatabaseAdapter(net.bloople.manga.DatabaseHelper.instance(), "audit_events")
+
         var UNKNOWN_ID = -1L
-        fun findById(id: Long): AuditEvent? {
-            val db = DatabaseHelper.instance()
-            db.rawQuery("SELECT * FROM audit_events WHERE _id=?", arrayOf(id.toString())).use {
-                it.moveToFirst()
-                return if (it.count > 0) AuditEvent(it) else null
-            }
-        }
     }
 }

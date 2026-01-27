@@ -19,7 +19,7 @@ import android.view.View
 import android.widget.ImageView
 import java.util.ArrayList
 
-internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>) :
+class BooksAdapter(requestManager: RequestManager, preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>) :
     RecyclerView.Adapter<BooksAdapter.ViewHolder>(), PreloadModelProvider<GlideUrl> {
     private val requestManager: RequestManager
     private val preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>
@@ -47,7 +47,7 @@ internal class BooksAdapter(requestManager: RequestManager, preloadSizeProvider:
         notifyDataSetChanged()
     }
 
-    internal inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var pageCountView: TextView = view.findViewById(R.id.page_count_view)
         var openedCountView: TextView = view.findViewById(R.id.opened_count_view)
         var textView: TextView = view.findViewById(R.id.text_view)

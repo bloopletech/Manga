@@ -1,5 +1,6 @@
 package net.bloople.manga
 
+import android.database.Cursor
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -22,4 +23,19 @@ val String.u: String
 fun <T : Fragment> View.findFragmentById(@IdRes id: Int): T {
     val view: FragmentContainerView = findViewById(id)
     return view.getFragment()
+}
+
+inline operator fun <reified T: Any?> Cursor.get(columnName: String): T {
+    val columnIndex = getColumnIndexOrThrow(columnName)
+    return when (T::class) {
+        ByteArray::class -> getBlob(columnIndex) as T
+        Double::class -> getDouble(columnIndex) as T
+        Float::class -> getFloat(columnIndex) as T
+        Int::class -> getInt(columnIndex) as T
+        Long::class -> getLong(columnIndex) as T
+        Short::class -> getShort(columnIndex) as T
+        String::class, CharSequence::class -> getString(columnIndex) as T
+        Boolean::class -> (getInt(columnIndex) == 1) as T
+        else -> throw IllegalArgumentException("Cursor does not have a getter for type ${T::class.qualifiedName}")
+    }
 }

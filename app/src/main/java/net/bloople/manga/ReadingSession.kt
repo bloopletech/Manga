@@ -7,7 +7,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 
-internal class ReadingSession(private val context: Context, private val library: Library, private val book: Book) {
+class ReadingSession(private val library: Library, private val book: Book) {
     private var pager: ViewPager2? = null
     private val metadata: BookMetadata = BookMetadata.findOrCreateByBookId(book.id)
     private val auditor = BooksAuditor()

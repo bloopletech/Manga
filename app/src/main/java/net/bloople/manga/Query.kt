@@ -2,6 +2,7 @@ package net.bloople.manga
 
 import android.content.ContentValues
 import android.database.Cursor
+import net.bloople.awdiobooks.DatabaseAdapter
 
 class Query {
     var id = -1L
@@ -10,20 +11,8 @@ class Query {
     var lastUsedAt: Long = 0
     var usedCount: Long = 0
 
-    internal constructor()
-    internal constructor(
-        text: String?,
-        createdAt: Long,
-        lastUsedAt: Long,
-        usedCount: Long
-    ) {
-        this.text = text
-        this.createdAt = createdAt
-        this.lastUsedAt = lastUsedAt
-        this.usedCount = usedCount
-    }
-
-    internal constructor(result: Cursor) {
+    constructor()
+    constructor(result: Cursor) {
         id = result["_id"]
         text = result["text"]
         createdAt = result["created_at"]
@@ -37,30 +26,21 @@ class Query {
         values.put("created_at", createdAt)
         values.put("last_used_at", lastUsedAt)
         values.put("used_count", usedCount)
-        val db = DatabaseHelper.instance()
         if(id == -1L) {
-            id = db.insertOrThrow("queries", null, values)
+            id = dba.insert(values)
         }
         else {
-            db.update("queries", values, "_id=?", arrayOf(id.toString()))
+            dba.update(values, id)
         }
     }
 
     companion object {
-        fun findById(id: Long): Query? {
-            val db = DatabaseHelper.instance()
-            db.rawQuery("SELECT * FROM queries WHERE _id=?", arrayOf(id.toString())).use {
-                it.moveToFirst()
-                return if (it.count > 0) Query(it) else null
-            }
-        }
+        private val dba: DatabaseAdapter
+            get() = DatabaseAdapter(DatabaseHelper.instance(), "queries")
 
-        fun findByText(text: String): Query? {
-            val db = DatabaseHelper.instance()
-            db.rawQuery("SELECT * FROM queries WHERE \"text\"=?", arrayOf(text)).use {
-                it.moveToFirst()
-                return if (it.count > 0) Query(it) else null
-            }
-        }
+        fun find(id: Long) = dba.find(id) { Query(it) }
+
+        fun findByText(text: String): Query? =
+            dba.findBy("SELECT * FROM queries WHERE \"text\"=?", text) { Query(it) }
     }
 }

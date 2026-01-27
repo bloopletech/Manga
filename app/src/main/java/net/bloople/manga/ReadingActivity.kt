@@ -46,7 +46,7 @@ class ReadingActivity : AppCompatActivity() {
             val bookId = intent.getLongExtra("_id", -1)
             val book = library.books[bookId] ?: return@launch
 
-            session = ReadingSession(applicationContext, library, book)
+            session = ReadingSession(library, book)
             session.bind(this@ReadingActivity, pager)
 
             if(intent.getBooleanExtra("resume", false)) session.resume()

@@ -13,7 +13,7 @@ import com.bumptech.glide.RequestBuilder
 import android.graphics.drawable.Drawable
 import androidx.fragment.app.Fragment
 
-internal class BookPagerAdapter(fa: FragmentActivity?, private val book: Book) : FragmentStateAdapter(
+class BookPagerAdapter(fa: FragmentActivity?, private val book: Book) : FragmentStateAdapter(
     fa!!
 ), PreloadModelProvider<GlideUrl> {
     private var requestManager: RequestManager? = null

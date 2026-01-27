@@ -9,7 +9,7 @@ import java.lang.StringBuilder
  * Utilities method for manipulating String.
  * @author zemian 1/1/13
  */
-internal object StringNextUtil {
+object StringNextUtil {
     /** Calculate string successor value. Similar to Ruby's String#next() method.  */
     fun next(text: String): String {
         // We will not process empty string

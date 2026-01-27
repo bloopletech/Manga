@@ -4,7 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
-internal class BooksSorter {
+class BooksSorter {
     var sortMethod = BooksSortMethod.SORT_AGE
     var sortDirectionAsc = false
 

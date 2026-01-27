@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.regex.Pattern
 
-internal class BooksSearcher {
+class BooksSearcher {
     var searchText = ""
     var filterIds: ArrayList<Long> = ArrayList()
 

@@ -1,11 +1,10 @@
 package net.bloople.manga.audit
 
-import android.content.Context
 import android.database.Cursor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AuditEventsSearcher internal constructor() {
+class AuditEventsSearcher() {
     var resourceId: Long? = null
 
     suspend fun search(): Cursor {

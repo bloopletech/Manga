@@ -2,7 +2,6 @@ package net.bloople.manga
 
 import android.content.Context
 import net.bloople.manga.Library.Companion.findHighestPosition
-import net.bloople.manga.Library.Companion.findById
 import net.bloople.manga.LibraryEditFragment.OnLibraryEditFinishedListener
 import android.widget.ImageButton
 import android.os.Bundle
@@ -14,6 +13,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ConcatAdapter
+import net.bloople.manga.Library.Companion.find
 
 class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null
@@ -24,7 +24,7 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     var isEditingMode = false
         private set
 
-    internal interface OnLibrarySelectedListener {
+    interface OnLibrarySelectedListener {
         fun onLibrarySelected(libraryId: Long)
     }
 
@@ -103,10 +103,10 @@ class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     }
 
     fun swap(libraryAId: Long, libraryBId: Long) {
-        val libraryA = findById(libraryAId)
-        val libraryB = findById(libraryBId)
-        val aPosition = libraryA!!.position
-        libraryA.position = libraryB!!.position
+        val libraryA = find(libraryAId)
+        val libraryB = find(libraryBId)
+        val aPosition = libraryA.position
+        libraryA.position = libraryB.position
         libraryB.position = aPosition
         libraryA.save()
         libraryB.save()

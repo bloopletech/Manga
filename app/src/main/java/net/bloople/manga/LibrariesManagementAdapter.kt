@@ -8,12 +8,12 @@ import android.view.View
 import android.widget.ImageButton
 import net.bloople.manga.audit.AuditEventsActivity
 
-internal class LibrariesManagementAdapter(private val fragment: LibrariesFragment) :
+class LibrariesManagementAdapter(private val fragment: LibrariesFragment) :
     RecyclerView.Adapter<LibrariesManagementAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = 1
 
-    internal inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val startEditingButton: ImageButton = view.findViewById(R.id.start_editing)
         val viewAuditEventsButton: ImageButton = view.findViewById(R.id.view_audit_events)
 

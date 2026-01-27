@@ -1,6 +1,6 @@
 package net.bloople.manga.audit
 
-internal enum class ResourceType {
+enum class ResourceType {
     UNKNOWN,
     LIBRARY,
     BOOK

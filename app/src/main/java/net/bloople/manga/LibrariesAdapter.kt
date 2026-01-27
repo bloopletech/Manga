@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 
-internal class LibrariesAdapter(private val fragment: LibrariesFragment, cursor: Cursor?) :
+class LibrariesAdapter(private val fragment: LibrariesFragment, cursor: Cursor?) :
     CursorRecyclerAdapter<LibrariesAdapter.ItemViewHolder>(cursor) {
     private lateinit var touchHelper: ItemTouchHelper
     private var selectedLibraryId: Long = 0
@@ -55,7 +55,7 @@ internal class LibrariesAdapter(private val fragment: LibrariesFragment, cursor:
         touchHelper.attachToRecyclerView(null)
     }
 
-    internal inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @JvmField
         var libraryId: Long = 0
         var nameView: TextView = view.findViewById(R.id.name)

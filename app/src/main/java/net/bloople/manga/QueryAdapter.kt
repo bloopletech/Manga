@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.CursorAdapter
 import android.widget.TextView
 
-class QueryAdapter internal constructor(context: Context, cursor: Cursor?) : CursorAdapter(context, cursor, 0) {
+class QueryAdapter(context: Context, cursor: Cursor?) : CursorAdapter(context, cursor, 0) {
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
     override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
