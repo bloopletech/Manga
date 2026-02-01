@@ -67,7 +67,7 @@ object LibraryService {
 
             MangaApplication.okHttpClient.newCall(request).execute().use {
                 if(!it.isSuccessful) throw IOException("Request failed. Request: $request, Response: $it")
-                books = Json.decodeFromStream(it.body!!.byteStream())
+                books = Json.decodeFromStream(it.body.byteStream())
             }
 
             library.inflate(books)

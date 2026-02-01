@@ -30,13 +30,12 @@ class PageFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(url: MangosUrl?): PageFragment {
-            val fragment = PageFragment()
-            val args = Bundle()
-            args.putParcelable("url", url)
-            fragment.arguments = args
-            return fragment
+        fun newInstance(url: MangosUrl): PageFragment {
+            return PageFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable("url", url)
+                }
+            }
         }
     }
 }
