@@ -136,7 +136,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         val library = model.getLibrary()
-        if(library != null) savedInstanceState.putLong("libraryId", library.id)
+        if(library.isPresent()) savedInstanceState.putLong("libraryId", library.id)
         savedInstanceState.putString("sortMethod", model.sortMethod.toString())
         savedInstanceState.putBoolean("sortDirectionAsc", model.sortDirectionAsc)
         super.onSaveInstanceState(savedInstanceState)
@@ -209,7 +209,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
 
     private fun loadLibrary(libraryId: Long) {
         lifecycleScope.launch {
-            val library = LibraryService.ensureLibrary(this@IndexActivity, libraryId) ?: return@launch
+            val library = LibraryService.ensureLibrary(libraryId, this@IndexActivity)
 
             librariesFragment.setCurrentLibraryId(library.id)
             auditor.selected(library)

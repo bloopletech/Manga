@@ -5,10 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class IndexViewModel(application: Application) : AndroidViewModel(application) {
-    private lateinit var library: Library
+    private var library = Library.EMPTY
     private val searcher = BooksSearcher()
     private val sorter = BooksSorter()
 
@@ -25,7 +24,7 @@ class IndexViewModel(application: Application) : AndroidViewModel(application) {
         resolve()
     }
 
-    fun getLibrary(): Library? {
+    fun getLibrary(): Library {
         return library
     }
 

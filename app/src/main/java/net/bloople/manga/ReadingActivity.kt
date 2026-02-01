@@ -41,7 +41,7 @@ class ReadingActivity : AppCompatActivity() {
         val libraryId = intent.getLongExtra("libraryId", -1)
 
         lifecycleScope.launch {
-            val library = LibraryService.ensureLibrary(this@ReadingActivity, libraryId) ?: return@launch
+            val library = LibraryService.ensureLibrary(libraryId, this@ReadingActivity)
 
             val bookId = intent.getLongExtra("_id", -1)
             val book = library.books[bookId] ?: return@launch

@@ -58,6 +58,9 @@ class Library {
         dba.delete(id)
     }
 
+    fun isEmpty() = id == -1L
+    fun isPresent() = !isEmpty()
+
     companion object {
         private val dba: DatabaseAdapter
             get() = DatabaseAdapter(DatabaseHelper.instance(), "library_roots")
@@ -71,5 +74,7 @@ class Library {
 
         fun findHighestPosition(): Int =
             dba.findBy("SELECT position FROM library_roots ORDER BY position DESC LIMIT 1") { it["position"] } ?: 0
+
+        val EMPTY = Library()
     }
 }

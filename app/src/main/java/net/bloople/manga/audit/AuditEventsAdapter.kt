@@ -132,7 +132,7 @@ class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAda
     private fun renderBook(holder: ViewHolder, event: AuditEvent) {
         val context = holder.imageView.context as AppCompatActivity
         context.lifecycleScope.launch {
-            val library = LibraryService.ensureLibrary(context, event.resourceContextId)!!
+            val library = LibraryService.ensureLibrary(event.resourceContextId, context)
 
             holder.openResourceView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE

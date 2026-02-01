@@ -5,6 +5,7 @@ import net.bloople.manga.Library
 
 class LibrariesAuditor() {
     fun selected(library: Library) {
+        if(library.isEmpty()) return
         val event = AuditEvent(
             System.currentTimeMillis(),
             Action.LIBRARY_SELECTED,

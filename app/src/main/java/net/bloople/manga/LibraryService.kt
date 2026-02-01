@@ -10,38 +10,41 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import net.bloople.manga.Library.Companion.find
-import okhttp3.OkHttpClient
 import java.io.IOException
 
 object LibraryService {
     private const val LIBRARY_CACHE_MAX_COUNT = 5
     private val currentLibraries = LruCache<Long, Library>(LIBRARY_CACHE_MAX_COUNT)
-    private val okHttpClient = OkHttpClient()
 
-    suspend fun ensureLibrary(context: Context, libraryId: Long): Library? {
+    suspend fun ensureLibrary(libraryId: Long, context: Context? = null): Library {
         val library = if(libraryId != -1L) find(libraryId) else findDefault()
-        if(library == null) return null
+        if(library == null) return Library.EMPTY
 
         val current = currentLibraries[library.id]
         if(current != null && current.root == library.root) return current
 
-        if(load(context, library)) {
+        if(load(library, context)) {
             currentLibraries.put(library.id, library)
             return library
         }
 
-        return null
+        return Library.EMPTY
     }
 
-    private suspend fun load(context: Context, library: Library): Boolean {
-        val loadingLibraryDialog = ProgressDialog.show(
-            context,
-            "Loading " + library.name,
-            "Please wait while the library is loaded...",
-            true
-        )
+    private suspend fun load(library: Library, context: Context?): Boolean {
+        if(context != null) {
+            val loadingLibraryDialog = ProgressDialog.show(
+                context,
+                "Loading " + library.name,
+                "Please wait while the library is loaded...",
+                true
+            )
 
-        return inflate(library).also { loadingLibraryDialog.dismiss() }
+            return inflate(library).also { loadingLibraryDialog.dismiss() }
+        }
+        else {
+            return inflate(library)
+        }
     }
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -62,7 +65,7 @@ object LibraryService {
             val books: List<Book>
             val request = library.dataUrl.toOkHttpRequest()
 
-            okHttpClient.newCall(request).execute().use {
+            MangaApplication.okHttpClient.newCall(request).execute().use {
                 if(!it.isSuccessful) throw IOException("Request failed. Request: $request, Response: $it")
                 books = Json.decodeFromStream(it.body!!.byteStream())
             }
