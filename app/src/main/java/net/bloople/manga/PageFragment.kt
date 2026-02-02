@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import coil3.load
 
 class PageFragment : Fragment() {
-    private lateinit var url: MangosUrl
+    private lateinit var url: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        url = requireArguments().getParcelable("url")!!
+        url = requireArguments().getString("url")!!
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -24,16 +24,14 @@ class PageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val imageView: ImageView = view.findViewById(R.id.image)
 
-        imageView.load(null) {
-            url.loadInto(this)
-        }
+        imageView.load(url)
     }
 
     companion object {
         fun newInstance(url: MangosUrl): PageFragment {
             return PageFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable("url", url)
+                    putString("url", url.toString())
                 }
             }
         }

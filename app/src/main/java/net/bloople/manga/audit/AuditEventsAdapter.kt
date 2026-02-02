@@ -17,10 +17,10 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import coil3.load
 import net.bloople.manga.LibraryService
 import kotlinx.coroutines.launch
 import net.bloople.manga.clear
-import net.bloople.manga.loadUrl
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -141,7 +141,7 @@ class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAda
 
             val book = library.books[event.resourceId]
 
-            if(book != null) holder.imageView.loadUrl(book.thumbnailUrl)
+            if(book != null) holder.imageView.load(book.thumbnailUrl.toString())
             else holder.imageView.clear()
         }
     }

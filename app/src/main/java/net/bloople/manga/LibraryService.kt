@@ -10,6 +10,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import net.bloople.manga.Library.Companion.find
+import okhttp3.Request
 import java.io.IOException
 
 object LibraryService {
@@ -63,7 +64,7 @@ object LibraryService {
     private suspend fun inflateUnchecked(library: Library) {
         withContext(Dispatchers.IO) {
             val books: List<Book>
-            val request = library.dataUrl.toOkHttpRequest()
+            val request = Request(library.dataUrl.toHttpUrl())
 
             MangaApplication.okHttpClient.newCall(request).execute().use {
                 if(!it.isSuccessful) throw IOException("Request failed. Request: $request, Response: $it")

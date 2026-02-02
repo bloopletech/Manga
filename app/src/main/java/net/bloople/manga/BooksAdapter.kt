@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import coil3.load
 import java.util.ArrayList
 
 class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
@@ -138,6 +139,6 @@ class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
             holder.openedCountView.visibility = View.GONE
         }
 
-        holder.imageView.loadUrl(book.thumbnailUrl)
+        holder.imageView.load(book.thumbnailUrl.toString())
     }
 }

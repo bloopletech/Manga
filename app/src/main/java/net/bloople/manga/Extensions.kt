@@ -42,10 +42,6 @@ inline operator fun <reified T: Any?> Cursor.get(columnName: String): T {
     }
 }
 
-fun ImageView.loadUrl(url: MangosUrl) {
-    load(null) { url.loadInto(this) }
-}
-
 fun ImageView.clear() {
     setImageDrawable(null)
 }
