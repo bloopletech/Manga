@@ -29,6 +29,8 @@
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingRight">0dp</item>
         <item name="android:paddingEnd">0dp</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="maxButtonHeight">56dp</item>
     </style>
 
     <style name="LibraryTitle" parent="@android:style/TextAppearance.Material.Widget.ActionBar.Title">
