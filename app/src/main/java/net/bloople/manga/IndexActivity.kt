@@ -13,10 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import android.view.inputmethod.EditorInfo
 import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.util.ViewPreloadSizeProvider
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import android.content.DialogInterface
 import android.view.KeyEvent
 import android.view.Menu
@@ -27,8 +23,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -100,18 +94,8 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         booksLayoutManager = GridLayoutManager(this, 4)
         booksView.layoutManager = booksLayoutManager
 
-        val requestManager = Glide.with(this).applyDefaultRequestOptions(
-            RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-        val sizeProvider = ViewPreloadSizeProvider<GlideUrl>()
-
-        adapter = BooksAdapter(requestManager, sizeProvider)
+        adapter = BooksAdapter()
         booksView.adapter = adapter
-
-        val preloader = RecyclerViewPreloader(
-            requestManager, adapter, sizeProvider, 12
-        )
-
-        booksView.addOnScrollListener(preloader)
 
         queryService = QueryService(this, searchField)
 

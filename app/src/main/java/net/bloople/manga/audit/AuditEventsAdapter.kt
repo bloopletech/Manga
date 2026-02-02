@@ -18,8 +18,9 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import net.bloople.manga.LibraryService
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
+import net.bloople.manga.clear
+import net.bloople.manga.loadUrl
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -125,8 +126,6 @@ class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAda
 
         holder.openResourceView.visibility = View.VISIBLE
         holder.imageView.visibility = View.GONE
-
-        Glide.with(holder.imageView.context).clear(holder.imageView)
     }
 
     private fun renderBook(holder: ViewHolder, event: AuditEvent) {
@@ -140,12 +139,10 @@ class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAda
             val viewWidthToBitmapWidthRatio = holder.imageView.layoutParams.width.toDouble() / 197.0
             holder.imageView.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
 
-            val glide = Glide.with(holder.imageView.context)
-
             val book = library.books[event.resourceId]
 
-            if(book != null) glide.load(book.thumbnailUrl.toGlideUrl()).into(holder.imageView)
-            else glide.clear(holder.imageView)
+            if(book != null) holder.imageView.loadUrl(book.thumbnailUrl)
+            else holder.imageView.clear()
         }
     }
 }

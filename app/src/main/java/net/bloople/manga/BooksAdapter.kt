@@ -1,10 +1,6 @@
 package net.bloople.manga
 
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.util.ViewPreloadSizeProvider
-import com.bumptech.glide.load.model.GlideUrl
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.ListPreloader.PreloadModelProvider
 import android.widget.TextView
 import android.content.Intent
 import android.view.LayoutInflater
@@ -13,23 +9,16 @@ import net.bloople.manga.audit.AuditEventsActivity
 import android.widget.PopupWindow
 import android.view.ViewGroup
 import android.view.Gravity
-import com.bumptech.glide.RequestBuilder
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import java.util.ArrayList
 
-class BooksAdapter(requestManager: RequestManager, preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>) :
-    RecyclerView.Adapter<BooksAdapter.ViewHolder>(), PreloadModelProvider<GlideUrl> {
-    private val requestManager: RequestManager
-    private val preloadSizeProvider: ViewPreloadSizeProvider<GlideUrl>
+class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
     private var books = ArrayList<Book>()
     private var booksMetadata: Map<Long, BookMetadata> = emptyMap()
 
     init {
         setHasStableIds(true)
-        this.requestManager = requestManager
-        this.preloadSizeProvider = preloadSizeProvider
     }
 
     override fun getItemId(position: Int): Long {
@@ -127,8 +116,6 @@ class BooksAdapter(requestManager: RequestManager, preloadSizeProvider: ViewPrel
         val viewWidthToBitmapWidthRatio = parent.width.toDouble() / 4.0 / 197.0
         view.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
 
-        preloadSizeProvider.setView(view)
-
         return ViewHolder(view)
     }
 
@@ -151,17 +138,6 @@ class BooksAdapter(requestManager: RequestManager, preloadSizeProvider: ViewPrel
             holder.openedCountView.visibility = View.GONE
         }
 
-        requestManager
-            .load(book.thumbnailUrl.toGlideUrl())
-            .into(holder.imageView)
-    }
-
-    override fun getPreloadItems(position: Int): List<GlideUrl> {
-        val book = books[position]
-        return listOf(book.thumbnailUrl.toGlideUrl())
-    }
-
-    override fun getPreloadRequestBuilder(url: GlideUrl): RequestBuilder<Drawable> {
-        return requestManager.load(url)
+        holder.imageView.loadUrl(book.thumbnailUrl)
     }
 }

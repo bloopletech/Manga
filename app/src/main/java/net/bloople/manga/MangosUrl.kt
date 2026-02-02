@@ -2,8 +2,6 @@ package net.bloople.manga
 
 import android.net.Uri
 import android.os.Parcelable
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import android.os.Parcel
 import android.os.Parcelable.Creator
 import android.util.Base64
@@ -31,13 +29,6 @@ open class MangosUrl(private val url: String, private val credential: String? = 
         val builder = Request.Builder().url(url)
         if(credential != null) builder.header("Authorization", "Basic $credential")
         return builder.build()
-    }
-
-    fun toGlideUrl(): GlideUrl {
-        if(credential != null) {
-            return GlideUrl(url, LazyHeaders.Builder().addHeader("Authorization", "Basic $credential").build())
-        }
-        return GlideUrl(url)
     }
 
     fun loadInto(builder: ImageRequest.Builder): ImageRequest.Builder {

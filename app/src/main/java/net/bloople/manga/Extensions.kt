@@ -2,9 +2,11 @@ package net.bloople.manga
 
 import android.database.Cursor
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import coil3.load
 import java.util.Locale
 
 val Number.f: String
@@ -38,4 +40,12 @@ inline operator fun <reified T: Any?> Cursor.get(columnName: String): T {
         Boolean::class -> (getInt(columnIndex) == 1) as T
         else -> throw IllegalArgumentException("Cursor does not have a getter for type ${T::class.qualifiedName}")
     }
+}
+
+fun ImageView.loadUrl(url: MangosUrl) {
+    load(null) { url.loadInto(this) }
+}
+
+fun ImageView.clear() {
+    setImageDrawable(null)
 }
