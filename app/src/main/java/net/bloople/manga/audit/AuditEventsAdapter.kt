@@ -141,7 +141,7 @@ class AuditEventsAdapter(cursor: Cursor?) : CursorRecyclerAdapter<AuditEventsAda
 
             val book = library.books[event.resourceId]
 
-            if(book != null) holder.imageView.load(book.thumbnailUrl.toString())
+            if(book != null) holder.imageView.load(book.thumbnailUrl.build())
             else holder.imageView.clear()
         }
     }

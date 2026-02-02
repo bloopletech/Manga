@@ -139,6 +139,6 @@ class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
             holder.openedCountView.visibility = View.GONE
         }
 
-        holder.imageView.load(book.thumbnailUrl.toString())
+        holder.imageView.load(book.thumbnailUrl.build())
     }
 }

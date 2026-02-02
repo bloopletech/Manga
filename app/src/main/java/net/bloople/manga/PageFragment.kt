@@ -31,7 +31,7 @@ class PageFragment : Fragment() {
         fun newInstance(url: MangosUrl): PageFragment {
             return PageFragment().apply {
                 arguments = Bundle().apply {
-                    putString("url", url.toString())
+                    putString("url", url.build())
                 }
             }
         }
