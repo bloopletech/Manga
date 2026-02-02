@@ -3,7 +3,7 @@ package net.bloople.manga
 import android.net.Uri
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
-open class MangosUrl private constructor(private val url: String) {
+class MangosUrl private constructor(private val url: String) {
     constructor(url: String, username: String?, password: String?) : this(
         if(!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
             url.toHttpUrl().newBuilder().username(username).password(password).build().toString()
@@ -13,9 +13,7 @@ open class MangosUrl private constructor(private val url: String) {
         }
     )
 
-    operator fun div(other: String): MangosUrl {
-        return MangosUrl(url + "/" + Uri.encode(other))
-    }
+    operator fun div(other: String) = MangosUrl(url + "/" + Uri.encode(other))
 
     fun toHttpUrl() = url.toHttpUrl()
     fun build() = url
