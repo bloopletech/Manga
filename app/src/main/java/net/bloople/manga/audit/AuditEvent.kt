@@ -75,7 +75,7 @@ class AuditEvent {
 
     companion object {
         private val dba: DatabaseAdapter
-            get() = DatabaseAdapter(net.bloople.manga.DatabaseHelper.instance(), "audit_events")
+            get() = DatabaseAdapter(DatabaseHelper.instance(), "audit_events")
 
         var UNKNOWN_ID = -1L
     }
