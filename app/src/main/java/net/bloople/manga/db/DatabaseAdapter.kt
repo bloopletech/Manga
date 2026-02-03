@@ -1,4 +1,4 @@
-package net.bloople.awdiobooks
+package net.bloople.manga.db
 
 import android.content.ContentValues
 import android.database.Cursor

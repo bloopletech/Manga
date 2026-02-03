@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package net.bloople.manga
 
 import android.annotation.SuppressLint
@@ -27,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.bloople.manga.coil.ListPreloader
 import net.bloople.manga.coil.RecyclerToListViewScrollListener
+import net.bloople.manga.db.DatabaseManagementFragment
 
 class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     private lateinit var model: IndexViewModel

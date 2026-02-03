@@ -2,7 +2,8 @@ package net.bloople.manga
 
 import android.content.ContentValues
 import android.database.Cursor
-import net.bloople.awdiobooks.DatabaseAdapter
+import net.bloople.manga.db.DatabaseAdapter
+import net.bloople.manga.db.DatabaseHelper
 
 class Query {
     var id = -1L

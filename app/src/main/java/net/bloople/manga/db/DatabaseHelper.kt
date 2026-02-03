@@ -1,15 +1,15 @@
-package net.bloople.manga
+package net.bloople.manga.db
 
-import android.database.sqlite.SQLiteDatabase
 import android.content.ContentValues
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import net.bloople.manga.MangaApplication
+import net.bloople.manga.get
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import kotlin.jvm.Synchronized
-import kotlin.Throws
 
 object DatabaseHelper {
     private const val DB_NAME = "books"

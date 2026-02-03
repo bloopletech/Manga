@@ -3,6 +3,7 @@ package net.bloople.manga
 import android.content.Context
 import android.widget.AutoCompleteTextView
 import android.widget.FilterQueryProvider
+import net.bloople.manga.db.DatabaseHelper
 
 class QueryService(context: Context, searchField: AutoCompleteTextView) {
     private val adapter: QueryAdapter = QueryAdapter(context, null)

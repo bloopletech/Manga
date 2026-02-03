@@ -4,9 +4,10 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import net.bloople.awdiobooks.DatabaseAdapter
+import net.bloople.manga.db.DatabaseAdapter
 import java.util.HashMap
 import androidx.core.net.toUri
+import net.bloople.manga.db.DatabaseHelper
 
 class Library {
     var id = -1L

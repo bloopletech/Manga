@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ConcatAdapter
 import net.bloople.manga.Library.Companion.find
+import net.bloople.manga.db.DatabaseHelper
 
 class LibrariesFragment : Fragment(), OnLibraryEditFinishedListener {
     private var listener: OnLibrarySelectedListener? = null

@@ -4,7 +4,8 @@ import android.content.ContentValues
 import android.database.Cursor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.bloople.awdiobooks.DatabaseAdapter
+import net.bloople.manga.db.DatabaseAdapter
+import net.bloople.manga.db.DatabaseHelper
 import java.lang.StringBuilder
 import java.util.ArrayList
 import java.util.HashMap
