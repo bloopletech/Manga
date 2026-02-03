@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.ImageView
 import coil3.load
 import coil3.request.ImageRequest
+import net.bloople.manga.coil.ListPreloader
 import java.util.ArrayList
 
 class BooksAdapter : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloader.Provider {

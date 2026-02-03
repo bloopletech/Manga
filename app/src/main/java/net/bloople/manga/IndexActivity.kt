@@ -25,6 +25,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.bloople.manga.coil.ListPreloader
+import net.bloople.manga.coil.RecyclerToListViewScrollListener
 
 class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     private lateinit var model: IndexViewModel

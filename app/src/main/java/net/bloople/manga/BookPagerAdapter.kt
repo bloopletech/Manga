@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import coil3.request.ImageRequest
+import net.bloople.manga.coil.ListPreloader
+import net.bloople.manga.coil.RecyclerToListViewScrollListener
 
 class BookPagerAdapter(
     fa: FragmentActivity,

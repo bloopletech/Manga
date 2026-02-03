@@ -1,4 +1,4 @@
-package net.bloople.manga
+package net.bloople.manga.coil
 
 import android.content.Context
 import android.widget.AbsListView
@@ -10,7 +10,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 // Based on https://github.com/bumptech/glide/blob/b12f574fd6ea20430c55c5a2eb29d624d843bf3e/library/src/main/java/com/bumptech/glide/ListPreloader.java#L29
-open class ListPreloader(
+class ListPreloader(
     private val context: Context,
     private val imageLoader: ImageLoader,
     private val preloadProvider: Provider,

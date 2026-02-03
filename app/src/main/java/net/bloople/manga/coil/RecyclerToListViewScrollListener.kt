@@ -1,4 +1,4 @@
-package net.bloople.manga
+package net.bloople.manga.coil
 
 import android.widget.AbsListView
 import androidx.recyclerview.widget.LinearLayoutManager
