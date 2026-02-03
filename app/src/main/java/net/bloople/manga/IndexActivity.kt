@@ -32,7 +32,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     private lateinit var librariesFragment: LibrariesFragment
     private lateinit var databaseManagementFragment: DatabaseManagementFragment
     private val auditor = LibrariesAuditor()
-    private lateinit var adapter: BooksAdapter
+    private val adapter = BooksAdapter()
     private lateinit var booksLayoutManager: GridLayoutManager
     private lateinit var searchField: AutoCompleteTextView
     private lateinit var searchResultsToolbar: TextView
@@ -94,8 +94,6 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         val booksView = findViewById<RecyclerView>(R.id.books_view)
         booksLayoutManager = GridLayoutManager(this, 4)
         booksView.layoutManager = booksLayoutManager
-
-        adapter = BooksAdapter(this)
         booksView.adapter = adapter
 
         val preloader = RecyclerViewPreloader(this, adapter, 12)

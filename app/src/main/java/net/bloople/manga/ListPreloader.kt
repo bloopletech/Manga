@@ -1,7 +1,9 @@
 package net.bloople.manga
 
+import android.content.Context
 import android.widget.AbsListView
 import coil3.ImageLoader
+import coil3.imageLoader
 import coil3.request.Disposable
 import coil3.request.ImageRequest
 import kotlin.math.max
@@ -9,10 +11,16 @@ import kotlin.math.min
 
 // Based on https://github.com/bumptech/glide/blob/b12f574fd6ea20430c55c5a2eb29d624d843bf3e/library/src/main/java/com/bumptech/glide/ListPreloader.java#L29
 class ListPreloader<T>(
+    private val context: Context,
     private val imageLoader: ImageLoader,
     private val preloadProvider: PreloadProvider<T>,
     private val maxPreload: Int
 ) : AbsListView.OnScrollListener {
+    constructor(
+        context: Context,
+        preloadProvider: PreloadProvider<T>,
+        maxPreload: Int) : this(context, context.imageLoader, preloadProvider, maxPreload)
+
     private val requestQueue = ArrayDeque<Disposable>(maxPreload + 1)
 
     private var lastEnd = 0
@@ -25,7 +33,7 @@ class ListPreloader<T>(
     interface PreloadProvider<U> {
         fun getPreloadItems(position: Int): List<U?>
 
-        fun getPreloadImageRequest(item: U): ImageRequest?
+        fun getPreloadImageRequest(context: Context, item: U): ImageRequest?
     }
 
     override fun onScrollStateChanged(absListView: AbsListView?, scrollState: Int) {
@@ -95,7 +103,7 @@ class ListPreloader<T>(
     private fun preloadItem(item: T?) {
         if(item == null) return
         println($"Preloading item: $item")
-        val imageRequest = preloadProvider.getPreloadImageRequest(item) ?: return
+        val imageRequest = preloadProvider.getPreloadImageRequest(context, item) ?: return
 
         val handle = imageLoader.enqueue(imageRequest)
         if(requestQueue.size >= maxPreload) requestQueue.removeFirst()

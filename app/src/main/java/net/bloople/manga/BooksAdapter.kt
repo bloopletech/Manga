@@ -16,7 +16,7 @@ import coil3.load
 import coil3.request.ImageRequest
 import java.util.ArrayList
 
-class BooksAdapter(private val context: Context) : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloader.PreloadProvider<MangosUrl> {
+class BooksAdapter : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloader.PreloadProvider<MangosUrl> {
     private var books = ArrayList<Book>()
     private var booksMetadata: Map<Long, BookMetadata> = emptyMap()
 
@@ -150,7 +150,7 @@ class BooksAdapter(private val context: Context) : RecyclerView.Adapter<BooksAda
         return listOf(book.thumbnailUrl)
     }
 
-    override fun getPreloadImageRequest(item: MangosUrl): ImageRequest {
+    override fun getPreloadImageRequest(context: Context, item: MangosUrl): ImageRequest {
         return ImageRequest.Builder(context).data(item.build()).build()
     }
 }
