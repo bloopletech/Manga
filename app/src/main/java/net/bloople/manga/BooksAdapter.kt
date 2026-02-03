@@ -1,5 +1,6 @@
 package net.bloople.manga
 
+import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import android.content.Intent
@@ -12,9 +13,10 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import coil3.load
+import coil3.request.ImageRequest
 import java.util.ArrayList
 
-class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
+class BooksAdapter(private val context: Context) : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloader.PreloadProvider<MangosUrl> {
     private var books = ArrayList<Book>()
     private var booksMetadata: Map<Long, BookMetadata> = emptyMap()
 
@@ -140,5 +142,15 @@ class BooksAdapter() : RecyclerView.Adapter<BooksAdapter.ViewHolder>() {
         }
 
         holder.imageView.load(book.thumbnailUrl.build())
+    }
+
+
+    override fun getPreloadItems(position: Int): List<MangosUrl> {
+        val book = books[position]
+        return listOf(book.thumbnailUrl)
+    }
+
+    override fun getPreloadImageRequest(item: MangosUrl): ImageRequest {
+        return ImageRequest.Builder(context).data(item.build()).build()
     }
 }

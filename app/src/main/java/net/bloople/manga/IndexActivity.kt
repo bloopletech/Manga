@@ -2,6 +2,7 @@ package net.bloople.manga
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import net.bloople.manga.LibrariesFragment.OnLibrarySelectedListener
 import net.bloople.manga.audit.LibrariesAuditor
@@ -94,8 +95,11 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
         booksLayoutManager = GridLayoutManager(this, 4)
         booksView.layoutManager = booksLayoutManager
 
-        adapter = BooksAdapter()
+        adapter = BooksAdapter(this)
         booksView.adapter = adapter
+
+        val preloader = RecyclerViewPreloader(this, adapter, 12)
+        booksView.addOnScrollListener(preloader)
 
         queryService = QueryService(this, searchField)
 
