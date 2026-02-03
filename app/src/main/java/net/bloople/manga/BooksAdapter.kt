@@ -16,9 +16,11 @@ import coil3.load
 import coil3.request.ImageRequest
 import java.util.ArrayList
 
-class BooksAdapter : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloader.PreloadProvider<MangosUrl> {
+class BooksAdapter : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloader.Provider {
     private var books = ArrayList<Book>()
     private var booksMetadata: Map<Long, BookMetadata> = emptyMap()
+    private var thumbnailWidth = 0
+    private var thumbnailHeight = 0
 
     init {
         setHasStableIds(true)
@@ -114,10 +116,13 @@ class BooksAdapter : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloa
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.index_book_view, parent, false)
+        val thumbnailWidthExact = parent.width.toDouble() / 4.0
+        thumbnailWidth = thumbnailWidthExact.toInt()
+        val viewWidthToBitmapWidthRatio = thumbnailWidthExact / 197.0
+        thumbnailHeight = (310.0 * viewWidthToBitmapWidthRatio).toInt()
 
-        val viewWidthToBitmapWidthRatio = parent.width.toDouble() / 4.0 / 197.0
-        view.layoutParams.height = (310.0 * viewWidthToBitmapWidthRatio).toInt()
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.index_book_view, parent, false)
+        view.layoutParams.height = thumbnailHeight
 
         return ViewHolder(view)
     }
@@ -144,13 +149,10 @@ class BooksAdapter : RecyclerView.Adapter<BooksAdapter.ViewHolder>(), ListPreloa
         holder.imageView.load(book.thumbnailUrl.build())
     }
 
-
-    override fun getPreloadItems(position: Int): List<MangosUrl> {
+    override fun getPreloadRequests(context: Context, position: Int): List<ImageRequest> {
         val book = books[position]
-        return listOf(book.thumbnailUrl)
-    }
-
-    override fun getPreloadImageRequest(context: Context, item: MangosUrl): ImageRequest {
-        return ImageRequest.Builder(context).data(item.build()).build()
+        val request = ImageRequest.Builder(context)
+            .data(book.thumbnailUrl.build()).size(thumbnailWidth, thumbnailHeight).build()
+        return listOf(request)
     }
 }

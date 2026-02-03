@@ -8,7 +8,7 @@ import coil3.request.ImageRequest
 
 class BookPagerAdapter(
     fa: FragmentActivity,
-    private val book: Book) : FragmentStateAdapter(fa), ListPreloader.PreloadProvider<MangosUrl> {
+    private val book: Book) : FragmentStateAdapter(fa), ListPreloader.Provider {
     private val preloader = RecyclerViewPreloader(fa, this, ReadingSession.CACHE_PAGES_LIMIT)
 
     override fun createFragment(i: Int) = PageFragment.newInstance(book.pageUrl(i))
@@ -24,12 +24,8 @@ class BookPagerAdapter(
         recyclerView.removeOnScrollListener(preloader)
     }
 
-    override fun getPreloadItems(position: Int): List<MangosUrl> {
+    override fun getPreloadRequests(context: Context, position: Int): List<ImageRequest> {
         val pageUrl = book.pageUrl(position)
-        return listOf(pageUrl)
-    }
-
-    override fun getPreloadImageRequest(context: Context, item: MangosUrl): ImageRequest {
-        return ImageRequest.Builder(context).data(item.build()).build()
+        return listOf(ImageRequest.Builder(context).data(pageUrl.build()).build())
     }
 }

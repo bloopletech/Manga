@@ -10,16 +10,15 @@ import kotlin.math.max
 import kotlin.math.min
 
 // Based on https://github.com/bumptech/glide/blob/b12f574fd6ea20430c55c5a2eb29d624d843bf3e/library/src/main/java/com/bumptech/glide/ListPreloader.java#L29
-class ListPreloader<T>(
+class ListPreloader(
     private val context: Context,
     private val imageLoader: ImageLoader,
-    private val preloadProvider: PreloadProvider<T>,
-    private val maxPreload: Int
-) : AbsListView.OnScrollListener {
+    private val preloadProvider: Provider,
+    private val maxPreload: Int) : AbsListView.OnScrollListener {
     constructor(
         context: Context,
-        preloadProvider: PreloadProvider<T>,
-        maxPreload: Int) : this(context, context.imageLoader, preloadProvider, maxPreload)
+        provider: Provider,
+        maxPreload: Int) : this(context, context.imageLoader, provider, maxPreload)
 
     private val requestQueue = ArrayDeque<Disposable>(maxPreload + 1)
 
@@ -30,10 +29,8 @@ class ListPreloader<T>(
 
     private var isIncreasing = true
 
-    interface PreloadProvider<U> {
-        fun getPreloadItems(position: Int): List<U?>
-
-        fun getPreloadImageRequest(context: Context, item: U): ImageRequest?
+    interface Provider {
+        fun getPreloadRequests(context: Context, position: Int): List<ImageRequest>
     }
 
     override fun onScrollStateChanged(absListView: AbsListView?, scrollState: Int) {
@@ -77,13 +74,13 @@ class ListPreloader<T>(
         if(from < to) {
             // Increasing
             for(i in start ..< end) {
-                preloadAdapterPosition(preloadProvider.getPreloadItems(i), true)
+                preloadAdapterPosition(i, true)
             }
         }
         else {
             // Decreasing
             for(i in end - 1 downTo start) {
-                preloadAdapterPosition(preloadProvider.getPreloadItems(i), false)
+                preloadAdapterPosition(i, false)
             }
         }
 
@@ -91,21 +88,19 @@ class ListPreloader<T>(
         lastEnd = end
     }
 
-    private fun preloadAdapterPosition(items: List<T?>, isIncreasing: Boolean) {
+    private fun preloadAdapterPosition(position: Int, isIncreasing: Boolean) {
+        val requests = preloadProvider.getPreloadRequests(context, position)
+
         if(isIncreasing) {
-            for(item in items) preloadItem(item)
+            for(request in requests) preloadRequest(request)
         }
         else {
-            for(item in items.reversed()) preloadItem(item)
+            for(request in requests.asReversed()) preloadRequest(request)
         }
     }
 
-    private fun preloadItem(item: T?) {
-        if(item == null) return
-        println($"Preloading item: $item")
-        val imageRequest = preloadProvider.getPreloadImageRequest(context, item) ?: return
-
-        val handle = imageLoader.enqueue(imageRequest)
+    private fun preloadRequest(request: ImageRequest) {
+        val handle = imageLoader.enqueue(request)
         if(requestQueue.size >= maxPreload) requestQueue.removeFirst()
         requestQueue.add(handle)
     }
