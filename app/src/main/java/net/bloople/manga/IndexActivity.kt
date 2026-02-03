@@ -2,7 +2,6 @@ package net.bloople.manga
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import net.bloople.manga.LibrariesFragment.OnLibrarySelectedListener
 import net.bloople.manga.audit.LibrariesAuditor
@@ -32,8 +31,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     private lateinit var librariesFragment: LibrariesFragment
     private lateinit var databaseManagementFragment: DatabaseManagementFragment
     private val auditor = LibrariesAuditor()
-    private val adapter = BooksAdapter()
-    private lateinit var booksLayoutManager: GridLayoutManager
+    private lateinit var booksView: RecyclerView
     private lateinit var searchField: AutoCompleteTextView
     private lateinit var searchResultsToolbar: TextView
 
@@ -91,19 +89,18 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
             false
         }
 
-        val booksView = findViewById<RecyclerView>(R.id.books_view)
-        booksLayoutManager = GridLayoutManager(this, 4)
-        booksView.layoutManager = booksLayoutManager
+        val adapter = BooksAdapter()
+
+        booksView = findViewById(R.id.books_view)
+        booksView.layoutManager = GridLayoutManager(this, 4)
         booksView.adapter = adapter
-
-        val preloader = RecyclerViewPreloader(this, adapter, 12)
-        booksView.addOnScrollListener(preloader)
-
-        queryService = QueryService(this, searchField)
+        booksView.addOnScrollListener(RecyclerToListViewScrollListener(ListPreloader(this, adapter, 12)))
 
         model.searchResults.observe(this) { searchResults: SearchResults ->
             adapter.update(searchResults)
         }
+
+        queryService = QueryService(this, searchField)
 
         val intent = intent
         val intentLibraryId = intent.getLongExtra("libraryId", -1)
@@ -173,15 +170,15 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
             }
             R.id.import_database -> {
                 databaseManagementFragment.startImport()
-                true
+                return true
             }
             R.id.export_database -> {
                 databaseManagementFragment.startExport()
-                true
+                return true
             }
             R.id.clear_cache -> {
                 clearCache()
-                true
+                return true
             }
         }
 
@@ -204,7 +201,7 @@ class IndexActivity : AppCompatActivity(), OnLibrarySelectedListener {
     }
 
     private fun scrollToTop() {
-        booksLayoutManager.scrollToPositionWithOffset(0, 0)
+        booksView.scrollTo(0, 0)
     }
 
     private fun onSearch(text: String) {

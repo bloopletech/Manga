@@ -9,7 +9,7 @@ import coil3.request.ImageRequest
 class BookPagerAdapter(
     fa: FragmentActivity,
     private val book: Book) : FragmentStateAdapter(fa), ListPreloader.Provider {
-    private val preloader = RecyclerViewPreloader(fa, this, ReadingSession.CACHE_PAGES_LIMIT)
+    private val preloader = RecyclerToListViewScrollListener(ListPreloader(fa, this, ReadingSession.CACHE_PAGES_LIMIT))
 
     override fun createFragment(i: Int) = PageFragment.newInstance(book.pageUrl(i))
     override fun getItemCount(): Int = book.pages

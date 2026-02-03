@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 
 // Based on https://github.com/bumptech/glide/blob/b12f574fd6ea20430c55c5a2eb29d624d843bf3e/integration/recyclerview/src/main/java/com/bumptech/glide/integration/recyclerview/RecyclerToListViewScrollListener.java
+// Based on https://github.com/bumptech/glide/blob/b12f574fd6ea20430c55c5a2eb29d624d843bf3e/integration/recyclerview/src/main/java/com/bumptech/glide/integration/recyclerview/RecyclerViewPreloader.java
 class RecyclerToListViewScrollListener(
     private val scrollListener: AbsListView.OnScrollListener) : RecyclerView.OnScrollListener() {
     private var lastFirstVisible = -1

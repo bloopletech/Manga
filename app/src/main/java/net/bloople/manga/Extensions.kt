@@ -6,7 +6,6 @@ import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import coil3.load
 import java.util.Locale
 
 val Number.f: String
